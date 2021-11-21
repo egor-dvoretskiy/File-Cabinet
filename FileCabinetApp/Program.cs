@@ -19,6 +19,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
             new Tuple<string, Action<string>>("stat", Stat),
+            new Tuple<string, Action<string>>("create", Create),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -26,6 +27,7 @@ namespace FileCabinetApp
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "display record statistics", "The 'stat' command displays record statistics." },
+            new string[] { "create", "create user data", "The 'create' command creates user data." },
         };
 
         public static void Main(string[] args)
@@ -105,6 +107,33 @@ namespace FileCabinetApp
         {
             var recordsCount = Program.fileCabinetService.GetStat();
             Console.WriteLine($"{recordsCount} record(s).");
+        }
+
+        private static void Create(string parametrs)
+        {
+            Console.Write("First name: ");
+            var firstName = Console.ReadLine();
+
+            Console.Write("Last name: ");
+            var lastName = Console.ReadLine();
+
+            Console.Write("First name: ");
+            var birthDateString = Console.ReadLine();
+
+            if (firstName is null || lastName is null || birthDateString is null)
+            {
+                throw new ArgumentNullException(lastName);
+            }
+
+            if (!DateTime.TryParse(birthDateString, out DateTime birthDate))
+            {
+                Console.WriteLine("Wrong date. Creating record is failed!");
+                return;
+            }
+
+            Program.fileCabinetService.CreateRecord(firstName, lastName, birthDate);
+
+            Console.WriteLine($"Record #{Program.fileCabinetService.GetStat()} is created.");
         }
     }
 }
