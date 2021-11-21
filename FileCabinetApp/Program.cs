@@ -10,22 +10,32 @@ namespace FileCabinetApp
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
 
+        private static FileCabinetService fileCabinetService = new ();
+
         private static bool isRunning = true;
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
+            new Tuple<string, Action<string>>("stat", Stat),
+            new Tuple<string, Action<string>>("create", Create),
+            new Tuple<string, Action<string>>("list", List),
         };
 
         private static string[][] helpMessages = new string[][]
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
+            new string[] { "stat", "display record statistics", "The 'stat' command displays record statistics." },
+            new string[] { "create", "create user data", "The 'create' command creates user data." },
+            new string[] { "list", "display stored records", "The 'list' command displays stored records." },
         };
 
         public static void Main(string[] args)
         {
+            _ = args;
+
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
@@ -33,7 +43,13 @@ namespace FileCabinetApp
             do
             {
                 Console.Write("> ");
-                var inputs = Console.ReadLine().Split(' ', 2);
+                var input = Console.ReadLine();
+                if (input is null)
+                {
+                    continue;
+                }
+
+                var inputs = input.Split(' ', 2);
                 const int commandIndex = 0;
                 var command = inputs[commandIndex];
 
@@ -95,6 +111,49 @@ namespace FileCabinetApp
         {
             Console.WriteLine("Exiting an application...");
             isRunning = false;
+        }
+
+        private static void Stat(string parameters)
+        {
+            var recordsCount = Program.fileCabinetService.GetStat();
+            Console.WriteLine($"{recordsCount} record(s).");
+        }
+
+        private static void Create(string parameters)
+        {
+            Console.Write("First name: ");
+            var firstName = Console.ReadLine();
+
+            Console.Write("Last name: ");
+            var lastName = Console.ReadLine();
+
+            Console.Write("Date of birth (month/day/year): ");
+            var birthDateString = Console.ReadLine();
+
+            if (firstName is null || lastName is null || birthDateString is null)
+            {
+                throw new ArgumentNullException(lastName);
+            }
+
+            if (!DateTime.TryParse(birthDateString, out DateTime birthDate))
+            {
+                Console.WriteLine("Wrong date. Creating record is failed!");
+                return;
+            }
+
+            Program.fileCabinetService.CreateRecord(firstName, lastName, birthDate, 0, 0, ' ');
+
+            Console.WriteLine($"Record #{Program.fileCabinetService.GetStat()} is created.");
+        }
+
+        private static void List(string parameters)
+        {
+            var records = Program.fileCabinetService.GetRecords();
+
+            for (int i = 0; i < records.Length; i++)
+            {
+                Console.WriteLine($"#{records[i].Id} {records[i].FirstName} {records[i].LastName} {records[i].DateOfBirth:yyyy-MMM-dd}");
+            }
         }
     }
 }
