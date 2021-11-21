@@ -20,6 +20,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("exit", Exit),
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("create", Create),
+            new Tuple<string, Action<string>>("list", List),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -28,6 +29,7 @@ namespace FileCabinetApp
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "display record statistics", "The 'stat' command displays record statistics." },
             new string[] { "create", "create user data", "The 'create' command creates user data." },
+            new string[] { "list", "display stored records", "The 'list' command displays stored records." },
         };
 
         public static void Main(string[] args)
@@ -109,7 +111,7 @@ namespace FileCabinetApp
             Console.WriteLine($"{recordsCount} record(s).");
         }
 
-        private static void Create(string parametrs)
+        private static void Create(string parameters)
         {
             Console.Write("First name: ");
             var firstName = Console.ReadLine();
@@ -117,7 +119,7 @@ namespace FileCabinetApp
             Console.Write("Last name: ");
             var lastName = Console.ReadLine();
 
-            Console.Write("First name: ");
+            Console.Write("Date of birth (month/day/year): ");
             var birthDateString = Console.ReadLine();
 
             if (firstName is null || lastName is null || birthDateString is null)
@@ -134,6 +136,16 @@ namespace FileCabinetApp
             Program.fileCabinetService.CreateRecord(firstName, lastName, birthDate);
 
             Console.WriteLine($"Record #{Program.fileCabinetService.GetStat()} is created.");
+        }
+
+        private static void List(string parameters)
+        {
+            var records = Program.fileCabinetService.GetRecords();
+
+            for (int i = 0; i < records.Length; i++)
+            {
+                Console.WriteLine($"#{records[i].Id} {records[i].FirstName} {records[i].LastName} {records[i].DateOfBirth.ToString("yyyy-MMM-dd")}");
+            }
         }
     }
 }
