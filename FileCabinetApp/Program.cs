@@ -10,7 +10,7 @@ namespace FileCabinetApp
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
 
-        private static FileCabinetService fileCabinetService = new FileCabinetService();
+        private static FileCabinetService fileCabinetService = new ();
 
         private static bool isRunning = true;
 
@@ -34,6 +34,8 @@ namespace FileCabinetApp
 
         public static void Main(string[] args)
         {
+            _ = args;
+
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
@@ -41,7 +43,13 @@ namespace FileCabinetApp
             do
             {
                 Console.Write("> ");
-                var inputs = Console.ReadLine().Split(' ', 2);
+                var input = Console.ReadLine();
+                if (input is null)
+                {
+                    continue;
+                }
+
+                var inputs = input.Split(' ', 2);
                 const int commandIndex = 0;
                 var command = inputs[commandIndex];
 
@@ -133,7 +141,7 @@ namespace FileCabinetApp
                 return;
             }
 
-            Program.fileCabinetService.CreateRecord(firstName, lastName, birthDate);
+            Program.fileCabinetService.CreateRecord(firstName, lastName, birthDate, 0, 0, ' ');
 
             Console.WriteLine($"Record #{Program.fileCabinetService.GetStat()} is created.");
         }
@@ -144,7 +152,7 @@ namespace FileCabinetApp
 
             for (int i = 0; i < records.Length; i++)
             {
-                Console.WriteLine($"#{records[i].Id} {records[i].FirstName} {records[i].LastName} {records[i].DateOfBirth.ToString("yyyy-MMM-dd")}");
+                Console.WriteLine($"#{records[i].Id} {records[i].FirstName} {records[i].LastName} {records[i].DateOfBirth:yyyy-MMM-dd}");
             }
         }
     }
