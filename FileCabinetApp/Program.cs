@@ -130,18 +130,16 @@ namespace FileCabinetApp
             Console.Write("Date of birth (month/day/year): ");
             var birthDateString = Console.ReadLine();
 
-            if (firstName is null || lastName is null || birthDateString is null)
-            {
-                throw new ArgumentNullException(lastName);
-            }
+            Console.Write("Times in jail: ");
+            var jailTimesString = Console.ReadLine();
 
-            if (!DateTime.TryParse(birthDateString, out DateTime birthDate))
-            {
-                Console.WriteLine("Wrong date. Creating record is failed!");
-                return;
-            }
+            Console.Write("Amount of money: ");
+            var moneyAccountString = Console.ReadLine();
 
-            Program.fileCabinetService.CreateRecord(firstName, lastName, birthDate, 0, 0, ' ');
+            Console.Write("Gender: ");
+            var genderString = Console.ReadLine();
+
+            _ = Program.fileCabinetService.CreateRecord(firstName, lastName, birthDateString, jailTimesString, moneyAccountString, genderString);
 
             Console.WriteLine($"Record #{Program.fileCabinetService.GetStat()} is created.");
         }
@@ -150,9 +148,22 @@ namespace FileCabinetApp
         {
             var records = Program.fileCabinetService.GetRecords();
 
+            if (records.Length == 0)
+            {
+                Console.WriteLine("List is empty.");
+                return;
+            }
+
             for (int i = 0; i < records.Length; i++)
             {
-                Console.WriteLine($"#{records[i].Id} {records[i].FirstName} {records[i].LastName} {records[i].DateOfBirth:yyyy-MMM-dd}");
+                Console.WriteLine(
+                    $"#{records[i].Id} " +
+                    $"{records[i].FirstName} " +
+                    $"{records[i].LastName} " +
+                    $"{records[i].DateOfBirth:yyyy-MMM-dd} " +
+                    $"{records[i].TimesInJail} " +
+                    $"{records[i].MoneyAccount} " +
+                    $"{records[i].Gender}");
             }
         }
     }
