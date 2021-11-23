@@ -11,22 +11,37 @@ namespace FileCabinetApp
 
         public int CreateRecord(string firstName, string lastName, string dateOfBirth, string jailTimesString, string moneyAccountString, string genderString)
         {
-            var parametersTuple = this.ValidateArguments(firstName, lastName, dateOfBirth, jailTimesString, moneyAccountString, genderString);
-
-            var record = new FileCabinetRecord
+            try
             {
-                Id = this.list.Count + 1,
-                FirstName = firstName,
-                LastName = lastName,
-                DateOfBirth = parametersTuple.Item1,
-                TimesInJail = parametersTuple.Item2,
-                MoneyAccount = parametersTuple.Item3,
-                Gender = parametersTuple.Item4,
-            };
+                var parametersTuple = this.ValidateArguments(firstName, lastName, dateOfBirth, jailTimesString, moneyAccountString, genderString);
 
-            this.list.Add(record);
+                var record = new FileCabinetRecord
+                {
+                    Id = this.list.Count + 1,
+                    FirstName = firstName,
+                    LastName = lastName,
+                    DateOfBirth = parametersTuple.Item1,
+                    TimesInJail = parametersTuple.Item2,
+                    MoneyAccount = parametersTuple.Item3,
+                    Gender = parametersTuple.Item4,
+                };
 
-            return record.Id;
+                this.list.Add(record);
+
+                return record.Id;
+            }
+            catch (ArgumentNullException anex)
+            {
+                Console.WriteLine(anex.Message);
+            }
+            catch (ArgumentException aex)
+            {
+                Console.WriteLine(aex.Message);
+            }
+
+            Console.WriteLine("Please, try again:");
+
+            return -1;
         }
 
         public FileCabinetRecord[] GetRecords()
@@ -48,7 +63,7 @@ namespace FileCabinetApp
                 string.IsNullOrWhiteSpace(moneyAccountString) ||
                 string.IsNullOrWhiteSpace(genderString))
             {
-                throw new ArgumentNullException(firstName);
+                throw new ArgumentNullException("Something has null reference");
             }
 
             var birthDateValid = DateTime.TryParse(dateOfBirth, out DateTime birthDate);

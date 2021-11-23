@@ -121,27 +121,31 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            Console.Write("First name: ");
-            var firstName = Console.ReadLine();
+            int id = -1;
+            while (id == -1)
+            {
+                Console.Write("First name: ");
+                var firstName = Console.ReadLine();
 
-            Console.Write("Last name: ");
-            var lastName = Console.ReadLine();
+                Console.Write("Last name: ");
+                var lastName = Console.ReadLine();
 
-            Console.Write("Date of birth (month/day/year): ");
-            var birthDateString = Console.ReadLine();
+                Console.Write("Date of birth (month/day/year): ");
+                var birthDateString = Console.ReadLine();
 
-            Console.Write("Times in jail: ");
-            var jailTimesString = Console.ReadLine();
+                Console.Write("Times in jail: ");
+                var jailTimesString = Console.ReadLine();
 
-            Console.Write("Amount of money: ");
-            var moneyAccountString = Console.ReadLine();
+                Console.Write("Amount of money: ");
+                var moneyAccountString = Console.ReadLine();
 
-            Console.Write("Gender: ");
-            var genderString = Console.ReadLine();
+                Console.Write("Gender: ");
+                var genderString = Console.ReadLine();
 
-            _ = Program.fileCabinetService.CreateRecord(firstName, lastName, birthDateString, jailTimesString, moneyAccountString, genderString);
+                id = Program.fileCabinetService.CreateRecord(firstName, lastName, birthDateString, jailTimesString, moneyAccountString, genderString);
+            }
 
-            Console.WriteLine($"Record #{Program.fileCabinetService.GetStat()} is created.");
+            Console.WriteLine($"Record #{id} is created.");
         }
 
         private static void List(string parameters)
