@@ -21,6 +21,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
+            new Tuple<string, Action<string>>("edit", Edit),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -30,6 +31,7 @@ namespace FileCabinetApp
             new string[] { "stat", "display record statistics", "The 'stat' command displays record statistics." },
             new string[] { "create", "create user data", "The 'create' command creates user data." },
             new string[] { "list", "display stored records", "The 'list' command displays stored records." },
+            new string[] { "edit", "edit stored user data", "The 'edit' command edits stored user data." },
         };
 
         public static void Main(string[] args)
@@ -146,6 +148,53 @@ namespace FileCabinetApp
             }
 
             Console.WriteLine($"Record #{id} is created.");
+        }
+
+        private static void Edit(string parameters)
+        {
+            bool isIdValid = int.TryParse(parameters, out int id);
+            if (!isIdValid)
+            {
+                Console.WriteLine("Wrong id value.");
+                return;
+            }
+
+            try
+            {
+                int listValue = Program.fileCabinetService.GetPositionInListRecordsById(id);
+                if (listValue == -1)
+                {
+                    Console.WriteLine($"#{id} record is not found.");
+                    Program.fileCabinetService.EditRecord(listValue, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+                    return;
+                }
+
+                Console.Write("First name: ");
+                var firstName = Console.ReadLine();
+
+                Console.Write("Last name: ");
+                var lastName = Console.ReadLine();
+
+                Console.Write("Date of birth (month/day/year): ");
+                var birthDateString = Console.ReadLine();
+
+                Console.Write("Times in jail: ");
+                var jailTimesString = Console.ReadLine();
+
+                Console.Write("Amount of money: ");
+                var moneyAccountString = Console.ReadLine();
+
+                Console.Write("Gender: ");
+                var genderString = Console.ReadLine();
+
+                Program.fileCabinetService.EditRecord(listValue, firstName, lastName, birthDateString, jailTimesString, moneyAccountString, genderString);
+
+                Console.WriteLine($"Record #{id} is edited.");
+            }
+            catch (ArgumentException aex)
+            {
+                _ = aex;
+            }
         }
 
         private static void List(string parameters)

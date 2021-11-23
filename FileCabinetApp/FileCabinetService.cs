@@ -44,6 +44,41 @@ namespace FileCabinetApp
             return -1;
         }
 
+        public void EditRecord(
+            int id,
+            string firstName,
+            string lastName,
+            string dateOfBirth,
+            string jailTimesString,
+            string moneyAccountString,
+            string genderString)
+        {
+            if (id == -1)
+            {
+                throw new ArgumentException($"{id}");
+            }
+
+            try
+            {
+                var parametersTuple = this.ValidateArguments(firstName, lastName, dateOfBirth, jailTimesString, moneyAccountString, genderString);
+
+                this.list[id].FirstName = firstName;
+                this.list[id].LastName = lastName;
+                this.list[id].DateOfBirth = parametersTuple.Item1;
+                this.list[id].TimesInJail = parametersTuple.Item2;
+                this.list[id].MoneyAccount = parametersTuple.Item3;
+                this.list[id].Gender = parametersTuple.Item4;
+            }
+            catch (ArgumentNullException anex)
+            {
+                Console.WriteLine(anex.Message);
+            }
+            catch (ArgumentException aex)
+            {
+                Console.WriteLine(aex.Message);
+            }
+        }
+
         public FileCabinetRecord[] GetRecords()
         {
             return this.list.ToArray();
@@ -52,6 +87,33 @@ namespace FileCabinetApp
         public int GetStat()
         {
             return this.list.Count;
+        }
+
+        public int GetPositionInListRecordsById(int id)
+        {
+            int leftBorder = 0;
+            int rightBorder = this.list.Count;
+            int index = -1;
+            while (leftBorder < rightBorder)
+            {
+                int middle = (leftBorder + rightBorder) / 2;
+                int checkId = this.list[middle].Id;
+                if (checkId > id)
+                {
+                    rightBorder = middle - 1;
+                }
+                else if (checkId < id)
+                {
+                    leftBorder = middle + 1;
+                }
+                else
+                {
+                    index = middle;
+                    break;
+                }
+            }
+
+            return index;
         }
 
         private Tuple<DateTime, short, decimal, char> ValidateArguments(string firstName, string lastName, string dateOfBirth, string jailTimesString, string moneyAccountString, string genderString)
