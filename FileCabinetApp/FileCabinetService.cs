@@ -116,6 +116,23 @@ namespace FileCabinetApp
             return index;
         }
 
+        public FileCabinetRecord[] FindByFirstName(string firstName)
+        {
+            List<FileCabinetRecord> tempLst = new ();
+            int index = 0;
+
+            while (index != -1)
+            {
+                index = this.list.FindIndex(index, this.list.Count - index, i => string.Equals(i.FirstName, firstName, StringComparison.InvariantCultureIgnoreCase));
+                if (index != -1)
+                {
+                    tempLst.Add(this.list[index++]);
+                }
+            }
+
+            return tempLst.ToArray();
+        }
+
         private Tuple<DateTime, short, decimal, char> ValidateArguments(string firstName, string lastName, string dateOfBirth, string jailTimesString, string moneyAccountString, string genderString)
         {
             if (string.IsNullOrWhiteSpace(firstName) ||
