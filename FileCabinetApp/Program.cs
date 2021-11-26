@@ -155,25 +155,33 @@ namespace FileCabinetApp
         private static void Find(string parameters)
         {
             var paramsFindContainer = parameters.Split(' ');
+            FileCabinetRecord[] foundDataContainer = Array.Empty<FileCabinetRecord>();
+            string parameterToFind = paramsFindContainer[1].Replace("\"", string.Empty);
 
             switch (paramsFindContainer[0])
             {
                 case "firstname":
-                    var foundData = Program.fileCabinetService.FindByFirstName(paramsFindContainer[1].Replace("\"", string.Empty));
-
-                    for (int i = 0; i < foundData.Length; i++)
-                    {
-                        PrintRecord(foundData[i]);
-                    }
-
-                    if (foundData.Length == 0)
-                    {
-                        Console.WriteLine("Nothing found.");
-                    }
-
+                    foundDataContainer = Program.fileCabinetService.FindByFirstName(parameterToFind);
+                    break;
+                case "lastname":
+                    foundDataContainer = Program.fileCabinetService.FindByLastName(parameterToFind);
+                    break;
+                case "dateofbirth":
+                    foundDataContainer = Program.fileCabinetService.FindByBirthDate(parameterToFind);
                     break;
                 default:
                     break;
+            }
+
+            if (foundDataContainer.Length == 0)
+            {
+                Console.WriteLine("Nothing found.");
+                return;
+            }
+
+            for (int i = 0; i < foundDataContainer.Length; i++)
+            {
+                PrintRecord(foundDataContainer[i]);
             }
         }
 
