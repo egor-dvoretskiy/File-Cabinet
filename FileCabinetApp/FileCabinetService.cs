@@ -8,8 +8,17 @@ namespace FileCabinetApp
     public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new ();
+        private Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private Dictionary<string, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
-        public int CreateRecord(string firstName, string lastName, string dateOfBirth, string jailTimesString, string moneyAccountString, string genderString)
+        public int CreateRecord(
+            string firstName,
+            string lastName,
+            string dateOfBirth,
+            string jailTimesString,
+            string moneyAccountString,
+            string genderString)
         {
             try
             {
@@ -27,6 +36,10 @@ namespace FileCabinetApp
                 };
 
                 this.list.Add(record);
+
+                this.AddInformationToDictionary(firstName, ref this.firstNameDictionary, record);
+                this.AddInformationToDictionary(lastName, ref this.lastNameDictionary, record);
+                this.AddInformationToDictionary(dateOfBirth, ref this.dateOfBirthDictionary, record);
 
                 return record.Id;
             }
@@ -68,6 +81,10 @@ namespace FileCabinetApp
                 this.list[id].TimesInJail = parametersTuple.Item2;
                 this.list[id].MoneyAccount = parametersTuple.Item3;
                 this.list[id].Gender = parametersTuple.Item4;
+
+                this.EditInformationInDictionary(firstName, ref this.firstNameDictionary, this.list[id]);
+                this.EditInformationInDictionary(lastName, ref this.lastNameDictionary, this.list[id]);
+                this.EditInformationInDictionary(dateOfBirth, ref this.dateOfBirthDictionary, this.list[id]);
             }
             catch (ArgumentNullException anex)
             {
@@ -114,6 +131,97 @@ namespace FileCabinetApp
             }
 
             return index;
+        }
+
+        public FileCabinetRecord[] FindByFirstName(string firstName)
+        {
+            /*List<FileCabinetRecord> tempLst = new ();
+            int index = 0;
+
+            while (index != -1)
+            {
+                index = this.list.FindIndex(index, this.list.Count - index, i => string.Equals(i.FirstName, firstName, StringComparison.InvariantCultureIgnoreCase));
+                if (index != -1)
+                {
+                    tempLst.Add(this.list[index++]);
+                }
+            }*/
+
+            return this.GetInformationFromDictionary(firstName, this.firstNameDictionary).ToArray();
+        }
+
+        public FileCabinetRecord[] FindByLastName(string lastName)
+        {
+            /*List<FileCabinetRecord> tempLst = new();
+            int index = 0;
+
+            while (index != -1)
+            {
+                index = this.list.FindIndex(index, this.list.Count - index, i => string.Equals(i.LastName, lastName, StringComparison.InvariantCultureIgnoreCase));
+                if (index != -1)
+                {
+                    tempLst.Add(this.list[index++]);
+                }
+            }*/
+
+            return this.GetInformationFromDictionary(lastName, this.lastNameDictionary).ToArray();
+        }
+
+        public FileCabinetRecord[] FindByBirthDate(string birthDate)
+        {
+            /*List<FileCabinetRecord> tempLst = new ();
+
+            bool isBirthDateVaild = DateTime.TryParse(birthDate, out DateTime birthDateTime);
+
+            int index = 0;
+
+            while (index != -1)
+            {
+                index = this.list.FindIndex(index, this.list.Count - index, i => DateTime.Compare(i.DateOfBirth, birthDateTime) == 0);
+                if (index != -1)
+                {
+                    tempLst.Add(this.list[index++]);
+                }
+            }*/
+
+            return this.GetInformationFromDictionary(birthDate, this.dateOfBirthDictionary).ToArray();
+        }
+
+        private void AddInformationToDictionary(string parametrName, ref Dictionary<string, List<FileCabinetRecord>> dict, FileCabinetRecord record)
+        {
+            if (!dict.ContainsKey(parametrName))
+            {
+                dict.Add(parametrName, new List<FileCabinetRecord>() { record });
+            }
+            else
+            {
+                dict[parametrName].Add(record);
+            }
+        }
+
+        private void EditInformationInDictionary(string parameterName, ref Dictionary<string, List<FileCabinetRecord>> dict, FileCabinetRecord record)
+        {
+            if (dict.ContainsKey(parameterName))
+            {
+                for (int i = 0; i < dict[parameterName].Count; i++)
+                {
+                    if (dict[parameterName][i].Id == record.Id)
+                    {
+                        dict[parameterName][i] = record;
+                        return;
+                    }
+                }
+            }
+        }
+
+        private List<FileCabinetRecord> GetInformationFromDictionary(string parametrName, Dictionary<string, List<FileCabinetRecord>> dictionary)
+        {
+            if (dictionary.ContainsKey(parametrName))
+            {
+                return dictionary[parametrName];
+            }
+
+            return new List<FileCabinetRecord>();
         }
 
         private Tuple<DateTime, short, decimal, char> ValidateArguments(string firstName, string lastName, string dateOfBirth, string jailTimesString, string moneyAccountString, string genderString)

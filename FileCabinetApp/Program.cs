@@ -22,6 +22,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
+            new Tuple<string, Action<string>>("find", Find),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -32,6 +33,7 @@ namespace FileCabinetApp
             new string[] { "create", "create user data", "The 'create' command creates user data." },
             new string[] { "list", "display stored records", "The 'list' command displays stored records." },
             new string[] { "edit", "edit stored user data", "The 'edit' command edits stored user data." },
+            new string[] { "find", "find stored user data by specific field", "The 'find' command searches for stored user data by specific field." },
         };
 
         public static void Main(string[] args)
@@ -150,6 +152,39 @@ namespace FileCabinetApp
             Console.WriteLine($"Record #{id} is created.");
         }
 
+        private static void Find(string parameters)
+        {
+            var paramsFindContainer = parameters.Split(' ');
+            FileCabinetRecord[] foundDataContainer = Array.Empty<FileCabinetRecord>();
+            string parameterToFind = paramsFindContainer[1].Replace("\"", string.Empty);
+
+            switch (paramsFindContainer[0])
+            {
+                case "firstname":
+                    foundDataContainer = Program.fileCabinetService.FindByFirstName(parameterToFind);
+                    break;
+                case "lastname":
+                    foundDataContainer = Program.fileCabinetService.FindByLastName(parameterToFind);
+                    break;
+                case "dateofbirth":
+                    foundDataContainer = Program.fileCabinetService.FindByBirthDate(parameterToFind);
+                    break;
+                default:
+                    break;
+            }
+
+            if (foundDataContainer.Length == 0)
+            {
+                Console.WriteLine("Nothing found.");
+                return;
+            }
+
+            for (int i = 0; i < foundDataContainer.Length; i++)
+            {
+                PrintRecord(foundDataContainer[i]);
+            }
+        }
+
         private static void Edit(string parameters)
         {
             bool isIdValid = int.TryParse(parameters, out int id);
@@ -209,15 +244,20 @@ namespace FileCabinetApp
 
             for (int i = 0; i < records.Length; i++)
             {
-                Console.WriteLine(
-                    $"#{records[i].Id} " +
-                    $"{records[i].FirstName} " +
-                    $"{records[i].LastName} " +
-                    $"{records[i].DateOfBirth:yyyy-MMM-dd} " +
-                    $"{records[i].TimesInJail} " +
-                    $"{records[i].MoneyAccount} " +
-                    $"{records[i].Gender}");
+                PrintRecord(records[i]);
             }
+        }
+
+        private static void PrintRecord(FileCabinetRecord record)
+        {
+            Console.WriteLine(
+                    $"#{record.Id} " +
+                    $"{record.FirstName} " +
+                    $"{record.LastName} " +
+                    $"{record.DateOfBirth:yyyy-MMM-dd} " +
+                    $"{record.TimesInJail} " +
+                    $"{record.MoneyAccount} " +
+                    $"{record.Gender}");
         }
     }
 }
