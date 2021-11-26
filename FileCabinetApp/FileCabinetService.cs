@@ -10,6 +10,7 @@ namespace FileCabinetApp
         private readonly List<FileCabinetRecord> list = new ();
         private Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private Dictionary<string, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
         public int CreateRecord(
             string firstName,
@@ -38,6 +39,7 @@ namespace FileCabinetApp
 
                 this.AddInformationToDictionary(firstName, ref this.firstNameDictionary, record);
                 this.AddInformationToDictionary(lastName, ref this.lastNameDictionary, record);
+                this.AddInformationToDictionary(dateOfBirth, ref this.dateOfBirthDictionary, record);
 
                 return record.Id;
             }
@@ -82,6 +84,7 @@ namespace FileCabinetApp
 
                 this.EditInformationInDictionary(firstName, ref this.firstNameDictionary, this.list[id]);
                 this.EditInformationInDictionary(lastName, ref this.lastNameDictionary, this.list[id]);
+                this.EditInformationInDictionary(dateOfBirth, ref this.dateOfBirthDictionary, this.list[id]);
             }
             catch (ArgumentNullException anex)
             {
@@ -166,7 +169,7 @@ namespace FileCabinetApp
 
         public FileCabinetRecord[] FindByBirthDate(string birthDate)
         {
-            List<FileCabinetRecord> tempLst = new ();
+            /*List<FileCabinetRecord> tempLst = new ();
 
             bool isBirthDateVaild = DateTime.TryParse(birthDate, out DateTime birthDateTime);
 
@@ -179,9 +182,9 @@ namespace FileCabinetApp
                 {
                     tempLst.Add(this.list[index++]);
                 }
-            }
+            }*/
 
-            return tempLst.ToArray();
+            return this.GetInformationFromDictionary(birthDate, this.dateOfBirthDictionary).ToArray();
         }
 
         private void AddInformationToDictionary(string parametrName, ref Dictionary<string, List<FileCabinetRecord>> dict, FileCabinetRecord record)
