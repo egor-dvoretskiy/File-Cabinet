@@ -9,6 +9,7 @@ namespace FileCabinetApp
     {
         private readonly List<FileCabinetRecord> list = new ();
         private Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
         public int CreateRecord(
             string firstName,
@@ -36,6 +37,7 @@ namespace FileCabinetApp
                 this.list.Add(record);
 
                 this.AddInformationToDictionary(firstName, ref this.firstNameDictionary, record);
+                this.AddInformationToDictionary(lastName, ref this.lastNameDictionary, record);
 
                 return record.Id;
             }
@@ -79,6 +81,7 @@ namespace FileCabinetApp
                 this.list[id].Gender = parametersTuple.Item4;
 
                 this.EditInformationInDictionary(firstName, ref this.firstNameDictionary, this.list[id]);
+                this.EditInformationInDictionary(lastName, ref this.lastNameDictionary, this.list[id]);
             }
             catch (ArgumentNullException anex)
             {
@@ -129,8 +132,8 @@ namespace FileCabinetApp
 
         public FileCabinetRecord[] FindByFirstName(string firstName)
         {
-            List<FileCabinetRecord> tempLst = new ();
-            /*int index = 0;
+            /*List<FileCabinetRecord> tempLst = new ();
+            int index = 0;
 
             while (index != -1)
             {
@@ -146,7 +149,7 @@ namespace FileCabinetApp
 
         public FileCabinetRecord[] FindByLastName(string lastName)
         {
-            List<FileCabinetRecord> tempLst = new();
+            /*List<FileCabinetRecord> tempLst = new();
             int index = 0;
 
             while (index != -1)
@@ -156,9 +159,9 @@ namespace FileCabinetApp
                 {
                     tempLst.Add(this.list[index++]);
                 }
-            }
+            }*/
 
-            return tempLst.ToArray();
+            return this.GetInformationFromDictionary(lastName, this.lastNameDictionary).ToArray();
         }
 
         public FileCabinetRecord[] FindByBirthDate(string birthDate)
