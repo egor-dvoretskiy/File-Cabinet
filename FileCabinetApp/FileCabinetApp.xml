@@ -70,29 +70,19 @@
             Records Processor Class.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(System.String,System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.RecordInputObject)">
             <summary>
             Creates record and adds to main list.
             </summary>
-            <param name="firstName">First name.</param>
-            <param name="lastName">Last name.</param>
-            <param name="dateOfBirth">Birth date.</param>
-            <param name="personalRating">Personal rating.</param>
-            <param name="debtString">Debt.</param>
-            <param name="genderString">Gender.</param>
+            <param name="recordInputObject">Input parameter object.</param>
             <returns>Record's id in list.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,System.String,System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,FileCabinetApp.RecordInputObject)">
             <summary>
             Edit record in list.
             </summary>
             <param name="id">Record's id in list.</param>
-            <param name="firstName">First name.</param>
-            <param name="lastName">Last name.</param>
-            <param name="dateOfBirth">Birth date.</param>
-            <param name="personalRating">Personal rating.</param>
-            <param name="debtString">Debt.</param>
-            <param name="genderString">Gender.</param>
+            <param name="recordInputObject">Input parameter object.</param>
             <exception cref="T:System.ArgumentException">id.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
@@ -145,6 +135,59 @@
             Init Method.
             </summary>
             <param name="args">Default parameters.</param>
+        </member>
+        <member name="T:FileCabinetApp.RecordInputObject">
+            <summary>
+            Contains input parameter object for create and edit methods.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.RecordInputObject.FirstName">
+            <summary>
+            Gets or sets person's first name.
+            </summary>
+            <value>
+            Person's first name.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.RecordInputObject.LastName">
+            <summary>
+            Gets or sets person's last name.
+            </summary>
+            <value>
+            Person's last name.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.RecordInputObject.DateOfBirth">
+            <summary>
+            Gets or sets person's birth date.
+            </summary>
+            <value>
+            Person's birth date.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.RecordInputObject.PersonalRating">
+            <summary>
+            Gets or sets person's personal rating.
+            </summary>
+            <value>
+            Person's personal rating.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.RecordInputObject.Debt">
+            <summary>
+            Gets or sets person's amount of debt.
+            </summary>
+            <value>
+            Person's amount of debt.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.RecordInputObject.Gender">
+            <summary>
+            Gets or sets person's gender.
+            </summary>
+            <value>
+            Person's gender.
+            </value>
         </member>
     </members>
 </doc>

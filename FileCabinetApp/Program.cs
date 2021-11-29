@@ -1,5 +1,7 @@
 ﻿using System;
 
+#pragma warning disable CS8601 // Possible null reference argument.
+
 namespace FileCabinetApp
 {
     /// <summary>
@@ -144,18 +146,26 @@ namespace FileCabinetApp
                 Console.Write("Date of birth (month/day/year): ");
                 var birthDateString = Console.ReadLine();
 
-                Console.Write("Times in jail: ");
+                Console.Write("Personal rating: ");
                 var personalRatingString = Console.ReadLine();
 
-                Console.Write("Amount of money: ");
-                var moneyAccountString = Console.ReadLine();
+                Console.Write("Debt: ");
+                var debtString = Console.ReadLine();
 
                 Console.Write("Gender: ");
                 var genderString = Console.ReadLine();
 
-#pragma warning disable CS8604 // Possible null reference argument.
-                id = Program.fileCabinetService.CreateRecord(firstName, lastName, birthDateString, personalRatingString, moneyAccountString, genderString);
-#pragma warning restore CS8604 // Possible null reference argument.
+                RecordInputObject recordInputObject = new RecordInputObject()
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    DateOfBirth = birthDateString,
+                    PersonalRating = personalRatingString,
+                    Debt = debtString,
+                    Gender = genderString,
+                };
+
+                id = Program.fileCabinetService.CreateRecord(recordInputObject);
             }
 
             Console.WriteLine($"Record #{id} is created.");
@@ -164,8 +174,15 @@ namespace FileCabinetApp
         private static void Find(string parameters)
         {
             var paramsFindContainer = parameters.Split(' ');
+
+            if (paramsFindContainer.Length < 2)
+            {
+                Console.WriteLine("Not enough parameters. Try again.");
+                return;
+            }
+
             FileCabinetRecord[] foundDataContainer = Array.Empty<FileCabinetRecord>();
-            string parameterToFind = paramsFindContainer[1].Replace("\"", string.Empty);
+            string parameterToFind = paramsFindContainer[1];
 
             switch (paramsFindContainer[0])
             {
@@ -210,7 +227,7 @@ namespace FileCabinetApp
                 if (listValue == -1)
                 {
                     Console.WriteLine($"#{id} record is not found.");
-                    Program.fileCabinetService.EditRecord(listValue, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+                    Program.fileCabinetService.EditRecord(listValue, new RecordInputObject());
                     return;
                 }
 
@@ -223,18 +240,26 @@ namespace FileCabinetApp
                 Console.Write("Date of birth (month/day/year): ");
                 var birthDateString = Console.ReadLine();
 
-                Console.Write("Times in jail: ");
+                Console.Write("Personal rating: ");
                 var personalRatingString = Console.ReadLine();
 
-                Console.Write("Amount of money: ");
-                var moneyAccountString = Console.ReadLine();
+                Console.Write("Debt: ");
+                var debtString = Console.ReadLine();
 
                 Console.Write("Gender: ");
                 var genderString = Console.ReadLine();
 
-#pragma warning disable CS8604 // Possible null reference argument.
-                Program.fileCabinetService.EditRecord(listValue, firstName, lastName, birthDateString, personalRatingString, moneyAccountString, genderString);
-#pragma warning restore CS8604 // Possible null reference argument.
+                RecordInputObject recordInputObject = new RecordInputObject()
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    DateOfBirth = birthDateString,
+                    PersonalRating = personalRatingString,
+                    Debt = debtString,
+                    Gender = genderString,
+                };
+
+                Program.fileCabinetService.EditRecord(listValue, recordInputObject);
 
                 Console.WriteLine($"Record #{id} is edited.");
             }
