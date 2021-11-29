@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Records Processor Class.
+    /// </summary>
     public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new ();
@@ -12,17 +15,27 @@ namespace FileCabinetApp
         private Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private Dictionary<string, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
+        /// <summary>
+        /// Creates record and adds to main list.
+        /// </summary>
+        /// <param name="firstName">First name.</param>
+        /// <param name="lastName">Last name.</param>
+        /// <param name="dateOfBirth">Birth date.</param>
+        /// <param name="personalRating">Personal rating.</param>
+        /// <param name="debtString">Debt.</param>
+        /// <param name="genderString">Gender.</param>
+        /// <returns>Record's id in list.</returns>
         public int CreateRecord(
             string firstName,
             string lastName,
             string dateOfBirth,
             string personalRating,
-            string moneyAccountString,
+            string debtString,
             string genderString)
         {
             try
             {
-                var parametersTuple = this.ValidateArguments(firstName, lastName, dateOfBirth, personalRating, moneyAccountString, genderString);
+                var parametersTuple = this.ValidateArguments(firstName, lastName, dateOfBirth, personalRating, debtString, genderString);
 
                 var record = new FileCabinetRecord
                 {
@@ -31,7 +44,7 @@ namespace FileCabinetApp
                     LastName = lastName,
                     DateOfBirth = parametersTuple.Item1,
                     PersonalRating = parametersTuple.Item2,
-                    MoneyAccount = parametersTuple.Item3,
+                    Debt = parametersTuple.Item3,
                     Gender = parametersTuple.Item4,
                 };
 
@@ -57,13 +70,24 @@ namespace FileCabinetApp
             return -1;
         }
 
+        /// <summary>
+        /// Edit record in list.
+        /// </summary>
+        /// <param name="id">Record's id in list.</param>
+        /// <param name="firstName">First name.</param>
+        /// <param name="lastName">Last name.</param>
+        /// <param name="dateOfBirth">Birth date.</param>
+        /// <param name="personalRating">Personal rating.</param>
+        /// <param name="debtString">Debt.</param>
+        /// <param name="genderString">Gender.</param>
+        /// <exception cref="ArgumentException">id.</exception>
         public void EditRecord(
             int id,
             string firstName,
             string lastName,
             string dateOfBirth,
-            string personalRatingString,
-            string moneyAccountString,
+            string personalRating,
+            string debtString,
             string genderString)
         {
             if (id == -1)
@@ -73,13 +97,13 @@ namespace FileCabinetApp
 
             try
             {
-                var parametersTuple = this.ValidateArguments(firstName, lastName, dateOfBirth, personalRatingString, moneyAccountString, genderString);
+                var parametersTuple = this.ValidateArguments(firstName, lastName, dateOfBirth, personalRating, debtString, genderString);
 
                 this.list[id].FirstName = firstName;
                 this.list[id].LastName = lastName;
                 this.list[id].DateOfBirth = parametersTuple.Item1;
                 this.list[id].PersonalRating = parametersTuple.Item2;
-                this.list[id].MoneyAccount = parametersTuple.Item3;
+                this.list[id].Debt = parametersTuple.Item3;
                 this.list[id].Gender = parametersTuple.Item4;
 
                 this.EditInformationInDictionary(firstName, ref this.firstNameDictionary, this.list[id]);
@@ -96,16 +120,29 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Method return all stored records.
+        /// </summary>
+        /// <returns>Stored records.</returns>
         public FileCabinetRecord[] GetRecords()
         {
             return this.list.ToArray();
         }
 
+        /// <summary>
+        /// Method return records count.
+        /// </summary>
+        /// <returns>Amount of records.</returns>
         public int GetStat()
         {
             return this.list.Count;
         }
 
+        /// <summary>
+        /// Method find record position in list by ID.
+        /// </summary>
+        /// <param name="id">Record's id.</param>
+        /// <returns>Record's position in list.</returns>
         public int GetPositionInListRecordsById(int id)
         {
             int leftBorder = 0;
@@ -133,6 +170,11 @@ namespace FileCabinetApp
             return index;
         }
 
+        /// <summary>
+        /// Searches all matches by firstname parameter.
+        /// </summary>
+        /// <param name="firstName">Person's first name.</param>
+        /// <returns>All records with the same firstname.</returns>
         public FileCabinetRecord[] FindByFirstName(string firstName)
         {
             /*List<FileCabinetRecord> tempLst = new ();
@@ -150,6 +192,11 @@ namespace FileCabinetApp
             return this.GetInformationFromDictionary(firstName, this.firstNameDictionary).ToArray();
         }
 
+        /// <summary>
+        /// Searches all matches by lastName parameter.
+        /// </summary>
+        /// <param name="lastName">Person's last name.</param>
+        /// <returns>All records with the same lastname.</returns>
         public FileCabinetRecord[] FindByLastName(string lastName)
         {
             /*List<FileCabinetRecord> tempLst = new();
@@ -167,6 +214,11 @@ namespace FileCabinetApp
             return this.GetInformationFromDictionary(lastName, this.lastNameDictionary).ToArray();
         }
 
+        /// <summary>
+        /// Searches all matches by birthDate parameter.
+        /// </summary>
+        /// <param name="birthDate">Person's date of birth.</param>
+        /// <returns>All records with the same date of birth.</returns>
         public FileCabinetRecord[] FindByBirthDate(string birthDate)
         {
             /*List<FileCabinetRecord> tempLst = new ();
@@ -229,7 +281,7 @@ namespace FileCabinetApp
             string lastName,
             string dateOfBirth,
             string personalRatingString,
-            string moneyAccountString,
+            string debtString,
             string genderString)
         {
             this.NullCheckRecordValues(
@@ -237,18 +289,18 @@ namespace FileCabinetApp
                 lastName,
                 dateOfBirth,
                 personalRatingString,
-                moneyAccountString,
+                debtString,
                 genderString);
 
             var isBirthDateValid = DateTime.TryParse(dateOfBirth, out DateTime birthDate);
             var isPersonalRatingValid = short.TryParse(personalRatingString, out short personalRating);
-            var isAmountOfMoneyValid = decimal.TryParse(moneyAccountString, out decimal amountOfMoney);
+            var isDebtValid = decimal.TryParse(debtString, out decimal debt);
             var isGenderValid = char.TryParse(genderString, out char gender);
 
             this.ValidateParsingRecordValues(
                 isBirthDateValid,
                 isPersonalRatingValid,
-                isAmountOfMoneyValid,
+                isDebtValid,
                 isGenderValid);
 
             this.ValidateRecordBySpecificRules(
@@ -256,10 +308,10 @@ namespace FileCabinetApp
                 lastName,
                 birthDate,
                 personalRating,
-                amountOfMoney,
+                debt,
                 gender);
 
-            return new Tuple<DateTime, short, decimal, char>(birthDate, personalRating, amountOfMoney, gender);
+            return new Tuple<DateTime, short, decimal, char>(birthDate, personalRating, debt, gender);
         }
 
         private void NullCheckRecordValues(
@@ -267,7 +319,7 @@ namespace FileCabinetApp
             string lastName,
             string dateOfBirth,
             string personalRatingString,
-            string moneyAccountString,
+            string debtString,
             string genderString)
         {
             if (string.IsNullOrWhiteSpace(firstName))
@@ -290,9 +342,9 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(personalRatingString));
             }
 
-            if (string.IsNullOrWhiteSpace(moneyAccountString))
+            if (string.IsNullOrWhiteSpace(debtString))
             {
-                throw new ArgumentNullException(nameof(moneyAccountString));
+                throw new ArgumentNullException(nameof(debtString));
             }
 
             if (string.IsNullOrWhiteSpace(genderString))
@@ -304,7 +356,7 @@ namespace FileCabinetApp
         private void ValidateParsingRecordValues(
             bool isBirthDateValid,
             bool isPersonalRatingValid,
-            bool isAmountOfMoneyValid,
+            bool isDebtValid,
             bool isGenderValid)
         {
             if (!isBirthDateValid)
@@ -317,9 +369,9 @@ namespace FileCabinetApp
                 throw new ArgumentException($"Cannot parse _personalRating_.");
             }
 
-            if (!isAmountOfMoneyValid)
+            if (!isDebtValid)
             {
-                throw new ArgumentException($"Cannot parse _amountOfMoney_.");
+                throw new ArgumentException($"Cannot parse _indebtness_.");
             }
 
             if (!isGenderValid)
@@ -333,7 +385,7 @@ namespace FileCabinetApp
             string lastName,
             DateTime birthDate,
             short personalRating,
-            decimal amountOfMoney,
+            decimal debt,
             char gender)
         {
             if (firstName.Length < 2 || firstName.Length > 60)
@@ -351,9 +403,9 @@ namespace FileCabinetApp
                 throw new ArgumentException($"{nameof(personalRating)} value lesser than -12.");
             }
 
-            if (amountOfMoney < 0)
+            if (debt < 0)
             {
-                throw new ArgumentException($"{nameof(amountOfMoney)} value is less than zero.");
+                throw new ArgumentException($"{nameof(debt)} value is less than zero.");
             }
 
             if (!char.IsLetter(gender))

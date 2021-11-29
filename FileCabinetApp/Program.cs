@@ -2,6 +2,9 @@
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Main Class.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Egor Dvoretskiy";
@@ -36,6 +39,10 @@ namespace FileCabinetApp
             new string[] { "find", "find stored user data by specific field", "The 'find' command searches for stored user data by specific field." },
         };
 
+        /// <summary>
+        /// Init Method.
+        /// </summary>
+        /// <param name="args">Default parameters.</param>
         public static void Main(string[] args)
         {
             _ = args;
@@ -146,7 +153,9 @@ namespace FileCabinetApp
                 Console.Write("Gender: ");
                 var genderString = Console.ReadLine();
 
+#pragma warning disable CS8604 // Possible null reference argument.
                 id = Program.fileCabinetService.CreateRecord(firstName, lastName, birthDateString, personalRatingString, moneyAccountString, genderString);
+#pragma warning restore CS8604 // Possible null reference argument.
             }
 
             Console.WriteLine($"Record #{id} is created.");
@@ -223,7 +232,9 @@ namespace FileCabinetApp
                 Console.Write("Gender: ");
                 var genderString = Console.ReadLine();
 
+#pragma warning disable CS8604 // Possible null reference argument.
                 Program.fileCabinetService.EditRecord(listValue, firstName, lastName, birthDateString, personalRatingString, moneyAccountString, genderString);
+#pragma warning restore CS8604 // Possible null reference argument.
 
                 Console.WriteLine($"Record #{id} is edited.");
             }
@@ -257,7 +268,7 @@ namespace FileCabinetApp
                     $"{record.LastName}, " +
                     $"{record.DateOfBirth:yyyy-MMM-dd}, " +
                     $"{record.PersonalRating}, " +
-                    $"{record.MoneyAccount}, " +
+                    $"{record.Debt}, " +
                     $"{record.Gender}.");
         }
     }
