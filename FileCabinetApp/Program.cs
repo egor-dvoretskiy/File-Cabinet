@@ -138,7 +138,7 @@ namespace FileCabinetApp
                 var birthDateString = Console.ReadLine();
 
                 Console.Write("Times in jail: ");
-                var jailTimesString = Console.ReadLine();
+                var personalRatingString = Console.ReadLine();
 
                 Console.Write("Amount of money: ");
                 var moneyAccountString = Console.ReadLine();
@@ -146,7 +146,7 @@ namespace FileCabinetApp
                 Console.Write("Gender: ");
                 var genderString = Console.ReadLine();
 
-                id = Program.fileCabinetService.CreateRecord(firstName, lastName, birthDateString, jailTimesString, moneyAccountString, genderString);
+                id = Program.fileCabinetService.CreateRecord(firstName, lastName, birthDateString, personalRatingString, moneyAccountString, genderString);
             }
 
             Console.WriteLine($"Record #{id} is created.");
@@ -170,6 +170,7 @@ namespace FileCabinetApp
                     foundDataContainer = Program.fileCabinetService.FindByBirthDate(parameterToFind);
                     break;
                 default:
+                    Console.WriteLine("There is no such parameter.");
                     break;
             }
 
@@ -214,7 +215,7 @@ namespace FileCabinetApp
                 var birthDateString = Console.ReadLine();
 
                 Console.Write("Times in jail: ");
-                var jailTimesString = Console.ReadLine();
+                var personalRatingString = Console.ReadLine();
 
                 Console.Write("Amount of money: ");
                 var moneyAccountString = Console.ReadLine();
@@ -222,7 +223,7 @@ namespace FileCabinetApp
                 Console.Write("Gender: ");
                 var genderString = Console.ReadLine();
 
-                Program.fileCabinetService.EditRecord(listValue, firstName, lastName, birthDateString, jailTimesString, moneyAccountString, genderString);
+                Program.fileCabinetService.EditRecord(listValue, firstName, lastName, birthDateString, personalRatingString, moneyAccountString, genderString);
 
                 Console.WriteLine($"Record #{id} is edited.");
             }
@@ -251,13 +252,13 @@ namespace FileCabinetApp
         private static void PrintRecord(FileCabinetRecord record)
         {
             Console.WriteLine(
-                    $"#{record.Id} " +
-                    $"{record.FirstName} " +
-                    $"{record.LastName} " +
-                    $"{record.DateOfBirth:yyyy-MMM-dd} " +
-                    $"{record.TimesInJail} " +
-                    $"{record.MoneyAccount} " +
-                    $"{record.Gender}");
+                    $"#{record.Id}, " +
+                    $"{record.FirstName}, " +
+                    $"{record.LastName}, " +
+                    $"{record.DateOfBirth:yyyy-MMM-dd}, " +
+                    $"{record.PersonalRating}, " +
+                    $"{record.MoneyAccount}, " +
+                    $"{record.Gender}.");
         }
     }
 }

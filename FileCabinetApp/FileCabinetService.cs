@@ -16,13 +16,13 @@ namespace FileCabinetApp
             string firstName,
             string lastName,
             string dateOfBirth,
-            string jailTimesString,
+            string personalRating,
             string moneyAccountString,
             string genderString)
         {
             try
             {
-                var parametersTuple = this.ValidateArguments(firstName, lastName, dateOfBirth, jailTimesString, moneyAccountString, genderString);
+                var parametersTuple = this.ValidateArguments(firstName, lastName, dateOfBirth, personalRating, moneyAccountString, genderString);
 
                 var record = new FileCabinetRecord
                 {
@@ -30,7 +30,7 @@ namespace FileCabinetApp
                     FirstName = firstName,
                     LastName = lastName,
                     DateOfBirth = parametersTuple.Item1,
-                    TimesInJail = parametersTuple.Item2,
+                    PersonalRating = parametersTuple.Item2,
                     MoneyAccount = parametersTuple.Item3,
                     Gender = parametersTuple.Item4,
                 };
@@ -62,7 +62,7 @@ namespace FileCabinetApp
             string firstName,
             string lastName,
             string dateOfBirth,
-            string jailTimesString,
+            string personalRatingString,
             string moneyAccountString,
             string genderString)
         {
@@ -73,12 +73,12 @@ namespace FileCabinetApp
 
             try
             {
-                var parametersTuple = this.ValidateArguments(firstName, lastName, dateOfBirth, jailTimesString, moneyAccountString, genderString);
+                var parametersTuple = this.ValidateArguments(firstName, lastName, dateOfBirth, personalRatingString, moneyAccountString, genderString);
 
                 this.list[id].FirstName = firstName;
                 this.list[id].LastName = lastName;
                 this.list[id].DateOfBirth = parametersTuple.Item1;
-                this.list[id].TimesInJail = parametersTuple.Item2;
+                this.list[id].PersonalRating = parametersTuple.Item2;
                 this.list[id].MoneyAccount = parametersTuple.Item3;
                 this.list[id].Gender = parametersTuple.Item4;
 
@@ -224,45 +224,150 @@ namespace FileCabinetApp
             return new List<FileCabinetRecord>();
         }
 
-        private Tuple<DateTime, short, decimal, char> ValidateArguments(string firstName, string lastName, string dateOfBirth, string jailTimesString, string moneyAccountString, string genderString)
+        private Tuple<DateTime, short, decimal, char> ValidateArguments(
+            string firstName,
+            string lastName,
+            string dateOfBirth,
+            string personalRatingString,
+            string moneyAccountString,
+            string genderString)
         {
-            if (string.IsNullOrWhiteSpace(firstName) ||
-                string.IsNullOrWhiteSpace(lastName) ||
-                string.IsNullOrWhiteSpace(dateOfBirth) ||
-                string.IsNullOrWhiteSpace(jailTimesString) ||
-                string.IsNullOrWhiteSpace(moneyAccountString) ||
-                string.IsNullOrWhiteSpace(genderString))
+            this.NullCheckRecordValues(
+                firstName,
+                lastName,
+                dateOfBirth,
+                personalRatingString,
+                moneyAccountString,
+                genderString);
+
+            var isBirthDateValid = DateTime.TryParse(dateOfBirth, out DateTime birthDate);
+            var isPersonalRatingValid = short.TryParse(personalRatingString, out short personalRating);
+            var isAmountOfMoneyValid = decimal.TryParse(moneyAccountString, out decimal amountOfMoney);
+            var isGenderValid = char.TryParse(genderString, out char gender);
+
+            this.ValidateParsingRecordValues(
+                isBirthDateValid,
+                isPersonalRatingValid,
+                isAmountOfMoneyValid,
+                isGenderValid);
+
+            this.ValidateRecordBySpecificRules(
+                firstName,
+                lastName,
+                birthDate,
+                personalRating,
+                amountOfMoney,
+                gender);
+
+            return new Tuple<DateTime, short, decimal, char>(birthDate, personalRating, amountOfMoney, gender);
+        }
+
+        private void NullCheckRecordValues(
+            string firstName,
+            string lastName,
+            string dateOfBirth,
+            string personalRatingString,
+            string moneyAccountString,
+            string genderString)
+        {
+            if (string.IsNullOrWhiteSpace(firstName))
             {
-                throw new ArgumentNullException("Something has null reference");
+                throw new ArgumentNullException(nameof(firstName));
             }
 
-            var birthDateValid = DateTime.TryParse(dateOfBirth, out DateTime birthDate);
-            var jailTimesValid = short.TryParse(jailTimesString, out short jailTimes);
-            var moneyAccountValid = decimal.TryParse(moneyAccountString, out decimal moneyAccount);
-            var genderValid = char.TryParse(genderString, out char gender);
-
-            if (!birthDateValid ||
-                !jailTimesValid ||
-                !moneyAccountValid ||
-                !genderValid)
+            if (string.IsNullOrWhiteSpace(lastName))
             {
-                throw new ArgumentException("First block of Argument Check.");
+                throw new ArgumentNullException(nameof(lastName));
             }
 
-            var firstDate = new DateTime(1950, 1, 1);
-            var lastDate = DateTime.Now;
-
-            if (firstName.Length < 2 || firstName.Length > 60 ||
-                lastName.Length < 2 || lastName.Length > 60 ||
-                jailTimes < 0 ||
-                moneyAccount < 0 ||
-                !char.IsLetter(gender) ||
-                DateTime.Compare(birthDate, firstDate) < 0 || DateTime.Compare(birthDate, lastDate) > 0)
+            if (string.IsNullOrWhiteSpace(dateOfBirth))
             {
-                throw new ArgumentException("Second block of Argument Check.");
+                throw new ArgumentNullException(nameof(dateOfBirth));
             }
 
-            return new Tuple<DateTime, short, decimal, char>(birthDate, jailTimes, moneyAccount, gender);
+            if (string.IsNullOrWhiteSpace(personalRatingString))
+            {
+                throw new ArgumentNullException(nameof(personalRatingString));
+            }
+
+            if (string.IsNullOrWhiteSpace(moneyAccountString))
+            {
+                throw new ArgumentNullException(nameof(moneyAccountString));
+            }
+
+            if (string.IsNullOrWhiteSpace(genderString))
+            {
+                throw new ArgumentNullException(nameof(genderString));
+            }
+        }
+
+        private void ValidateParsingRecordValues(
+            bool isBirthDateValid,
+            bool isPersonalRatingValid,
+            bool isAmountOfMoneyValid,
+            bool isGenderValid)
+        {
+            if (!isBirthDateValid)
+            {
+                throw new ArgumentException($"Cannot parse _birthDate_.");
+            }
+
+            if (!isPersonalRatingValid)
+            {
+                throw new ArgumentException($"Cannot parse _personalRating_.");
+            }
+
+            if (!isAmountOfMoneyValid)
+            {
+                throw new ArgumentException($"Cannot parse _amountOfMoney_.");
+            }
+
+            if (!isGenderValid)
+            {
+                throw new ArgumentException($"Cannot parse _gender_.");
+            }
+        }
+
+        private void ValidateRecordBySpecificRules(
+            string firstName,
+            string lastName,
+            DateTime birthDate,
+            short personalRating,
+            decimal amountOfMoney,
+            char gender)
+        {
+            if (firstName.Length < 2 || firstName.Length > 60)
+            {
+                throw new ArgumentException($"{nameof(firstName)}'s length is not in the interval [2; 60].");
+            }
+
+            if (lastName.Length < 2 || lastName.Length > 60)
+            {
+                throw new ArgumentException($"{nameof(lastName)}'s length is not in the interval [2; 60].");
+            }
+
+            if (personalRating < -12)
+            {
+                throw new ArgumentException($"{nameof(personalRating)} value lesser than -12.");
+            }
+
+            if (amountOfMoney < 0)
+            {
+                throw new ArgumentException($"{nameof(amountOfMoney)} value is less than zero.");
+            }
+
+            if (!char.IsLetter(gender))
+            {
+                throw new ArgumentException($"{nameof(gender)} is not a letter.");
+            }
+
+            DateTime leftDateLimit = new DateTime(1950, 1, 1);
+            DateTime rightDateLimit = DateTime.Now;
+
+            if (DateTime.Compare(birthDate, leftDateLimit) < 0 || DateTime.Compare(birthDate, rightDateLimit) > 0)
+            {
+                throw new ArgumentException($"{nameof(birthDate)} is not into the interval [{leftDateLimit:yyyy-MMM-dd}, {rightDateLimit:yyyy-MMM-dd}].");
+            }
         }
     }
 }

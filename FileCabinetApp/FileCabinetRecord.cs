@@ -16,7 +16,7 @@ namespace FileCabinetApp
 
         public DateTime DateOfBirth { get; set; }
 
-        public short TimesInJail { get; set; }
+        public short PersonalRating { get; set; }
 
         public decimal MoneyAccount { get; set; }
 
