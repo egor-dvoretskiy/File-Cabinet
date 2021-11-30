@@ -4,6 +4,30 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.FileCabinetCustomService">
+            <summary>
+            Records processor class that inherits FileCabinetService with custom conditions.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateParameters(FileCabinetApp.RecordInputObject)">
+            <summary>
+            Validates input parameters.
+            </summary>
+            <param name="recordInputObject">Input parameters class.</param>
+            <returns>Valid record.</returns>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetDefaultService">
+            <summary>
+            Records processor class that inherits FileCabinetService with custom conditions.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateParameters(FileCabinetApp.RecordInputObject)">
+            <summary>
+            Validates input parameters.
+            </summary>
+            <param name="recordInputObject">Input parameters class.</param>
+            <returns>Valid record.</returns>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Class, that contains record parameters.
@@ -67,7 +91,7 @@
         </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
-            Records Processor Class.
+            Records Processor Abstract Class.
             </summary>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.RecordInputObject)">
@@ -124,6 +148,37 @@
             </summary>
             <param name="birthDate">Person's date of birth.</param>
             <returns>All records with the same date of birth.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.ValidateParameters(FileCabinetApp.RecordInputObject)">
+            <summary>
+            Validates input parameters.
+            </summary>
+            <param name="recordInputObject">Input parameters class.</param>
+            <returns>Valid record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.NullCheckRecordValues(FileCabinetApp.RecordInputObject)">
+            <summary>
+            Check if records has null values.
+            </summary>
+            <param name="recordInputObject">Record.</param>
+            <exception cref="T:System.ArgumentNullException">One of record parameters.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.ValidateParsingRecordValues(System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Checks if parsing parameters goes right.
+            </summary>
+            <param name="isBirthDateValid">Status of parsed birthDate.</param>
+            <param name="isPersonalRatingValid">Status of parsed personal rating.</param>
+            <param name="isDebtValid">Status of parsed debt.</param>
+            <param name="isGenderValid">Status of parsed gender.</param>
+            <exception cref="T:System.ArgumentException">One of status values.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.ValidateRecordBySpecificRules(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Validates record using specific rules.
+            </summary>
+            <param name="fileCabinetRecord">Record.</param>
+            <exception cref="T:System.ArgumentException">One of record's parameters.</exception>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
