@@ -11,11 +11,14 @@ namespace FileCabinetApp
     {
         private const string DeveloperName = "Egor Dvoretskiy";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
+        private const string WrongInputArgsMessage = "Wrong input arguments. Using default validation rules.";
+        private const string CorrectCustomInputArgsMessage = "Using custom validation rules.";
+        private const string CorrectDefaultInputArgsMessage = "Using default validation rules.";
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
 
-        private static FileCabinetCustomService fileCabinetService = new ();
+        private static FileCabinetService fileCabinetService = new FileCabinetDefaultService();
 
         private static bool isRunning = true;
 
@@ -41,15 +44,22 @@ namespace FileCabinetApp
             new string[] { "find", "find stored user data by specific field", "The 'find' command searches for stored user data by specific field." },
         };
 
+        private static string[] availableArgsValues = new string[]
+            {
+                "default",
+                "custom",
+            };
+
         /// <summary>
         /// Init Method.
         /// </summary>
         /// <param name="args">Default parameters.</param>
         public static void Main(string[] args)
         {
-            _ = args;
-
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
+
+            ParseInputArgs(args);
+
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -85,6 +95,42 @@ namespace FileCabinetApp
                 }
             }
             while (isRunning);
+        }
+
+        private static void ParseInputArgs(string[] args)
+        {
+            bool isArgsProcessed = false;
+
+            if (args.Length == 1)
+            {
+                args = args[0].Split('=');
+                isArgsProcessed = true;
+            }
+
+            if ((args.Length != 2 && args.Length != 1) || (args.Length != 2 && isArgsProcessed))
+            {
+                Console.WriteLine(WrongInputArgsMessage);
+                return;
+            }
+
+            string currentServiceModeCaseLowered = args[1].ToLower();
+
+            if ((args[0] == "-v" || args[0] == "--validation-rules") && availableArgsValues.Contains(currentServiceModeCaseLowered))
+            {
+                if (string.Equals(currentServiceModeCaseLowered, availableArgsValues[0]))
+                {
+                    Console.WriteLine(CorrectDefaultInputArgsMessage);
+                }
+                else
+                {
+                    fileCabinetService = new FileCabinetCustomService();
+                    Console.WriteLine(CorrectCustomInputArgsMessage);
+                }
+            }
+            else
+            {
+                Console.WriteLine(WrongInputArgsMessage);
+            }
         }
 
         private static void PrintMissedCommandInfo(string command)
