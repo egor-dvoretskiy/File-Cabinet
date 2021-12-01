@@ -1,4 +1,6 @@
 ﻿using System;
+using FileCabinetApp.Interfaces;
+using FileCabinetApp.Validators;
 
 #pragma warning disable CS8601 // Possible null reference argument.
 
@@ -18,7 +20,7 @@ namespace FileCabinetApp
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
 
-        private static FileCabinetService fileCabinetService = new FileCabinetDefaultService();
+        private static FileCabinetService fileCabinetService = new FileCabinetDefaultService(new DefaultValidator());
 
         private static bool isRunning = true;
 
@@ -123,7 +125,7 @@ namespace FileCabinetApp
                 }
                 else
                 {
-                    fileCabinetService = new FileCabinetCustomService();
+                    fileCabinetService = new FileCabinetCustomService(new CustomValidator());
                     Console.WriteLine(CorrectCustomInputArgsMessage);
                 }
             }

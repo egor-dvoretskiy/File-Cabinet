@@ -14,6 +14,15 @@ namespace FileCabinetApp
     internal class FileCabinetDefaultService : FileCabinetService
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetDefaultService"/> class.
+        /// </summary>
+        /// <param name="validator">IRecordValidator.</param>
+        public FileCabinetDefaultService(IRecordValidator validator)
+            : base(validator)
+        {
+        }
+
+        /// <summary>
         /// Validates input parameters.
         /// </summary>
         /// <param name="recordInputObject">Input parameters class.</param>
