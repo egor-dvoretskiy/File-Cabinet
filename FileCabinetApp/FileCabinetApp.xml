@@ -16,6 +16,12 @@
             <param name="recordInputObject">Input parameters class.</param>
             <returns>Valid record.</returns>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.CreateValidator">
+            <summary>
+            Creates default validator.
+            </summary>
+            <returns>Interface that realises validate parameters.</returns>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetDefaultService">
             <summary>
             Records processor class that inherits FileCabinetService with custom conditions.
@@ -27,6 +33,12 @@
             </summary>
             <param name="recordInputObject">Input parameters class.</param>
             <returns>Valid record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.CreateValidator">
+            <summary>
+            Creates default validator.
+            </summary>
+            <returns>Interface that realises validate parameters.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
@@ -156,29 +168,23 @@
             <param name="recordInputObject">Input parameters class.</param>
             <returns>Valid record.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.NullCheckRecordValues(FileCabinetApp.RecordInputObject)">
+        <member name="M:FileCabinetApp.FileCabinetService.CreateValidator">
             <summary>
-            Check if records has null values.
+            Abstract class for creating various validators.
             </summary>
-            <param name="recordInputObject">Record.</param>
-            <exception cref="T:System.ArgumentNullException">One of record parameters.</exception>
+            <returns>IRecordValidator.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.ValidateParsingRecordValues(System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+        <member name="T:FileCabinetApp.Interfaces.IRecordValidator">
             <summary>
-            Checks if parsing parameters goes right.
+            Interface that hold validate parameters functional.
             </summary>
-            <param name="isBirthDateValid">Status of parsed birthDate.</param>
-            <param name="isPersonalRatingValid">Status of parsed personal rating.</param>
-            <param name="isDebtValid">Status of parsed debt.</param>
-            <param name="isGenderValid">Status of parsed gender.</param>
-            <exception cref="T:System.ArgumentException">One of status values.</exception>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.ValidateRecordBySpecificRules(FileCabinetApp.FileCabinetRecord)">
+        <member name="M:FileCabinetApp.Interfaces.IRecordValidator.ValidateParameters(FileCabinetApp.RecordInputObject)">
             <summary>
-            Validates record using specific rules.
+            Validates input parameters.
             </summary>
-            <param name="fileCabinetRecord">Record.</param>
-            <exception cref="T:System.ArgumentException">One of record's parameters.</exception>
+            <param name="recordInputObject">Input parameters class.</param>
+            <returns>Valid record.</returns>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
@@ -243,6 +249,63 @@
             <value>
             Person's gender.
             </value>
+        </member>
+        <member name="T:FileCabinetApp.Validators.CustomValidator">
+            <summary>
+            Validator with specific rules.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateParameters(FileCabinetApp.RecordInputObject)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomValidator.NullCheckRecordValues(FileCabinetApp.RecordInputObject)">
+            <summary>
+            Check if records has null values.
+            </summary>
+            <param name="recordInputObject">Record.</param>
+            <exception cref="T:System.ArgumentNullException">One of record parameters.</exception>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateParsingRecordValues(System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Checks if parsing parameters goes right.
+            </summary>
+            <param name="isBirthDateValid">Status of parsed birthDate.</param>
+            <param name="isPersonalRatingValid">Status of parsed personal rating.</param>
+            <param name="isDebtValid">Status of parsed debt.</param>
+            <param name="isGenderValid">Status of parsed gender.</param>
+            <exception cref="T:System.ArgumentException">One of status values.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.DefaultValidator">
+            <summary>
+            Default Validator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateParameters(FileCabinetApp.RecordInputObject)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.NullCheckRecordValues(FileCabinetApp.RecordInputObject)">
+            <summary>
+            Check if records has null values.
+            </summary>
+            <param name="recordInputObject">Record.</param>
+            <exception cref="T:System.ArgumentNullException">One of record parameters.</exception>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateParsingRecordValues(System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Checks if parsing parameters goes right.
+            </summary>
+            <param name="isBirthDateValid">Status of parsed birthDate.</param>
+            <param name="isPersonalRatingValid">Status of parsed personal rating.</param>
+            <param name="isDebtValid">Status of parsed debt.</param>
+            <param name="isGenderValid">Status of parsed gender.</param>
+            <exception cref="T:System.ArgumentException">One of status values.</exception>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateRecordBySpecificRules(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Validates record using specific rules.
+            </summary>
+            <param name="fileCabinetRecord">Record.</param>
+            <exception cref="T:System.ArgumentException">One of record's parameters.</exception>
         </member>
     </members>
 </doc>
