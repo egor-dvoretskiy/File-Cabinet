@@ -8,9 +8,9 @@ using FileCabinetApp.Validators;
 namespace FileCabinetApp
 {
     /// <summary>
-    /// Records Processor Abstract Class.
+    /// Records Processor Class.
     /// </summary>
-    public abstract class FileCabinetService
+    public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new ();
 
@@ -24,7 +24,7 @@ namespace FileCabinetApp
         /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
         /// </summary>
         /// <param name="validator">IRecordValidator.</param>
-        protected FileCabinetService(IRecordValidator validator)
+        public FileCabinetService(IRecordValidator validator)
         {
             this.validator = validator;
         }
@@ -38,7 +38,7 @@ namespace FileCabinetApp
         {
             try
             {
-                var validatedRecord = this.CreateValidator().ValidateParameters(recordInputObject);
+                var validatedRecord = this.validator.ValidateParameters(recordInputObject);
 
                 validatedRecord.Id = this.list.Count + 1;
 
@@ -81,7 +81,7 @@ namespace FileCabinetApp
 
             try
             {
-                var record = this.CreateValidator().ValidateParameters(recordInputObject);
+                var record = this.validator.ValidateParameters(recordInputObject);
 
                 record.Id = this.list[id].Id;
 
@@ -219,19 +219,6 @@ namespace FileCabinetApp
 
             return this.GetInformationFromDictionary(birthDate, this.dateOfBirthDictionary).ToArray();
         }
-
-        /// <summary>
-        /// Validates input parameters.
-        /// </summary>
-        /// <param name="recordInputObject">Input parameters class.</param>
-        /// <returns>Valid record.</returns>
-        protected abstract FileCabinetRecord ValidateParameters(RecordInputObject recordInputObject);
-
-        /// <summary>
-        /// Abstract class for creating various validators.
-        /// </summary>
-        /// <returns>IRecordValidator.</returns>
-        protected abstract IRecordValidator CreateValidator();
 
         private void AddInformationToDictionary(string parametrName, ref Dictionary<string, List<FileCabinetRecord>> dict, FileCabinetRecord record)
         {

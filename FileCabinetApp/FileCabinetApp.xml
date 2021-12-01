@@ -4,54 +4,6 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
-        <member name="T:FileCabinetApp.FileCabinetCustomService">
-            <summary>
-            Records processor class that inherits FileCabinetService with custom conditions.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.#ctor(FileCabinetApp.Interfaces.IRecordValidator)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetCustomService"/> class.
-            </summary>
-            <param name="validator">IRecordValidator.</param>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateParameters(FileCabinetApp.RecordInputObject)">
-            <summary>
-            Validates input parameters.
-            </summary>
-            <param name="recordInputObject">Input parameters class.</param>
-            <returns>Valid record.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.CreateValidator">
-            <summary>
-            Creates default validator.
-            </summary>
-            <returns>Interface that realises validate parameters.</returns>
-        </member>
-        <member name="T:FileCabinetApp.FileCabinetDefaultService">
-            <summary>
-            Records processor class that inherits FileCabinetService with custom conditions.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.#ctor(FileCabinetApp.Interfaces.IRecordValidator)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetDefaultService"/> class.
-            </summary>
-            <param name="validator">IRecordValidator.</param>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateParameters(FileCabinetApp.RecordInputObject)">
-            <summary>
-            Validates input parameters.
-            </summary>
-            <param name="recordInputObject">Input parameters class.</param>
-            <returns>Valid record.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.CreateValidator">
-            <summary>
-            Creates default validator.
-            </summary>
-            <returns>Interface that realises validate parameters.</returns>
-        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Class, that contains record parameters.
@@ -115,7 +67,7 @@
         </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
-            Records Processor Abstract Class.
+            Records Processor Class.
             </summary>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.#ctor(FileCabinetApp.Interfaces.IRecordValidator)">
@@ -178,19 +130,6 @@
             </summary>
             <param name="birthDate">Person's date of birth.</param>
             <returns>All records with the same date of birth.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.ValidateParameters(FileCabinetApp.RecordInputObject)">
-            <summary>
-            Validates input parameters.
-            </summary>
-            <param name="recordInputObject">Input parameters class.</param>
-            <returns>Valid record.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.CreateValidator">
-            <summary>
-            Abstract class for creating various validators.
-            </summary>
-            <returns>IRecordValidator.</returns>
         </member>
         <member name="T:FileCabinetApp.Interfaces.IRecordValidator">
             <summary>

@@ -20,7 +20,7 @@ namespace FileCabinetApp
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
 
-        private static FileCabinetService fileCabinetService = new FileCabinetDefaultService(new DefaultValidator());
+        private static FileCabinetService fileCabinetService = new FileCabinetService(new DefaultValidator());
 
         private static bool isRunning = true;
 
@@ -125,7 +125,7 @@ namespace FileCabinetApp
                 }
                 else
                 {
-                    fileCabinetService = new FileCabinetCustomService(new CustomValidator());
+                    fileCabinetService = new FileCabinetService(new CustomValidator());
                     Console.WriteLine(CorrectCustomInputArgsMessage);
                 }
             }
