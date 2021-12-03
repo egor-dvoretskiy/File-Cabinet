@@ -11,7 +11,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Records Processor Class.
     /// </summary>
-    public class FileCabinetService
+    public class FileCabinetService : IFileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new ();
 
