@@ -235,13 +235,13 @@ namespace FileCabinetApp
             switch (paramsFindContainer[0])
             {
                 case "firstname":
-                    foundDataContainer = Program.fileCabinetService.FindByFirstName(parameterToFind);
+                    foundDataContainer = Program.fileCabinetService.FindByFirstName(parameterToFind).ToArray();
                     break;
                 case "lastname":
-                    foundDataContainer = Program.fileCabinetService.FindByLastName(parameterToFind);
+                    foundDataContainer = Program.fileCabinetService.FindByLastName(parameterToFind).ToArray();
                     break;
                 case "dateofbirth":
-                    foundDataContainer = Program.fileCabinetService.FindByBirthDate(parameterToFind);
+                    foundDataContainer = Program.fileCabinetService.FindByBirthDate(parameterToFind).ToArray();
                     break;
                 default:
                     Console.WriteLine("There is no such parameter.");
@@ -321,13 +321,13 @@ namespace FileCabinetApp
         {
             var records = Program.fileCabinetService.GetRecords();
 
-            if (records.Length == 0)
+            if (records.Count == 0)
             {
                 Console.WriteLine("List is empty.");
                 return;
             }
 
-            for (int i = 0; i < records.Length; i++)
+            for (int i = 0; i < records.Count; i++)
             {
                 PrintRecord(records[i]);
             }

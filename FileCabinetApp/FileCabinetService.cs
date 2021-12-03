@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
 using FileCabinetApp.Interfaces;
@@ -105,9 +106,9 @@ namespace FileCabinetApp
         /// Method return all stored records.
         /// </summary>
         /// <returns>Stored records.</returns>
-        public FileCabinetRecord[] GetRecords()
+        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            return this.list.ToArray();
+            return new ReadOnlyCollection<FileCabinetRecord>(this.list);
         }
 
         /// <summary>
@@ -156,21 +157,9 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">Person's first name.</param>
         /// <returns>All records with the same firstname.</returns>
-        public FileCabinetRecord[] FindByFirstName(string firstName)
+        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            /*List<FileCabinetRecord> tempLst = new ();
-            int index = 0;
-
-            while (index != -1)
-            {
-                index = this.list.FindIndex(index, this.list.Count - index, i => string.Equals(i.FirstName, firstName, StringComparison.InvariantCultureIgnoreCase));
-                if (index != -1)
-                {
-                    tempLst.Add(this.list[index++]);
-                }
-            }*/
-
-            return this.GetInformationFromDictionary(firstName, this.firstNameDictionary).ToArray();
+            return new ReadOnlyCollection<FileCabinetRecord>(this.GetInformationFromDictionary(firstName, this.firstNameDictionary));
         }
 
         /// <summary>
@@ -178,21 +167,9 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="lastName">Person's last name.</param>
         /// <returns>All records with the same lastname.</returns>
-        public FileCabinetRecord[] FindByLastName(string lastName)
+        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            /*List<FileCabinetRecord> tempLst = new();
-            int index = 0;
-
-            while (index != -1)
-            {
-                index = this.list.FindIndex(index, this.list.Count - index, i => string.Equals(i.LastName, lastName, StringComparison.InvariantCultureIgnoreCase));
-                if (index != -1)
-                {
-                    tempLst.Add(this.list[index++]);
-                }
-            }*/
-
-            return this.GetInformationFromDictionary(lastName, this.lastNameDictionary).ToArray();
+            return new ReadOnlyCollection<FileCabinetRecord>(this.GetInformationFromDictionary(lastName, this.lastNameDictionary));
         }
 
         /// <summary>
@@ -200,24 +177,9 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="birthDate">Person's date of birth.</param>
         /// <returns>All records with the same date of birth.</returns>
-        public FileCabinetRecord[] FindByBirthDate(string birthDate)
+        public ReadOnlyCollection<FileCabinetRecord> FindByBirthDate(string birthDate)
         {
-            /*List<FileCabinetRecord> tempLst = new ();
-
-            bool isBirthDateVaild = DateTime.TryParse(birthDate, out DateTime birthDateTime);
-
-            int index = 0;
-
-            while (index != -1)
-            {
-                index = this.list.FindIndex(index, this.list.Count - index, i => DateTime.Compare(i.DateOfBirth, birthDateTime) == 0);
-                if (index != -1)
-                {
-                    tempLst.Add(this.list[index++]);
-                }
-            }*/
-
-            return this.GetInformationFromDictionary(birthDate, this.dateOfBirthDictionary).ToArray();
+            return new ReadOnlyCollection<FileCabinetRecord>(this.GetInformationFromDictionary(birthDate, this.dateOfBirthDictionary));
         }
 
         private void AddInformationToDictionary(string parametrName, ref Dictionary<string, List<FileCabinetRecord>> dict, FileCabinetRecord record)
