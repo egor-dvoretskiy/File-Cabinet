@@ -10,17 +10,17 @@ namespace FileCabinetApp
         /// <summary>
         /// Creates record and adds to main list.
         /// </summary>
-        /// <param name="recordInputObject">Input parameter object.</param>
+        /// <param name="record">Input parameter object.</param>
         /// <returns>Record's id in list.</returns>
-        int CreateRecord(RecordInputObject recordInputObject);
+        int CreateRecord(FileCabinetRecord record);
 
         /// <summary>
         /// Edit record in list.
         /// </summary>
         /// <param name="id">Record's id in list.</param>
-        /// <param name="recordInputObject">Input parameter object.</param>
+        /// <param name="record">Input parameter object.</param>
         /// <exception cref="ArgumentException">id.</exception>
-        void EditRecord(int id, RecordInputObject recordInputObject);
+        void EditRecord(int id, FileCabinetRecord record);
 
         /// <summary>
         /// Searches all matches by birthDate parameter.

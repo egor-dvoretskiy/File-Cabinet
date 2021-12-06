@@ -19,37 +19,31 @@ namespace FileCabinetApp
         private Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private Dictionary<string, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
-        private IRecordValidator validator = new DefaultValidator();
-
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
         /// </summary>
-        /// <param name="validator">IRecordValidator.</param>
-        public FileCabinetService(IRecordValidator validator)
+        public FileCabinetService()
         {
-            this.validator = validator;
         }
 
         /// <summary>
         /// Creates record and adds to main list.
         /// </summary>
-        /// <param name="recordInputObject">Input parameter object.</param>
+        /// <param name="record">Input parameter object.</param>
         /// <returns>Record's id in list.</returns>
-        public int CreateRecord(RecordInputObject recordInputObject)
+        public int CreateRecord(FileCabinetRecord record)
         {
             try
             {
-                var validatedRecord = this.validator.ValidateParameters(recordInputObject);
+                record.Id = this.list.Count + 1;
 
-                validatedRecord.Id = this.list.Count + 1;
+                this.list.Add(record);
 
-                this.list.Add(validatedRecord);
+                this.AddInformationToDictionary(record.FirstName, ref this.firstNameDictionary, record);
+                this.AddInformationToDictionary(record.LastName, ref this.lastNameDictionary, record);
+                this.AddInformationToDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd"), ref this.dateOfBirthDictionary, record);
 
-                this.AddInformationToDictionary(recordInputObject.FirstName, ref this.firstNameDictionary, validatedRecord);
-                this.AddInformationToDictionary(recordInputObject.LastName, ref this.lastNameDictionary, validatedRecord);
-                this.AddInformationToDictionary(recordInputObject.DateOfBirth, ref this.dateOfBirthDictionary, validatedRecord);
-
-                return validatedRecord.Id;
+                return record.Id;
             }
             catch (ArgumentNullException anex)
             {
@@ -60,8 +54,6 @@ namespace FileCabinetApp
                 Console.WriteLine(aex.Message);
             }
 
-            Console.WriteLine("Please, try again:");
-
             return -1;
         }
 
@@ -69,11 +61,11 @@ namespace FileCabinetApp
         /// Edit record in list.
         /// </summary>
         /// <param name="id">Record's id in list.</param>
-        /// <param name="recordInputObject">Input parameter object.</param>
+        /// <param name="record">Input parameter object.</param>
         /// <exception cref="ArgumentException">id.</exception>
         public void EditRecord(
             int id,
-            RecordInputObject recordInputObject)
+            FileCabinetRecord record)
         {
             if (id == -1)
             {
@@ -82,15 +74,13 @@ namespace FileCabinetApp
 
             try
             {
-                var record = this.validator.ValidateParameters(recordInputObject);
-
                 record.Id = this.list[id].Id;
 
                 this.list[id] = record;
 
-                this.EditInformationInDictionary(recordInputObject.FirstName, ref this.firstNameDictionary, record);
-                this.EditInformationInDictionary(recordInputObject.LastName, ref this.lastNameDictionary, record);
-                this.EditInformationInDictionary(recordInputObject.DateOfBirth, ref this.dateOfBirthDictionary, record);
+                this.EditInformationInDictionary(record.FirstName, ref this.firstNameDictionary, record);
+                this.EditInformationInDictionary(record.LastName, ref this.lastNameDictionary, record);
+                this.EditInformationInDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd"), ref this.dateOfBirthDictionary, record);
             }
             catch (ArgumentNullException anex)
             {

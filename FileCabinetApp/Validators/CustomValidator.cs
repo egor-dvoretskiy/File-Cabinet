@@ -13,121 +13,121 @@ namespace FileCabinetApp.Validators
     /// </summary>
     public class CustomValidator : IRecordValidator
     {
-        /// <inheritdoc/>
-        public FileCabinetRecord ValidateParameters(RecordInputObject recordInputObject)
+        /// <summary>
+        /// Validates firstName value.
+        /// </summary>
+        /// <param name="input">FirstName.</param>
+        /// <returns>Tuple values (isValid, errorMessage).</returns>
+        public Tuple<bool, string> FirstNameValidator(string input)
         {
-            this.NullCheckRecordValues(recordInputObject);
+            bool isValid = true;
+            string errorMessage = string.Empty;
 
-            bool isBirthDateValid = DateTime.TryParse(recordInputObject.DateOfBirth, out DateTime birthDate);
-            bool isPersonalRatingValid = short.TryParse(recordInputObject.PersonalRating, out short personalRating);
-            bool isDebtValid = decimal.TryParse(recordInputObject.Debt, out decimal debt);
-            bool isGenderValid = char.TryParse(recordInputObject.Gender, out char gender);
-
-            this.ValidateParsingRecordValues(
-                isBirthDateValid,
-                isPersonalRatingValid,
-                isDebtValid,
-                isGenderValid);
-
-            FileCabinetRecord record = new FileCabinetRecord()
+            if (input.Length < 2)
             {
-                FirstName = recordInputObject.FirstName,
-                LastName = recordInputObject.LastName,
-                DateOfBirth = birthDate,
-                PersonalRating = personalRating,
-                Debt = debt,
-                Gender = gender,
-            };
+                isValid = false;
+                errorMessage = "FirstName's length is less than 2.";
+            }
+            else if (!Regex.IsMatch(input, @"^[a-zA-Z]+$"))
+            {
+                isValid = false;
+                errorMessage = "FirstName has symbols that aren't letter.";
+            }
 
-            this.CustomValidation(record);
-
-            return record;
+            return new Tuple<bool, string>(isValid, errorMessage);
         }
 
         /// <summary>
-        /// Check if records has null values.
+        /// Validates lastName value.
         /// </summary>
-        /// <param name="recordInputObject">Record.</param>
-        /// <exception cref="ArgumentNullException">One of record parameters.</exception>
-        protected void NullCheckRecordValues(RecordInputObject recordInputObject)
+        /// <param name="input">LastName.</param>
+        /// <returns>Tuple values (isValid, errorMessage).</returns>
+        public Tuple<bool, string> LastNameValidator(string input)
         {
-            if (string.IsNullOrWhiteSpace(recordInputObject.FirstName))
+            bool isValid = true;
+            string errorMessage = string.Empty;
+
+            if (input.Length < 2)
             {
-                throw new ArgumentNullException(nameof(recordInputObject.FirstName));
+                isValid = false;
+                errorMessage = "LastName's length is less than 2.";
+            }
+            else if (!Regex.IsMatch(input, @"^[a-zA-Z]+$"))
+            {
+                isValid = false;
+                errorMessage = "LastName has symbols that aren't letter.";
             }
 
-            if (string.IsNullOrWhiteSpace(recordInputObject.LastName))
-            {
-                throw new ArgumentNullException(nameof(recordInputObject.LastName));
-            }
-
-            if (string.IsNullOrWhiteSpace(recordInputObject.DateOfBirth))
-            {
-                throw new ArgumentNullException(nameof(recordInputObject.DateOfBirth));
-            }
-
-            if (string.IsNullOrWhiteSpace(recordInputObject.PersonalRating))
-            {
-                throw new ArgumentNullException(nameof(recordInputObject.PersonalRating));
-            }
-
-            if (string.IsNullOrWhiteSpace(recordInputObject.Debt))
-            {
-                throw new ArgumentNullException(nameof(recordInputObject.Debt));
-            }
-
-            if (string.IsNullOrWhiteSpace(recordInputObject.Gender))
-            {
-                throw new ArgumentNullException(nameof(recordInputObject.Debt));
-            }
+            return new Tuple<bool, string>(isValid, errorMessage);
         }
 
         /// <summary>
-        /// Checks if parsing parameters goes right.
+        /// Validates birthDate value.
         /// </summary>
-        /// <param name="isBirthDateValid">Status of parsed birthDate.</param>
-        /// <param name="isPersonalRatingValid">Status of parsed personal rating.</param>
-        /// <param name="isDebtValid">Status of parsed debt.</param>
-        /// <param name="isGenderValid">Status of parsed gender.</param>
-        /// <exception cref="ArgumentException">One of status values.</exception>
-        protected void ValidateParsingRecordValues(
-            bool isBirthDateValid,
-            bool isPersonalRatingValid,
-            bool isDebtValid,
-            bool isGenderValid)
+        /// <param name="input">Birth Date.</param>
+        /// <returns>Tuple values (isValid, errorMessage).</returns>
+        public Tuple<bool, string> DateOfBirthValidator(DateTime input)
         {
-            if (!isBirthDateValid)
+            bool isValid = true;
+            string errorMessage = string.Empty;
+
+            DateTime leftDateLimit = new DateTime(1650, 1, 1);
+            DateTime rightDateLimit = DateTime.Now;
+
+            if (DateTime.Compare(input, leftDateLimit) < 0 || DateTime.Compare(input, rightDateLimit) > 0)
             {
-                throw new ArgumentException($"Cannot parse _birthDate_.");
+                isValid = false;
+                errorMessage = $"BirthDate is not into the interval [{leftDateLimit:yyyy-MMM-dd}, {rightDateLimit:yyyy-MMM-dd}].";
             }
 
-            if (!isPersonalRatingValid)
-            {
-                throw new ArgumentException($"Cannot parse _personalRating_.");
-            }
-
-            if (!isDebtValid)
-            {
-                throw new ArgumentException($"Cannot parse _indebtness_.");
-            }
-
-            if (!isGenderValid)
-            {
-                throw new ArgumentException($"Cannot parse _gender_.");
-            }
+            return new Tuple<bool, string>(isValid, errorMessage);
         }
 
-        private void CustomValidation(FileCabinetRecord fileCabinetRecord)
+        /// <summary>
+        /// Validates personalRating value.
+        /// </summary>
+        /// <param name="input">personalRating.</param>
+        /// <returns>Tuple values (isValid, errorMessage).</returns>
+        public Tuple<bool, string> PersonalRatingValidator(short input)
         {
-            if (!Regex.IsMatch(fileCabinetRecord.FirstName, @"^[a-zA-Z]+$"))
+            bool isValid = true;
+            string errorMessage = string.Empty;
+
+            if (input < 0)
             {
-                throw new ArgumentException($"{nameof(fileCabinetRecord.FirstName)} has symbols that aren't letter.");
+                errorMessage = $"PersonalRating value lesser than zero.";
             }
 
-            if (!Regex.IsMatch(fileCabinetRecord.FirstName, @"^[a-zA-Z]+$"))
+            return new Tuple<bool, string>(isValid, errorMessage);
+        }
+
+        /// <summary>
+        /// Validates debt value.
+        /// </summary>
+        /// <param name="input">debt.</param>
+        /// <returns>Tuple values (isValid, errorMessage).</returns>
+        public Tuple<bool, string> DebtValidator(decimal input)
+        {
+            bool isValid = true;
+            string errorMessage = string.Empty;
+
+            if (input < 0)
             {
-                throw new ArgumentException($"{nameof(fileCabinetRecord.LastName)} has symbols that aren't letter.");
+                errorMessage = $"Debt value is less than zero.";
             }
+
+            return new Tuple<bool, string>(isValid, errorMessage);
+        }
+
+        /// <summary>
+        /// Validates gender value.
+        /// </summary>
+        /// <param name="input">gender.</param>
+        /// <returns>Tuple values (isValid, errorMessage).</returns>
+        public Tuple<bool, string> GenderValidator(char input)
+        {
+            bool isValid = true;
+            string errorMessage = string.Empty;
 
             char[] availableGenderChars = new char[]
             {
@@ -138,38 +138,12 @@ namespace FileCabinetApp.Validators
                 'O',
             };
 
-            if (!availableGenderChars.Contains(fileCabinetRecord.Gender))
+            if (!availableGenderChars.Contains(input))
             {
-                throw new ArgumentException($"{nameof(fileCabinetRecord.Gender)} has not defined gender.");
+                errorMessage = $"The world doesnt know about entered genter at this moment.";
             }
 
-            if (fileCabinetRecord.FirstName.Length < 2)
-            {
-                throw new ArgumentException($"{nameof(fileCabinetRecord.FirstName)}'s length is less than 2.");
-            }
-
-            if (fileCabinetRecord.LastName.Length < 2)
-            {
-                throw new ArgumentException($"{nameof(fileCabinetRecord.LastName)}'s length is less than 2.");
-            }
-
-            DateTime leftDateLimit = new DateTime(1650, 1, 1);
-            DateTime rightDateLimit = DateTime.Now;
-
-            if (DateTime.Compare(fileCabinetRecord.DateOfBirth, leftDateLimit) < 0 || DateTime.Compare(fileCabinetRecord.DateOfBirth, rightDateLimit) > 0)
-            {
-                throw new ArgumentException($"{nameof(fileCabinetRecord.DateOfBirth)} is not into the interval [{leftDateLimit:yyyy-MMM-dd}, {rightDateLimit:yyyy-MMM-dd}].");
-            }
-
-            if (fileCabinetRecord.PersonalRating < 0)
-            {
-                throw new ArgumentException($"{nameof(fileCabinetRecord.PersonalRating)} value lesser than 0.");
-            }
-
-            if (fileCabinetRecord.Debt < 0)
-            {
-                throw new ArgumentException($"{nameof(fileCabinetRecord.Debt)} value is less than zero.");
-            }
+            return new Tuple<bool, string>(isValid, errorMessage);
         }
     }
 }

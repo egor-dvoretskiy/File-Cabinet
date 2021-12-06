@@ -4,6 +4,46 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.FieldsConverter">
+            <summary>
+            Contains various converters.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FieldsConverter.StringConverter(System.String)">
+            <summary>
+            Converts input string to string.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
+        </member>
+        <member name="M:FileCabinetApp.FieldsConverter.BirthDateConverter(System.String)">
+            <summary>
+            Converts input string to DateTime.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
+        </member>
+        <member name="M:FileCabinetApp.FieldsConverter.PersonalRatingConverter(System.String)">
+            <summary>
+            Converts input string to short.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
+        </member>
+        <member name="M:FileCabinetApp.FieldsConverter.DebtConverter(System.String)">
+            <summary>
+            Converts input string to decimal.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
+        </member>
+        <member name="M:FileCabinetApp.FieldsConverter.GenderConverter(System.String)">
+            <summary>
+            Converts input string to char.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Class, that contains record parameters.
@@ -70,25 +110,24 @@
             Records Processor Class.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.#ctor(FileCabinetApp.Interfaces.IRecordValidator)">
+        <member name="M:FileCabinetApp.FileCabinetService.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetService"/> class.
             </summary>
-            <param name="validator">IRecordValidator.</param>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.RecordInputObject)">
+        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.FileCabinetRecord)">
             <summary>
             Creates record and adds to main list.
             </summary>
-            <param name="recordInputObject">Input parameter object.</param>
+            <param name="record">Input parameter object.</param>
             <returns>Record's id in list.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,FileCabinetApp.RecordInputObject)">
+        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecord)">
             <summary>
             Edit record in list.
             </summary>
             <param name="id">Record's id in list.</param>
-            <param name="recordInputObject">Input parameter object.</param>
+            <param name="record">Input parameter object.</param>
             <exception cref="T:System.ArgumentException">id.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
@@ -136,19 +175,19 @@
             Records Processor interface.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.CreateRecord(FileCabinetApp.RecordInputObject)">
+        <member name="M:FileCabinetApp.IFileCabinetService.CreateRecord(FileCabinetApp.FileCabinetRecord)">
             <summary>
             Creates record and adds to main list.
             </summary>
-            <param name="recordInputObject">Input parameter object.</param>
+            <param name="record">Input parameter object.</param>
             <returns>Record's id in list.</returns>
         </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.EditRecord(System.Int32,FileCabinetApp.RecordInputObject)">
+        <member name="M:FileCabinetApp.IFileCabinetService.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecord)">
             <summary>
             Edit record in list.
             </summary>
             <param name="id">Record's id in list.</param>
-            <param name="recordInputObject">Input parameter object.</param>
+            <param name="record">Input parameter object.</param>
             <exception cref="T:System.ArgumentException">id.</exception>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.FindByBirthDate(System.String)">
@@ -196,12 +235,47 @@
             Interface that hold validate parameters functional.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Interfaces.IRecordValidator.ValidateParameters(FileCabinetApp.RecordInputObject)">
+        <member name="M:FileCabinetApp.Interfaces.IRecordValidator.FirstNameValidator(System.String)">
             <summary>
-            Validates input parameters.
+            Validates firstName value.
             </summary>
-            <param name="recordInputObject">Input parameters class.</param>
-            <returns>Valid record.</returns>
+            <param name="input">FirstName.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.IRecordValidator.LastNameValidator(System.String)">
+            <summary>
+            Validates lastName value.
+            </summary>
+            <param name="input">LastName.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.IRecordValidator.DateOfBirthValidator(System.DateTime)">
+            <summary>
+            Validates birthDate value.
+            </summary>
+            <param name="input">Birth Date.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.IRecordValidator.PersonalRatingValidator(System.Int16)">
+            <summary>
+            Validates personalRating value.
+            </summary>
+            <param name="input">personalRating.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.IRecordValidator.DebtValidator(System.Decimal)">
+            <summary>
+            Validates debt value.
+            </summary>
+            <param name="input">debt.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.IRecordValidator.GenderValidator(System.Char)">
+            <summary>
+            Validates gender value.
+            </summary>
+            <param name="input">gender.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
@@ -272,57 +346,94 @@
             Validator with specific rules.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateParameters(FileCabinetApp.RecordInputObject)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.NullCheckRecordValues(FileCabinetApp.RecordInputObject)">
+        <member name="M:FileCabinetApp.Validators.CustomValidator.FirstNameValidator(System.String)">
             <summary>
-            Check if records has null values.
+            Validates firstName value.
             </summary>
-            <param name="recordInputObject">Record.</param>
-            <exception cref="T:System.ArgumentNullException">One of record parameters.</exception>
+            <param name="input">FirstName.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateParsingRecordValues(System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+        <member name="M:FileCabinetApp.Validators.CustomValidator.LastNameValidator(System.String)">
             <summary>
-            Checks if parsing parameters goes right.
+            Validates lastName value.
             </summary>
-            <param name="isBirthDateValid">Status of parsed birthDate.</param>
-            <param name="isPersonalRatingValid">Status of parsed personal rating.</param>
-            <param name="isDebtValid">Status of parsed debt.</param>
-            <param name="isGenderValid">Status of parsed gender.</param>
-            <exception cref="T:System.ArgumentException">One of status values.</exception>
+            <param name="input">LastName.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomValidator.DateOfBirthValidator(System.DateTime)">
+            <summary>
+            Validates birthDate value.
+            </summary>
+            <param name="input">Birth Date.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomValidator.PersonalRatingValidator(System.Int16)">
+            <summary>
+            Validates personalRating value.
+            </summary>
+            <param name="input">personalRating.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomValidator.DebtValidator(System.Decimal)">
+            <summary>
+            Validates debt value.
+            </summary>
+            <param name="input">debt.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomValidator.GenderValidator(System.Char)">
+            <summary>
+            Validates gender value.
+            </summary>
+            <param name="input">gender.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
         <member name="T:FileCabinetApp.Validators.DefaultValidator">
             <summary>
             Default Validator.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateParameters(FileCabinetApp.RecordInputObject)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.NullCheckRecordValues(FileCabinetApp.RecordInputObject)">
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.FirstNameValidator(System.String)">
             <summary>
-            Check if records has null values.
+            Validates firstName value.
             </summary>
-            <param name="recordInputObject">Record.</param>
-            <exception cref="T:System.ArgumentNullException">One of record parameters.</exception>
+            <param name="input">FirstName.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateParsingRecordValues(System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.LastNameValidator(System.String)">
             <summary>
-            Checks if parsing parameters goes right.
+            Validates lastName value.
             </summary>
-            <param name="isBirthDateValid">Status of parsed birthDate.</param>
-            <param name="isPersonalRatingValid">Status of parsed personal rating.</param>
-            <param name="isDebtValid">Status of parsed debt.</param>
-            <param name="isGenderValid">Status of parsed gender.</param>
-            <exception cref="T:System.ArgumentException">One of status values.</exception>
+            <param name="input">LastName.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateRecordBySpecificRules(FileCabinetApp.FileCabinetRecord)">
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.DateOfBirthValidator(System.DateTime)">
             <summary>
-            Validates record using specific rules.
+            Validates birthDate value.
             </summary>
-            <param name="fileCabinetRecord">Record.</param>
-            <exception cref="T:System.ArgumentException">One of record's parameters.</exception>
+            <param name="input">Birth Date.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.PersonalRatingValidator(System.Int16)">
+            <summary>
+            Validates personalRating value.
+            </summary>
+            <param name="input">personalRating.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.DebtValidator(System.Decimal)">
+            <summary>
+            Validates debt value.
+            </summary>
+            <param name="input">debt.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.GenderValidator(System.Char)">
+            <summary>
+            Validates gender value.
+            </summary>
+            <param name="input">gender.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
     </members>
 </doc>

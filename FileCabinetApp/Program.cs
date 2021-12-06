@@ -20,7 +20,8 @@ namespace FileCabinetApp
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
 
-        private static IFileCabinetService fileCabinetService = new FileCabinetService(new DefaultValidator());
+        private static IFileCabinetService fileCabinetService = new FileCabinetService();
+        private static IRecordValidator validator = new DefaultValidator();
 
         private static bool isRunning = true;
 
@@ -125,7 +126,7 @@ namespace FileCabinetApp
                 }
                 else
                 {
-                    fileCabinetService = new FileCabinetService(new CustomValidator());
+                    validator = new CustomValidator();
                     Console.WriteLine(CorrectCustomInputArgsMessage);
                 }
             }
@@ -182,39 +183,35 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            int id = -1;
-            while (id == -1)
+            Console.Write("First name: ");
+            var firstName = Program.ReadInput(FieldsConverter.StringConverter, validator.FirstNameValidator);
+
+            Console.Write("Last name: ");
+            var lastName = Program.ReadInput(FieldsConverter.StringConverter, validator.LastNameValidator);
+
+            Console.Write("Date of birth (month/day/year): ");
+            var birthDate = Program.ReadInput(FieldsConverter.BirthDateConverter, validator.DateOfBirthValidator);
+
+            Console.Write("Personal rating: ");
+            var personalRating = Program.ReadInput(FieldsConverter.PersonalRatingConverter, validator.PersonalRatingValidator);
+
+            Console.Write("Debt: ");
+            var debt = Program.ReadInput(FieldsConverter.DebtConverter, validator.DebtValidator);
+
+            Console.Write("Gender: ");
+            var gender = Program.ReadInput(FieldsConverter.GenderConverter, validator.GenderValidator);
+
+            FileCabinetRecord record = new FileCabinetRecord()
             {
-                Console.Write("First name: ");
-                var firstName = Console.ReadLine();
+                FirstName = firstName,
+                LastName = lastName,
+                DateOfBirth = birthDate,
+                PersonalRating = personalRating,
+                Debt = debt,
+                Gender = gender,
+            };
 
-                Console.Write("Last name: ");
-                var lastName = Console.ReadLine();
-
-                Console.Write("Date of birth (month/day/year): ");
-                var birthDateString = Console.ReadLine();
-
-                Console.Write("Personal rating: ");
-                var personalRatingString = Console.ReadLine();
-
-                Console.Write("Debt: ");
-                var debtString = Console.ReadLine();
-
-                Console.Write("Gender: ");
-                var genderString = Console.ReadLine();
-
-                RecordInputObject recordInputObject = new RecordInputObject()
-                {
-                    FirstName = firstName,
-                    LastName = lastName,
-                    DateOfBirth = birthDateString,
-                    PersonalRating = personalRatingString,
-                    Debt = debtString,
-                    Gender = genderString,
-                };
-
-                id = Program.fileCabinetService.CreateRecord(recordInputObject);
-            }
+            int id = Program.fileCabinetService.CreateRecord(record);
 
             Console.WriteLine($"Record #{id} is created.");
         }
@@ -275,39 +272,39 @@ namespace FileCabinetApp
                 if (listValue == -1)
                 {
                     Console.WriteLine($"#{id} record is not found.");
-                    Program.fileCabinetService.EditRecord(listValue, new RecordInputObject());
+                    Program.fileCabinetService.EditRecord(listValue, new FileCabinetRecord());
                     return;
                 }
 
                 Console.Write("First name: ");
-                var firstName = Console.ReadLine();
+                var firstName = Program.ReadInput(FieldsConverter.StringConverter, validator.FirstNameValidator);
 
                 Console.Write("Last name: ");
-                var lastName = Console.ReadLine();
+                var lastName = Program.ReadInput(FieldsConverter.StringConverter, validator.LastNameValidator);
 
                 Console.Write("Date of birth (month/day/year): ");
-                var birthDateString = Console.ReadLine();
+                var birthDate = Program.ReadInput(FieldsConverter.BirthDateConverter, validator.DateOfBirthValidator);
 
                 Console.Write("Personal rating: ");
-                var personalRatingString = Console.ReadLine();
+                var personalRating = Program.ReadInput(FieldsConverter.PersonalRatingConverter, validator.PersonalRatingValidator);
 
                 Console.Write("Debt: ");
-                var debtString = Console.ReadLine();
+                var debt = Program.ReadInput(FieldsConverter.DebtConverter, validator.DebtValidator);
 
                 Console.Write("Gender: ");
-                var genderString = Console.ReadLine();
+                var gender = Program.ReadInput(FieldsConverter.GenderConverter, validator.GenderValidator);
 
-                RecordInputObject recordInputObject = new RecordInputObject()
+                FileCabinetRecord record = new FileCabinetRecord()
                 {
                     FirstName = firstName,
                     LastName = lastName,
-                    DateOfBirth = birthDateString,
-                    PersonalRating = personalRatingString,
-                    Debt = debtString,
-                    Gender = genderString,
+                    DateOfBirth = birthDate,
+                    PersonalRating = personalRating,
+                    Debt = debt,
+                    Gender = gender,
                 };
 
-                Program.fileCabinetService.EditRecord(listValue, recordInputObject);
+                Program.fileCabinetService.EditRecord(listValue, record);
 
                 Console.WriteLine($"Record #{id} is edited.");
             }
@@ -343,6 +340,42 @@ namespace FileCabinetApp
                     $"{record.PersonalRating}, " +
                     $"{record.Debt}, " +
                     $"{record.Gender}.");
+        }
+
+        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
+            do
+            {
+                T value;
+
+                var input = Console.ReadLine();
+
+                if (input is null)
+                {
+                    Console.WriteLine($"Incorrect input. Please, try again.");
+                    continue;
+                }
+
+                var conversionResult = converter(input);
+
+                if (!conversionResult.Item1)
+                {
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                value = conversionResult.Item3;
+
+                var validationResult = validator(value);
+                if (!validationResult.Item1)
+                {
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                return value;
+            }
+            while (true);
         }
     }
 }
