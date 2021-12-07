@@ -7,18 +7,10 @@ using System.Threading.Tasks;
 namespace FileCabinetApp
 {
     /// <summary>
-    /// Class, that contains record parameters.
+    /// Contains input parameter object for create and edit methods.
     /// </summary>
-    public class FileCabinetRecord
+    public class RecordInputObject
     {
-        /// <summary>
-        /// Gets or sets unique idetifier of record.
-        /// </summary>
-        /// <value>
-        /// Unique idetifier of record.
-        /// </value>
-        public int Id { get; set; }
-
         /// <summary>
         /// Gets or sets person's first name.
         /// </summary>
@@ -41,7 +33,7 @@ namespace FileCabinetApp
         /// <value>
         /// Person's birth date.
         /// </value>
-        public DateTime DateOfBirth { get; set; }
+        public string DateOfBirth { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets person's personal rating.
@@ -49,7 +41,7 @@ namespace FileCabinetApp
         /// <value>
         /// Person's personal rating.
         /// </value>
-        public short PersonalRating { get; set; }
+        public string PersonalRating { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets person's amount of debt.
@@ -57,7 +49,7 @@ namespace FileCabinetApp
         /// <value>
         /// Person's amount of debt.
         /// </value>
-        public decimal Debt { get; set; }
+        public string Debt { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets person's gender.
@@ -65,6 +57,6 @@ namespace FileCabinetApp
         /// <value>
         /// Person's gender.
         /// </value>
-        public char Gender { get; set; }
+        public string Gender { get; set; } = string.Empty;
     }
 }

@@ -1,16 +1,27 @@
 ﻿using System;
+using FileCabinetApp.Interfaces;
+using FileCabinetApp.Validators;
+
+#pragma warning disable CS8601 // Possible null reference argument.
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Main Class.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Egor Dvoretskiy";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
+        private const string WrongInputArgsMessage = "Wrong input arguments. Using default validation rules.";
+        private const string CorrectCustomInputArgsMessage = "Using custom validation rules.";
+        private const string CorrectDefaultInputArgsMessage = "Using default validation rules.";
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
 
-        private static FileCabinetService fileCabinetService = new ();
+        private static IFileCabinetService fileCabinetService = new FileCabinetService();
+        private static IRecordValidator validator = new DefaultValidator();
 
         private static bool isRunning = true;
 
@@ -36,11 +47,22 @@ namespace FileCabinetApp
             new string[] { "find", "find stored user data by specific field", "The 'find' command searches for stored user data by specific field." },
         };
 
+        private static string[] availableArgsValues = new string[]
+            {
+                "default",
+                "custom",
+            };
+
+        /// <summary>
+        /// Init Method.
+        /// </summary>
+        /// <param name="args">Default parameters.</param>
         public static void Main(string[] args)
         {
-            _ = args;
-
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
+
+            ParseInputArgs(args);
+
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -76,6 +98,42 @@ namespace FileCabinetApp
                 }
             }
             while (isRunning);
+        }
+
+        private static void ParseInputArgs(string[] args)
+        {
+            bool isArgsProcessed = false;
+
+            if (args.Length == 1)
+            {
+                args = args[0].Split('=');
+                isArgsProcessed = true;
+            }
+
+            if ((args.Length != 2 && args.Length != 1) || (args.Length != 2 && isArgsProcessed))
+            {
+                Console.WriteLine(WrongInputArgsMessage);
+                return;
+            }
+
+            string currentServiceModeCaseLowered = args[1].ToLower();
+
+            if ((args[0] == "-v" || args[0] == "--validation-rules") && availableArgsValues.Contains(currentServiceModeCaseLowered))
+            {
+                if (string.Equals(currentServiceModeCaseLowered, availableArgsValues[0]))
+                {
+                    Console.WriteLine(CorrectDefaultInputArgsMessage);
+                }
+                else
+                {
+                    validator = new CustomValidator();
+                    Console.WriteLine(CorrectCustomInputArgsMessage);
+                }
+            }
+            else
+            {
+                Console.WriteLine(WrongInputArgsMessage);
+            }
         }
 
         private static void PrintMissedCommandInfo(string command)
@@ -125,29 +183,35 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            int id = -1;
-            while (id == -1)
+            Console.Write("First name: ");
+            var firstName = Program.ReadInput(FieldsConverter.StringConverter, validator.FirstNameValidator);
+
+            Console.Write("Last name: ");
+            var lastName = Program.ReadInput(FieldsConverter.StringConverter, validator.LastNameValidator);
+
+            Console.Write("Date of birth (month/day/year): ");
+            var birthDate = Program.ReadInput(FieldsConverter.BirthDateConverter, validator.DateOfBirthValidator);
+
+            Console.Write("Personal rating: ");
+            var personalRating = Program.ReadInput(FieldsConverter.PersonalRatingConverter, validator.PersonalRatingValidator);
+
+            Console.Write("Debt: ");
+            var debt = Program.ReadInput(FieldsConverter.DebtConverter, validator.DebtValidator);
+
+            Console.Write("Gender: ");
+            var gender = Program.ReadInput(FieldsConverter.GenderConverter, validator.GenderValidator);
+
+            FileCabinetRecord record = new FileCabinetRecord()
             {
-                Console.Write("First name: ");
-                var firstName = Console.ReadLine();
+                FirstName = firstName,
+                LastName = lastName,
+                DateOfBirth = birthDate,
+                PersonalRating = personalRating,
+                Debt = debt,
+                Gender = gender,
+            };
 
-                Console.Write("Last name: ");
-                var lastName = Console.ReadLine();
-
-                Console.Write("Date of birth (month/day/year): ");
-                var birthDateString = Console.ReadLine();
-
-                Console.Write("Times in jail: ");
-                var jailTimesString = Console.ReadLine();
-
-                Console.Write("Amount of money: ");
-                var moneyAccountString = Console.ReadLine();
-
-                Console.Write("Gender: ");
-                var genderString = Console.ReadLine();
-
-                id = Program.fileCabinetService.CreateRecord(firstName, lastName, birthDateString, jailTimesString, moneyAccountString, genderString);
-            }
+            int id = Program.fileCabinetService.CreateRecord(record);
 
             Console.WriteLine($"Record #{id} is created.");
         }
@@ -155,21 +219,29 @@ namespace FileCabinetApp
         private static void Find(string parameters)
         {
             var paramsFindContainer = parameters.Split(' ');
+
+            if (paramsFindContainer.Length < 2)
+            {
+                Console.WriteLine("Not enough parameters. Try again.");
+                return;
+            }
+
             FileCabinetRecord[] foundDataContainer = Array.Empty<FileCabinetRecord>();
-            string parameterToFind = paramsFindContainer[1].Replace("\"", string.Empty);
+            string parameterToFind = paramsFindContainer[1];
 
             switch (paramsFindContainer[0])
             {
                 case "firstname":
-                    foundDataContainer = Program.fileCabinetService.FindByFirstName(parameterToFind);
+                    foundDataContainer = Program.fileCabinetService.FindByFirstName(parameterToFind).ToArray();
                     break;
                 case "lastname":
-                    foundDataContainer = Program.fileCabinetService.FindByLastName(parameterToFind);
+                    foundDataContainer = Program.fileCabinetService.FindByLastName(parameterToFind).ToArray();
                     break;
                 case "dateofbirth":
-                    foundDataContainer = Program.fileCabinetService.FindByBirthDate(parameterToFind);
+                    foundDataContainer = Program.fileCabinetService.FindByBirthDate(parameterToFind).ToArray();
                     break;
                 default:
+                    Console.WriteLine("There is no such parameter.");
                     break;
             }
 
@@ -200,29 +272,39 @@ namespace FileCabinetApp
                 if (listValue == -1)
                 {
                     Console.WriteLine($"#{id} record is not found.");
-                    Program.fileCabinetService.EditRecord(listValue, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+                    Program.fileCabinetService.EditRecord(listValue, new FileCabinetRecord());
                     return;
                 }
 
                 Console.Write("First name: ");
-                var firstName = Console.ReadLine();
+                var firstName = Program.ReadInput(FieldsConverter.StringConverter, validator.FirstNameValidator);
 
                 Console.Write("Last name: ");
-                var lastName = Console.ReadLine();
+                var lastName = Program.ReadInput(FieldsConverter.StringConverter, validator.LastNameValidator);
 
                 Console.Write("Date of birth (month/day/year): ");
-                var birthDateString = Console.ReadLine();
+                var birthDate = Program.ReadInput(FieldsConverter.BirthDateConverter, validator.DateOfBirthValidator);
 
-                Console.Write("Times in jail: ");
-                var jailTimesString = Console.ReadLine();
+                Console.Write("Personal rating: ");
+                var personalRating = Program.ReadInput(FieldsConverter.PersonalRatingConverter, validator.PersonalRatingValidator);
 
-                Console.Write("Amount of money: ");
-                var moneyAccountString = Console.ReadLine();
+                Console.Write("Debt: ");
+                var debt = Program.ReadInput(FieldsConverter.DebtConverter, validator.DebtValidator);
 
                 Console.Write("Gender: ");
-                var genderString = Console.ReadLine();
+                var gender = Program.ReadInput(FieldsConverter.GenderConverter, validator.GenderValidator);
 
-                Program.fileCabinetService.EditRecord(listValue, firstName, lastName, birthDateString, jailTimesString, moneyAccountString, genderString);
+                FileCabinetRecord record = new FileCabinetRecord()
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    DateOfBirth = birthDate,
+                    PersonalRating = personalRating,
+                    Debt = debt,
+                    Gender = gender,
+                };
+
+                Program.fileCabinetService.EditRecord(listValue, record);
 
                 Console.WriteLine($"Record #{id} is edited.");
             }
@@ -236,13 +318,13 @@ namespace FileCabinetApp
         {
             var records = Program.fileCabinetService.GetRecords();
 
-            if (records.Length == 0)
+            if (records.Count == 0)
             {
                 Console.WriteLine("List is empty.");
                 return;
             }
 
-            for (int i = 0; i < records.Length; i++)
+            for (int i = 0; i < records.Count; i++)
             {
                 PrintRecord(records[i]);
             }
@@ -251,13 +333,49 @@ namespace FileCabinetApp
         private static void PrintRecord(FileCabinetRecord record)
         {
             Console.WriteLine(
-                    $"#{record.Id} " +
-                    $"{record.FirstName} " +
-                    $"{record.LastName} " +
-                    $"{record.DateOfBirth:yyyy-MMM-dd} " +
-                    $"{record.TimesInJail} " +
-                    $"{record.MoneyAccount} " +
-                    $"{record.Gender}");
+                    $"#{record.Id}, " +
+                    $"{record.FirstName}, " +
+                    $"{record.LastName}, " +
+                    $"{record.DateOfBirth:yyyy-MMM-dd}, " +
+                    $"{record.PersonalRating}, " +
+                    $"{record.Debt}, " +
+                    $"{record.Gender}.");
+        }
+
+        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
+            do
+            {
+                T value;
+
+                var input = Console.ReadLine();
+
+                if (input is null)
+                {
+                    Console.WriteLine($"Incorrect input. Please, try again.");
+                    continue;
+                }
+
+                var conversionResult = converter(input);
+
+                if (!conversionResult.Item1)
+                {
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                value = conversionResult.Item3;
+
+                var validationResult = validator(value);
+                if (!validationResult.Item1)
+                {
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                return value;
+            }
+            while (true);
         }
     }
 }

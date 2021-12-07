@@ -1,45 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
+using FileCabinetApp.Interfaces;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetApp
 {
-    public class FileCabinetService
+    /// <summary>
+    /// Records Processor Class.
+    /// </summary>
+    public class FileCabinetService : IFileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new ();
+
         private Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private Dictionary<string, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
-        public int CreateRecord(
-            string firstName,
-            string lastName,
-            string dateOfBirth,
-            string jailTimesString,
-            string moneyAccountString,
-            string genderString)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
+        /// </summary>
+        public FileCabinetService()
+        {
+        }
+
+        /// <summary>
+        /// Creates record and adds to main list.
+        /// </summary>
+        /// <param name="record">Input parameter object.</param>
+        /// <returns>Record's id in list.</returns>
+        public int CreateRecord(FileCabinetRecord record)
         {
             try
             {
-                var parametersTuple = this.ValidateArguments(firstName, lastName, dateOfBirth, jailTimesString, moneyAccountString, genderString);
-
-                var record = new FileCabinetRecord
-                {
-                    Id = this.list.Count + 1,
-                    FirstName = firstName,
-                    LastName = lastName,
-                    DateOfBirth = parametersTuple.Item1,
-                    TimesInJail = parametersTuple.Item2,
-                    MoneyAccount = parametersTuple.Item3,
-                    Gender = parametersTuple.Item4,
-                };
+                record.Id = this.list.Count + 1;
 
                 this.list.Add(record);
 
-                this.AddInformationToDictionary(firstName, ref this.firstNameDictionary, record);
-                this.AddInformationToDictionary(lastName, ref this.lastNameDictionary, record);
-                this.AddInformationToDictionary(dateOfBirth, ref this.dateOfBirthDictionary, record);
+                this.AddInformationToDictionary(record.FirstName, ref this.firstNameDictionary, record);
+                this.AddInformationToDictionary(record.LastName, ref this.lastNameDictionary, record);
+                this.AddInformationToDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd"), ref this.dateOfBirthDictionary, record);
 
                 return record.Id;
             }
@@ -52,19 +54,18 @@ namespace FileCabinetApp
                 Console.WriteLine(aex.Message);
             }
 
-            Console.WriteLine("Please, try again:");
-
             return -1;
         }
 
+        /// <summary>
+        /// Edit record in list.
+        /// </summary>
+        /// <param name="id">Record's id in list.</param>
+        /// <param name="record">Input parameter object.</param>
+        /// <exception cref="ArgumentException">id.</exception>
         public void EditRecord(
             int id,
-            string firstName,
-            string lastName,
-            string dateOfBirth,
-            string jailTimesString,
-            string moneyAccountString,
-            string genderString)
+            FileCabinetRecord record)
         {
             if (id == -1)
             {
@@ -73,18 +74,13 @@ namespace FileCabinetApp
 
             try
             {
-                var parametersTuple = this.ValidateArguments(firstName, lastName, dateOfBirth, jailTimesString, moneyAccountString, genderString);
+                record.Id = this.list[id].Id;
 
-                this.list[id].FirstName = firstName;
-                this.list[id].LastName = lastName;
-                this.list[id].DateOfBirth = parametersTuple.Item1;
-                this.list[id].TimesInJail = parametersTuple.Item2;
-                this.list[id].MoneyAccount = parametersTuple.Item3;
-                this.list[id].Gender = parametersTuple.Item4;
+                this.list[id] = record;
 
-                this.EditInformationInDictionary(firstName, ref this.firstNameDictionary, this.list[id]);
-                this.EditInformationInDictionary(lastName, ref this.lastNameDictionary, this.list[id]);
-                this.EditInformationInDictionary(dateOfBirth, ref this.dateOfBirthDictionary, this.list[id]);
+                this.EditInformationInDictionary(record.FirstName, ref this.firstNameDictionary, record);
+                this.EditInformationInDictionary(record.LastName, ref this.lastNameDictionary, record);
+                this.EditInformationInDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd"), ref this.dateOfBirthDictionary, record);
             }
             catch (ArgumentNullException anex)
             {
@@ -96,16 +92,29 @@ namespace FileCabinetApp
             }
         }
 
-        public FileCabinetRecord[] GetRecords()
+        /// <summary>
+        /// Method return all stored records.
+        /// </summary>
+        /// <returns>Stored records.</returns>
+        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            return this.list.ToArray();
+            return new ReadOnlyCollection<FileCabinetRecord>(this.list);
         }
 
+        /// <summary>
+        /// Method return records count.
+        /// </summary>
+        /// <returns>Amount of records.</returns>
         public int GetStat()
         {
             return this.list.Count;
         }
 
+        /// <summary>
+        /// Method find record position in list by ID.
+        /// </summary>
+        /// <param name="id">Record's id.</param>
+        /// <returns>Record's position in list.</returns>
         public int GetPositionInListRecordsById(int id)
         {
             int leftBorder = 0;
@@ -133,58 +142,34 @@ namespace FileCabinetApp
             return index;
         }
 
-        public FileCabinetRecord[] FindByFirstName(string firstName)
+        /// <summary>
+        /// Searches all matches by firstname parameter.
+        /// </summary>
+        /// <param name="firstName">Person's first name.</param>
+        /// <returns>All records with the same firstname.</returns>
+        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            /*List<FileCabinetRecord> tempLst = new ();
-            int index = 0;
-
-            while (index != -1)
-            {
-                index = this.list.FindIndex(index, this.list.Count - index, i => string.Equals(i.FirstName, firstName, StringComparison.InvariantCultureIgnoreCase));
-                if (index != -1)
-                {
-                    tempLst.Add(this.list[index++]);
-                }
-            }*/
-
-            return this.GetInformationFromDictionary(firstName, this.firstNameDictionary).ToArray();
+            return new ReadOnlyCollection<FileCabinetRecord>(this.GetInformationFromDictionary(firstName, this.firstNameDictionary));
         }
 
-        public FileCabinetRecord[] FindByLastName(string lastName)
+        /// <summary>
+        /// Searches all matches by lastName parameter.
+        /// </summary>
+        /// <param name="lastName">Person's last name.</param>
+        /// <returns>All records with the same lastname.</returns>
+        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            /*List<FileCabinetRecord> tempLst = new();
-            int index = 0;
-
-            while (index != -1)
-            {
-                index = this.list.FindIndex(index, this.list.Count - index, i => string.Equals(i.LastName, lastName, StringComparison.InvariantCultureIgnoreCase));
-                if (index != -1)
-                {
-                    tempLst.Add(this.list[index++]);
-                }
-            }*/
-
-            return this.GetInformationFromDictionary(lastName, this.lastNameDictionary).ToArray();
+            return new ReadOnlyCollection<FileCabinetRecord>(this.GetInformationFromDictionary(lastName, this.lastNameDictionary));
         }
 
-        public FileCabinetRecord[] FindByBirthDate(string birthDate)
+        /// <summary>
+        /// Searches all matches by birthDate parameter.
+        /// </summary>
+        /// <param name="birthDate">Person's date of birth.</param>
+        /// <returns>All records with the same date of birth.</returns>
+        public ReadOnlyCollection<FileCabinetRecord> FindByBirthDate(string birthDate)
         {
-            /*List<FileCabinetRecord> tempLst = new ();
-
-            bool isBirthDateVaild = DateTime.TryParse(birthDate, out DateTime birthDateTime);
-
-            int index = 0;
-
-            while (index != -1)
-            {
-                index = this.list.FindIndex(index, this.list.Count - index, i => DateTime.Compare(i.DateOfBirth, birthDateTime) == 0);
-                if (index != -1)
-                {
-                    tempLst.Add(this.list[index++]);
-                }
-            }*/
-
-            return this.GetInformationFromDictionary(birthDate, this.dateOfBirthDictionary).ToArray();
+            return new ReadOnlyCollection<FileCabinetRecord>(this.GetInformationFromDictionary(birthDate, this.dateOfBirthDictionary));
         }
 
         private void AddInformationToDictionary(string parametrName, ref Dictionary<string, List<FileCabinetRecord>> dict, FileCabinetRecord record)
@@ -201,17 +186,24 @@ namespace FileCabinetApp
 
         private void EditInformationInDictionary(string parameterName, ref Dictionary<string, List<FileCabinetRecord>> dict, FileCabinetRecord record)
         {
-            if (dict.ContainsKey(parameterName))
+            foreach (var element in dict)
             {
-                for (int i = 0; i < dict[parameterName].Count; i++)
+                int index = element.Value.FindIndex(0, element.Value.Count, i => i.Id == record.Id);
+
+                if (index != -1)
                 {
-                    if (dict[parameterName][i].Id == record.Id)
+                    element.Value.RemoveAt(index);
+
+                    if (element.Value.Count == 0)
                     {
-                        dict[parameterName][i] = record;
-                        return;
+                        dict.Remove(element.Key);
                     }
+
+                    break;
                 }
             }
+
+            this.AddInformationToDictionary(parameterName, ref dict, record);
         }
 
         private List<FileCabinetRecord> GetInformationFromDictionary(string parametrName, Dictionary<string, List<FileCabinetRecord>> dictionary)
@@ -222,47 +214,6 @@ namespace FileCabinetApp
             }
 
             return new List<FileCabinetRecord>();
-        }
-
-        private Tuple<DateTime, short, decimal, char> ValidateArguments(string firstName, string lastName, string dateOfBirth, string jailTimesString, string moneyAccountString, string genderString)
-        {
-            if (string.IsNullOrWhiteSpace(firstName) ||
-                string.IsNullOrWhiteSpace(lastName) ||
-                string.IsNullOrWhiteSpace(dateOfBirth) ||
-                string.IsNullOrWhiteSpace(jailTimesString) ||
-                string.IsNullOrWhiteSpace(moneyAccountString) ||
-                string.IsNullOrWhiteSpace(genderString))
-            {
-                throw new ArgumentNullException("Something has null reference");
-            }
-
-            var birthDateValid = DateTime.TryParse(dateOfBirth, out DateTime birthDate);
-            var jailTimesValid = short.TryParse(jailTimesString, out short jailTimes);
-            var moneyAccountValid = decimal.TryParse(moneyAccountString, out decimal moneyAccount);
-            var genderValid = char.TryParse(genderString, out char gender);
-
-            if (!birthDateValid ||
-                !jailTimesValid ||
-                !moneyAccountValid ||
-                !genderValid)
-            {
-                throw new ArgumentException("First block of Argument Check.");
-            }
-
-            var firstDate = new DateTime(1950, 1, 1);
-            var lastDate = DateTime.Now;
-
-            if (firstName.Length < 2 || firstName.Length > 60 ||
-                lastName.Length < 2 || lastName.Length > 60 ||
-                jailTimes < 0 ||
-                moneyAccount < 0 ||
-                !char.IsLetter(gender) ||
-                DateTime.Compare(birthDate, firstDate) < 0 || DateTime.Compare(birthDate, lastDate) > 0)
-            {
-                throw new ArgumentException("Second block of Argument Check.");
-            }
-
-            return new Tuple<DateTime, short, decimal, char>(birthDate, jailTimes, moneyAccount, gender);
         }
     }
 }
