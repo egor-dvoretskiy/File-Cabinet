@@ -170,6 +170,17 @@
             <param name="birthDate">Person's date of birth.</param>
             <returns>All records with the same date of birth.</returns>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetService.MakeSnapshot">
+            <summary>
+            Makes snapshot of FileCabinetService.
+            </summary>
+            <returns>Snapshot of FileCabinetService.</returns>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetServiceSnapshot">
+            <summary>
+            holds snapshot for FileCabinetService.
+            </summary>
+        </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
             Records Processor interface.
@@ -230,6 +241,12 @@
             </summary>
             <returns>Amount of records.</returns>
         </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.MakeSnapshot">
+            <summary>
+            Makes snapshot of FileCabinetService.
+            </summary>
+            <returns>Snapshot of FileCabinetService.</returns>
+        </member>
         <member name="T:FileCabinetApp.Interfaces.IRecordValidator">
             <summary>
             Interface that hold validate parameters functional.
@@ -287,59 +304,6 @@
             Init Method.
             </summary>
             <param name="args">Default parameters.</param>
-        </member>
-        <member name="T:FileCabinetApp.RecordInputObject">
-            <summary>
-            Contains input parameter object for create and edit methods.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.RecordInputObject.FirstName">
-            <summary>
-            Gets or sets person's first name.
-            </summary>
-            <value>
-            Person's first name.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.RecordInputObject.LastName">
-            <summary>
-            Gets or sets person's last name.
-            </summary>
-            <value>
-            Person's last name.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.RecordInputObject.DateOfBirth">
-            <summary>
-            Gets or sets person's birth date.
-            </summary>
-            <value>
-            Person's birth date.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.RecordInputObject.PersonalRating">
-            <summary>
-            Gets or sets person's personal rating.
-            </summary>
-            <value>
-            Person's personal rating.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.RecordInputObject.Debt">
-            <summary>
-            Gets or sets person's amount of debt.
-            </summary>
-            <value>
-            Person's amount of debt.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.RecordInputObject.Gender">
-            <summary>
-            Gets or sets person's gender.
-            </summary>
-            <value>
-            Person's gender.
-            </value>
         </member>
         <member name="T:FileCabinetApp.Validators.CustomValidator">
             <summary>

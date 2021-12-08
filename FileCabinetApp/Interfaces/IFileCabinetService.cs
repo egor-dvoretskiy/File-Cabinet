@@ -61,5 +61,11 @@ namespace FileCabinetApp
         /// </summary>
         /// <returns>Amount of records.</returns>
         int GetStat();
+
+        /// <summary>
+        /// Makes snapshot of FileCabinetService.
+        /// </summary>
+        /// <returns>Snapshot of FileCabinetService.</returns>
+        FileCabinetServiceSnapshot MakeSnapshot();
     }
 }

@@ -34,6 +34,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
+            new Tuple<string, Action<string>>("export", Export),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -45,13 +46,20 @@ namespace FileCabinetApp
             new string[] { "list", "display stored records", "The 'list' command displays stored records." },
             new string[] { "edit", "edit stored user data", "The 'edit' command edits stored user data." },
             new string[] { "find", "find stored user data by specific field", "The 'find' command searches for stored user data by specific field." },
+            new string[] { "export", "export data list to specific format", "The 'export' command converts data list to specific format." },
         };
 
         private static string[] availableArgsValues = new string[]
-            {
-                "default",
-                "custom",
-            };
+        {
+            "default",
+            "custom",
+        };
+
+        private static string[] availableFormatsToExport = new string[]
+        {
+            "csv",
+            "xml",
+        };
 
         /// <summary>
         /// Init Method.
@@ -374,6 +382,81 @@ namespace FileCabinetApp
                 }
 
                 return value;
+            }
+            while (true);
+        }
+
+        private static void Export(string parameters)
+        {
+            var splitedParams = parameters.Split(' ');
+
+            string exportFormat = splitedParams[0];
+            string pathToFile = splitedParams[1];
+            string fileName = pathToFile.Split('\\').Last();
+
+            if (splitedParams.Length != 2 || !availableFormatsToExport.Contains(exportFormat))
+            {
+                Console.WriteLine("Wrong command. Please, try again.");
+                return;
+            }
+
+            if (File.Exists(pathToFile))
+            {
+                Console.Write($"File is exist - rewrite {pathToFile}? [Y/n] ");
+                string keyAgreement = Program.ReadKeyAgreement();
+                if (keyAgreement == "n")
+                {
+                    return;
+                }
+            }
+
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(pathToFile))
+                {
+                    var snapshot = fileCabinetService.MakeSnapshot();
+
+                    switch (exportFormat)
+                    {
+                        case "csv":
+                            snapshot.SaveToCsv(writer);
+                            break;
+                        case "xml":
+                            break;
+                        default:
+                            Console.WriteLine("There is no such format to export.");
+                            break;
+                    }
+
+                    Console.WriteLine($"All records are exported to file {fileName}.");
+                }
+            }
+            catch (DirectoryNotFoundException directoryNotFoundException)
+            {
+                _ = directoryNotFoundException;
+                Console.WriteLine($"Export failed: can't open file {pathToFile}.");
+            }
+        }
+
+        private static string ReadKeyAgreement()
+        {
+            do
+            {
+                var key = Console.ReadKey()
+                            .KeyChar
+                            .ToString()
+                            .ToLower();
+
+                if (key.Length != 1 || !(new string[2] { "y", "n" }).Contains(key))
+                {
+                    Console.Write("\nWrong key input. Please, try again with [Y/N]: ");
+                    continue;
+                }
+                else
+                {
+                    Console.WriteLine();
+                    return key;
+                }
             }
             while (true);
         }
