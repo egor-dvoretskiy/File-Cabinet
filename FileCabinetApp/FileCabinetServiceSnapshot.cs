@@ -13,11 +13,19 @@ namespace FileCabinetApp
     {
         private FileCabinetRecord[] records;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
+        /// </summary>
+        /// <param name="list">Stocked list of records.</param>
         public FileCabinetServiceSnapshot(List<FileCabinetRecord> list)
         {
             this.records = list.ToArray();
         }
 
+        /// <summary>
+        /// Save records to csv file.
+        /// </summary>
+        /// <param name="writer">Stream Writer.</param>
         public void SaveToCsv(StreamWriter writer)
         {
             var csvWriter = new FileCabinetRecordCsvWriter(writer);
@@ -28,6 +36,17 @@ namespace FileCabinetApp
             {
                 csvWriter.Write(this.records[i]);
             }
+        }
+
+        /// <summary>
+        /// Save records to xml file.
+        /// </summary>
+        /// <param name="writer">Stream Writer.</param>
+        public void SaveToXml(StreamWriter writer)
+        {
+            var xmlWriter = new FileCabinetRecordXmlWriter(writer);
+
+            xmlWriter.Write(this.records);
         }
     }
 }

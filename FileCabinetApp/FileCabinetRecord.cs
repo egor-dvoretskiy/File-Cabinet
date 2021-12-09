@@ -9,6 +9,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Class, that contains record parameters.
     /// </summary>
+    [Serializable]
     public class FileCabinetRecord
     {
         /// <summary>

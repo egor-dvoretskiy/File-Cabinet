@@ -6,8 +6,16 @@ using System.Threading.Tasks;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Class contains additional methods to work with writers.
+    /// </summary>
     public static class WriterAssistant
     {
+        /// <summary>
+        /// Gets properties values in class using reflection.
+        /// </summary>
+        /// <param name="record">Neccessary type to get values in.</param>
+        /// <returns>Concatenated properties values.</returns>
         public static string GetPropertiesValuesString(FileCabinetRecord record)
         {
             var t = record.GetType().GetProperties();
@@ -33,6 +41,11 @@ namespace FileCabinetApp
             return result;
         }
 
+        /// <summary>
+        /// Gets properties names in class using reflection.
+        /// </summary>
+        /// <param name="type">Neccessary type to get names in.</param>
+        /// <returns>Concatenated properties values.</returns>
         public static string GetPropertiesNameString(Type type)
         {
             var t = type.GetProperties();

@@ -105,6 +105,46 @@
             Person's gender.
             </value>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
+            <summary>
+            Contains logics to work with csv.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.#ctor(System.IO.TextWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvWriter"/> class.
+            </summary>
+            <param name="writer">Stream writer.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes to a csv file.
+            </summary>
+            <param name="record">Record to write.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.WriteHeader(System.Type)">
+            <summary>
+            Writes header to csv file.
+            </summary>
+            <param name="type">Type of data.</param>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
+            <summary>
+            Contains logics to work with xml.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.#ctor(System.IO.TextWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+            <param name="writer">Writer.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord[])">
+            <summary>
+            Writes to xml file.
+            </summary>
+            <param name="records">Records to write.</param>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
             Records Processor Class.
@@ -180,6 +220,24 @@
             <summary>
             holds snapshot for FileCabinetService.
             </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
+            </summary>
+            <param name="list">Stocked list of records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
+            <summary>
+            Save records to csv file.
+            </summary>
+            <param name="writer">Stream Writer.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToXml(System.IO.StreamWriter)">
+            <summary>
+            Save records to xml file.
+            </summary>
+            <param name="writer">Stream Writer.</param>
         </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
@@ -398,6 +456,25 @@
             </summary>
             <param name="input">gender.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
+        </member>
+        <member name="T:FileCabinetApp.WriterAssistant">
+            <summary>
+            Class contains additional methods to work with writers.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.WriterAssistant.GetPropertiesValuesString(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Gets properties values in class using reflection.
+            </summary>
+            <param name="record">Neccessary type to get values in.</param>
+            <returns>Concatenated properties values.</returns>
+        </member>
+        <member name="M:FileCabinetApp.WriterAssistant.GetPropertiesNameString(System.Type)">
+            <summary>
+            Gets properties names in class using reflection.
+            </summary>
+            <param name="type">Neccessary type to get names in.</param>
+            <returns>Concatenated properties values.</returns>
         </member>
     </members>
 </doc>

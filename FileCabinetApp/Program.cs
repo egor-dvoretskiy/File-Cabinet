@@ -422,6 +422,7 @@ namespace FileCabinetApp
                             snapshot.SaveToCsv(writer);
                             break;
                         case "xml":
+                            snapshot.SaveToXml(writer);
                             break;
                         default:
                             Console.WriteLine("There is no such format to export.");
