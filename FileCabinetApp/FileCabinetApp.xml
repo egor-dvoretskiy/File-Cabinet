@@ -105,6 +105,46 @@
             Person's gender.
             </value>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
+            <summary>
+            Contains logics to work with csv.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.#ctor(System.IO.TextWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvWriter"/> class.
+            </summary>
+            <param name="writer">Stream writer.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes to a csv file.
+            </summary>
+            <param name="record">Record to write.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.WriteHeader(System.Type)">
+            <summary>
+            Writes header to csv file.
+            </summary>
+            <param name="type">Type of data.</param>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
+            <summary>
+            Contains logics to work with xml.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.#ctor(System.IO.TextWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+            <param name="writer">Writer.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord[])">
+            <summary>
+            Writes to xml file.
+            </summary>
+            <param name="records">Records to write.</param>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
             Records Processor Class.
@@ -170,6 +210,35 @@
             <param name="birthDate">Person's date of birth.</param>
             <returns>All records with the same date of birth.</returns>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetService.MakeSnapshot">
+            <summary>
+            Makes snapshot of FileCabinetService.
+            </summary>
+            <returns>Snapshot of FileCabinetService.</returns>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetServiceSnapshot">
+            <summary>
+            holds snapshot for FileCabinetService.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
+            </summary>
+            <param name="list">Stocked list of records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
+            <summary>
+            Save records to csv file.
+            </summary>
+            <param name="writer">Stream Writer.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToXml(System.IO.StreamWriter)">
+            <summary>
+            Save records to xml file.
+            </summary>
+            <param name="writer">Stream Writer.</param>
+        </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
             Records Processor interface.
@@ -230,6 +299,12 @@
             </summary>
             <returns>Amount of records.</returns>
         </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.MakeSnapshot">
+            <summary>
+            Makes snapshot of FileCabinetService.
+            </summary>
+            <returns>Snapshot of FileCabinetService.</returns>
+        </member>
         <member name="T:FileCabinetApp.Interfaces.IRecordValidator">
             <summary>
             Interface that hold validate parameters functional.
@@ -287,59 +362,6 @@
             Init Method.
             </summary>
             <param name="args">Default parameters.</param>
-        </member>
-        <member name="T:FileCabinetApp.RecordInputObject">
-            <summary>
-            Contains input parameter object for create and edit methods.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.RecordInputObject.FirstName">
-            <summary>
-            Gets or sets person's first name.
-            </summary>
-            <value>
-            Person's first name.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.RecordInputObject.LastName">
-            <summary>
-            Gets or sets person's last name.
-            </summary>
-            <value>
-            Person's last name.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.RecordInputObject.DateOfBirth">
-            <summary>
-            Gets or sets person's birth date.
-            </summary>
-            <value>
-            Person's birth date.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.RecordInputObject.PersonalRating">
-            <summary>
-            Gets or sets person's personal rating.
-            </summary>
-            <value>
-            Person's personal rating.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.RecordInputObject.Debt">
-            <summary>
-            Gets or sets person's amount of debt.
-            </summary>
-            <value>
-            Person's amount of debt.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.RecordInputObject.Gender">
-            <summary>
-            Gets or sets person's gender.
-            </summary>
-            <value>
-            Person's gender.
-            </value>
         </member>
         <member name="T:FileCabinetApp.Validators.CustomValidator">
             <summary>
@@ -434,6 +456,25 @@
             </summary>
             <param name="input">gender.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
+        </member>
+        <member name="T:FileCabinetApp.WriterAssistant">
+            <summary>
+            Class contains additional methods to work with writers.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.WriterAssistant.GetPropertiesValuesString(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Gets properties values in class using reflection.
+            </summary>
+            <param name="record">Neccessary type to get values in.</param>
+            <returns>Concatenated properties values.</returns>
+        </member>
+        <member name="M:FileCabinetApp.WriterAssistant.GetPropertiesNameString(System.Type)">
+            <summary>
+            Gets properties names in class using reflection.
+            </summary>
+            <param name="type">Neccessary type to get names in.</param>
+            <returns>Concatenated properties values.</returns>
         </member>
     </members>
 </doc>

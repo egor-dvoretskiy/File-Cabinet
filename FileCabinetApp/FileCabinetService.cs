@@ -172,6 +172,15 @@ namespace FileCabinetApp
             return new ReadOnlyCollection<FileCabinetRecord>(this.GetInformationFromDictionary(birthDate, this.dateOfBirthDictionary));
         }
 
+        /// <summary>
+        /// Makes snapshot of FileCabinetService.
+        /// </summary>
+        /// <returns>Snapshot of FileCabinetService.</returns>
+        public FileCabinetServiceSnapshot MakeSnapshot()
+        {
+            return new FileCabinetServiceSnapshot(this.list);
+        }
+
         private void AddInformationToDictionary(string parametrName, ref Dictionary<string, List<FileCabinetRecord>> dict, FileCabinetRecord record)
         {
             if (!dict.ContainsKey(parametrName))
