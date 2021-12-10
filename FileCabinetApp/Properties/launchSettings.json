@@ -2,7 +2,7 @@
   "profiles": {
     "FileCabinetApp": {
       "commandName": "Project",
-      "commandLineArgs": "--storage memory -v default"
+      "commandLineArgs": "--storage file -v default"
     }
   }
 }
