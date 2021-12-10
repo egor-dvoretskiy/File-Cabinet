@@ -11,7 +11,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Records Processor Class.
     /// </summary>
-    public class FileCabinetService : IFileCabinetService
+    public class FileCabinetMemoryService : IFileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new ();
 
@@ -20,9 +20,9 @@ namespace FileCabinetApp
         private Dictionary<string, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
+        /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
         /// </summary>
-        public FileCabinetService()
+        public FileCabinetMemoryService()
         {
         }
 

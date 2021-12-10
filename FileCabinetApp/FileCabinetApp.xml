@@ -44,6 +44,77 @@
             <param name="input">Input string.</param>
             <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetMemoryService">
+            <summary>
+            Records Processor Class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetMemoryService"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.CreateRecord(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Creates record and adds to main list.
+            </summary>
+            <param name="record">Input parameter object.</param>
+            <returns>Record's id in list.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Edit record in list.
+            </summary>
+            <param name="id">Record's id in list.</param>
+            <param name="record">Input parameter object.</param>
+            <exception cref="T:System.ArgumentException">id.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetRecords">
+            <summary>
+            Method return all stored records.
+            </summary>
+            <returns>Stored records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetStat">
+            <summary>
+            Method return records count.
+            </summary>
+            <returns>Amount of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetPositionInListRecordsById(System.Int32)">
+            <summary>
+            Method find record position in list by ID.
+            </summary>
+            <param name="id">Record's id.</param>
+            <returns>Record's position in list.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByFirstName(System.String)">
+            <summary>
+            Searches all matches by firstname parameter.
+            </summary>
+            <param name="firstName">Person's first name.</param>
+            <returns>All records with the same firstname.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByLastName(System.String)">
+            <summary>
+            Searches all matches by lastName parameter.
+            </summary>
+            <param name="lastName">Person's last name.</param>
+            <returns>All records with the same lastname.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByBirthDate(System.String)">
+            <summary>
+            Searches all matches by birthDate parameter.
+            </summary>
+            <param name="birthDate">Person's date of birth.</param>
+            <returns>All records with the same date of birth.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.MakeSnapshot">
+            <summary>
+            Makes snapshot of FileCabinetService.
+            </summary>
+            <returns>Snapshot of FileCabinetService.</returns>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Class, that contains record parameters.
@@ -144,77 +215,6 @@
             Writes to xml file.
             </summary>
             <param name="records">Records to write.</param>
-        </member>
-        <member name="T:FileCabinetApp.FileCabinetService">
-            <summary>
-            Records Processor Class.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetService"/> class.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.FileCabinetRecord)">
-            <summary>
-            Creates record and adds to main list.
-            </summary>
-            <param name="record">Input parameter object.</param>
-            <returns>Record's id in list.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecord)">
-            <summary>
-            Edit record in list.
-            </summary>
-            <param name="id">Record's id in list.</param>
-            <param name="record">Input parameter object.</param>
-            <exception cref="T:System.ArgumentException">id.</exception>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
-            <summary>
-            Method return all stored records.
-            </summary>
-            <returns>Stored records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.GetStat">
-            <summary>
-            Method return records count.
-            </summary>
-            <returns>Amount of records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.GetPositionInListRecordsById(System.Int32)">
-            <summary>
-            Method find record position in list by ID.
-            </summary>
-            <param name="id">Record's id.</param>
-            <returns>Record's position in list.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.FindByFirstName(System.String)">
-            <summary>
-            Searches all matches by firstname parameter.
-            </summary>
-            <param name="firstName">Person's first name.</param>
-            <returns>All records with the same firstname.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.FindByLastName(System.String)">
-            <summary>
-            Searches all matches by lastName parameter.
-            </summary>
-            <param name="lastName">Person's last name.</param>
-            <returns>All records with the same lastname.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.FindByBirthDate(System.String)">
-            <summary>
-            Searches all matches by birthDate parameter.
-            </summary>
-            <param name="birthDate">Person's date of birth.</param>
-            <returns>All records with the same date of birth.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.MakeSnapshot">
-            <summary>
-            Makes snapshot of FileCabinetService.
-            </summary>
-            <returns>Snapshot of FileCabinetService.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetServiceSnapshot">
             <summary>
