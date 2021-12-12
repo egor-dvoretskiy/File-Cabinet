@@ -267,42 +267,42 @@
             </summary>
             <param name="args">Default parameters.</param>
         </member>
-        <member name="T:FileCabinetApp.FileCabinetFilesystemService">
+        <member name="T:FileCabinetApp.FileCabinetFileSystemService">
             <summary>
             File system service.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream)">
+        <member name="M:FileCabinetApp.FileCabinetFileSystemService.#ctor(System.IO.FileStream)">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetFilesystemService"/> class.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetFileSystemService"/> class.
             </summary>
             <param name="fileStream">File stream.</param>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.CreateRecord(FileCabinetApp.FileCabinetRecord)">
+        <member name="M:FileCabinetApp.FileCabinetFileSystemService.CreateRecord(FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecord)">
+        <member name="M:FileCabinetApp.FileCabinetFileSystemService.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByBirthDate(System.String)">
+        <member name="M:FileCabinetApp.FileCabinetFileSystemService.FindByBirthDate(System.String)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByFirstName(System.String)">
+        <member name="M:FileCabinetApp.FileCabinetFileSystemService.FindByFirstName(System.String)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByLastName(System.String)">
+        <member name="M:FileCabinetApp.FileCabinetFileSystemService.FindByLastName(System.String)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetPositionInListRecordsById(System.Int32)">
+        <member name="M:FileCabinetApp.FileCabinetFileSystemService.GetPositionInListRecordsById(System.Int32)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetRecords">
+        <member name="M:FileCabinetApp.FileCabinetFileSystemService.GetRecords">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetStat">
+        <member name="M:FileCabinetApp.FileCabinetFileSystemService.GetStat">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.MakeSnapshot">
+        <member name="M:FileCabinetApp.FileCabinetFileSystemService.MakeSnapshot">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">

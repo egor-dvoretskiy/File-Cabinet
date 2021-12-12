@@ -43,7 +43,7 @@ namespace FileCabinetApp
 
         private static bool isRunning = true;
 
-        private static FileStream fileStream = new FileStream("cabinet-records.db", FileMode.OpenOrCreate);
+        private static FileStream fileStream = File.Open("cabinet-records.db", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -86,13 +86,13 @@ namespace FileCabinetApp
         private static Dictionary<string, Tuple<IRecordValidator, string>> dictCommandLineValidationParameter = new Dictionary<string, Tuple<IRecordValidator, string>>()
         {
             { "default", new Tuple<IRecordValidator, string>(new DefaultValidator(), CorrectDefaultInputArgsMessage) },
-            { "custom", new Tuple<IRecordValidator, string>(new DefaultValidator(), CorrectCustomInputArgsMessage) },
+            { "custom", new Tuple<IRecordValidator, string>(new CustomValidator(), CorrectCustomInputArgsMessage) },
         };
 
         private static Dictionary<string, Tuple<IFileCabinetService, string>> dictCommandLineStorageParameter = new Dictionary<string, Tuple<IFileCabinetService, string>>()
         {
             { "memory", new Tuple<IFileCabinetService, string>(new FileCabinetMemoryService(), CorrectStorageMemoryInputArgsMessage) },
-            { "file", new Tuple<IFileCabinetService, string>(new FileCabinetFilesystemService(Program.fileStream), CorrectStorageFilesystemInputArgsMessage) },
+            { "file", new Tuple<IFileCabinetService, string>(new FileCabinetFileSystemService(Program.fileStream), CorrectStorageFilesystemInputArgsMessage) },
         };
 
         /// <summary>
