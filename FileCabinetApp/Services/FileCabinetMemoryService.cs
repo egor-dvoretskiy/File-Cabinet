@@ -11,7 +11,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Records Processor Class.
     /// </summary>
-    public class FileCabinetService : IFileCabinetService
+    public class FileCabinetMemoryService : IFileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new ();
 
@@ -20,9 +20,9 @@ namespace FileCabinetApp
         private Dictionary<string, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
+        /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
         /// </summary>
-        public FileCabinetService()
+        public FileCabinetMemoryService()
         {
         }
 
@@ -67,15 +67,8 @@ namespace FileCabinetApp
             int id,
             FileCabinetRecord record)
         {
-            if (id == -1)
-            {
-                throw new ArgumentException($"{id}");
-            }
-
             try
             {
-                record.Id = this.list[id].Id;
-
                 this.list[id] = record;
 
                 this.EditInformationInDictionary(record.FirstName, ref this.firstNameDictionary, record);
@@ -115,7 +108,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="id">Record's id.</param>
         /// <returns>Record's position in list.</returns>
-        public int GetPositionInListRecordsById(int id)
+        public int GetRecordPosition(int id)
         {
             int leftBorder = 0;
             int rightBorder = this.list.Count;
@@ -137,6 +130,11 @@ namespace FileCabinetApp
                     index = middle;
                     break;
                 }
+            }
+
+            if (index == -1)
+            {
+                throw new ArgumentException($"#{id} record is not found.");
             }
 
             return index;

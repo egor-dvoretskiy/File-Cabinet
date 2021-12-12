@@ -7,23 +7,43 @@ using FileCabinetApp.Validators;
 namespace FileCabinetApp
 {
     /// <summary>
+    /// Available command line parameters.
+    /// </summary>
+    public enum CommandLineParameters
+    {
+        /// <summary>
+        /// Validation commands.
+        /// </summary>
+        Validation,
+
+        /// <summary>
+        /// Storage commands.
+        /// </summary>
+        Storage,
+    }
+
+    /// <summary>
     /// Main Class.
     /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Egor Dvoretskiy";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
-        private const string WrongInputArgsMessage = "Wrong input arguments. Using default validation rules.";
+        private const string WrongInputArgsMessage = "Wrong input arguments. Using default settings.";
         private const string CorrectCustomInputArgsMessage = "Using custom validation rules.";
         private const string CorrectDefaultInputArgsMessage = "Using default validation rules.";
+        private const string CorrectStorageMemoryInputArgsMessage = "Using storage memory mode.";
+        private const string CorrectStorageFilesystemInputArgsMessage = "Using storage filesystem mode.";
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
 
-        private static IFileCabinetService fileCabinetService = new FileCabinetService();
+        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService();
         private static IRecordValidator validator = new DefaultValidator();
 
         private static bool isRunning = true;
+
+        private static FileStream fileStream = File.Open("cabinet-records.db", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -49,16 +69,30 @@ namespace FileCabinetApp
             new string[] { "export", "export data list to specific format", "The 'export' command converts data list to specific format." },
         };
 
-        private static string[] availableArgsValues = new string[]
-        {
-            "default",
-            "custom",
-        };
-
         private static string[] availableFormatsToExport = new string[]
         {
             "csv",
             "xml",
+        };
+
+        private static Dictionary<string, CommandLineParameters> dictCommandLineParameters = new Dictionary<string, CommandLineParameters>()
+        {
+            { "-v", CommandLineParameters.Validation },
+            { "--validation-rules", CommandLineParameters.Validation },
+            { "-s", CommandLineParameters.Storage },
+            { "--storage", CommandLineParameters.Storage },
+        };
+
+        private static Dictionary<string, Tuple<IRecordValidator, string>> dictCommandLineValidationParameter = new Dictionary<string, Tuple<IRecordValidator, string>>()
+        {
+            { "default", new Tuple<IRecordValidator, string>(new DefaultValidator(), CorrectDefaultInputArgsMessage) },
+            { "custom", new Tuple<IRecordValidator, string>(new CustomValidator(), CorrectCustomInputArgsMessage) },
+        };
+
+        private static Dictionary<string, Tuple<IFileCabinetService, string>> dictCommandLineStorageParameter = new Dictionary<string, Tuple<IFileCabinetService, string>>()
+        {
+            { "memory", new Tuple<IFileCabinetService, string>(new FileCabinetMemoryService(), CorrectStorageMemoryInputArgsMessage) },
+            { "file", new Tuple<IFileCabinetService, string>(new FileCabinetFileSystemService(Program.fileStream), CorrectStorageFilesystemInputArgsMessage) },
         };
 
         /// <summary>
@@ -110,37 +144,36 @@ namespace FileCabinetApp
 
         private static void ParseInputArgs(string[] args)
         {
-            bool isArgsProcessed = false;
+            int indexArgs = 0;
 
-            if (args.Length == 1)
+            while (indexArgs < args.Length)
             {
-                args = args[0].Split('=');
-                isArgsProcessed = true;
-            }
+                string arg = args[indexArgs].ToLower();
 
-            if ((args.Length != 2 && args.Length != 1) || (args.Length != 2 && isArgsProcessed))
-            {
-                Console.WriteLine(WrongInputArgsMessage);
-                return;
-            }
-
-            string currentServiceModeCaseLowered = args[1].ToLower();
-
-            if ((args[0] == "-v" || args[0] == "--validation-rules") && availableArgsValues.Contains(currentServiceModeCaseLowered))
-            {
-                if (string.Equals(currentServiceModeCaseLowered, availableArgsValues[0]))
+                if (args.Length % 2 != 0 || !dictCommandLineParameters.ContainsKey(arg))
                 {
-                    Console.WriteLine(CorrectDefaultInputArgsMessage);
+                    Console.WriteLine(WrongInputArgsMessage);
+                    return;
                 }
-                else
+
+                var parameter = args[indexArgs + 1];
+
+                switch (dictCommandLineParameters[arg])
                 {
-                    validator = new CustomValidator();
-                    Console.WriteLine(CorrectCustomInputArgsMessage);
+                    case CommandLineParameters.Validation when dictCommandLineValidationParameter.ContainsKey(args[indexArgs + 1]):
+                        Program.validator = dictCommandLineValidationParameter[parameter].Item1;
+                        Console.WriteLine(dictCommandLineValidationParameter[parameter].Item2);
+                        break;
+                    case CommandLineParameters.Storage when dictCommandLineStorageParameter.ContainsKey(args[indexArgs + 1]):
+                        Program.fileCabinetService = dictCommandLineStorageParameter[parameter].Item1;
+                        Console.WriteLine(dictCommandLineStorageParameter[parameter].Item2);
+                        break;
+                    default:
+                        Console.WriteLine(WrongInputArgsMessage);
+                        return;
                 }
-            }
-            else
-            {
-                Console.WriteLine(WrongInputArgsMessage);
+
+                indexArgs += 2;
             }
         }
 
@@ -192,22 +225,22 @@ namespace FileCabinetApp
         private static void Create(string parameters)
         {
             Console.Write("First name: ");
-            var firstName = Program.ReadInput(FieldsConverter.StringConverter, validator.FirstNameValidator);
+            var firstName = Program.ReadInput(UserConverter.StringConverter, validator.FirstNameValidator);
 
             Console.Write("Last name: ");
-            var lastName = Program.ReadInput(FieldsConverter.StringConverter, validator.LastNameValidator);
+            var lastName = Program.ReadInput(UserConverter.StringConverter, validator.LastNameValidator);
 
             Console.Write("Date of birth (month/day/year): ");
-            var birthDate = Program.ReadInput(FieldsConverter.BirthDateConverter, validator.DateOfBirthValidator);
+            var birthDate = Program.ReadInput(UserConverter.BirthDateConverter, validator.DateOfBirthValidator);
 
             Console.Write("Personal rating: ");
-            var personalRating = Program.ReadInput(FieldsConverter.PersonalRatingConverter, validator.PersonalRatingValidator);
+            var personalRating = Program.ReadInput(UserConverter.PersonalRatingConverter, validator.PersonalRatingValidator);
 
             Console.Write("Debt: ");
-            var debt = Program.ReadInput(FieldsConverter.DebtConverter, validator.DebtValidator);
+            var debt = Program.ReadInput(UserConverter.DebtConverter, validator.DebtValidator);
 
             Console.Write("Gender: ");
-            var gender = Program.ReadInput(FieldsConverter.GenderConverter, validator.GenderValidator);
+            var gender = Program.ReadInput(UserConverter.GenderConverter, validator.GenderValidator);
 
             FileCabinetRecord record = new FileCabinetRecord()
             {
@@ -276,34 +309,29 @@ namespace FileCabinetApp
 
             try
             {
-                int listValue = Program.fileCabinetService.GetPositionInListRecordsById(id);
-                if (listValue == -1)
-                {
-                    Console.WriteLine($"#{id} record is not found.");
-                    Program.fileCabinetService.EditRecord(listValue, new FileCabinetRecord());
-                    return;
-                }
+                int recordPosition = Program.fileCabinetService.GetRecordPosition(id);
 
                 Console.Write("First name: ");
-                var firstName = Program.ReadInput(FieldsConverter.StringConverter, validator.FirstNameValidator);
+                var firstName = Program.ReadInput(UserConverter.StringConverter, validator.FirstNameValidator);
 
                 Console.Write("Last name: ");
-                var lastName = Program.ReadInput(FieldsConverter.StringConverter, validator.LastNameValidator);
+                var lastName = Program.ReadInput(UserConverter.StringConverter, validator.LastNameValidator);
 
                 Console.Write("Date of birth (month/day/year): ");
-                var birthDate = Program.ReadInput(FieldsConverter.BirthDateConverter, validator.DateOfBirthValidator);
+                var birthDate = Program.ReadInput(UserConverter.BirthDateConverter, validator.DateOfBirthValidator);
 
                 Console.Write("Personal rating: ");
-                var personalRating = Program.ReadInput(FieldsConverter.PersonalRatingConverter, validator.PersonalRatingValidator);
+                var personalRating = Program.ReadInput(UserConverter.PersonalRatingConverter, validator.PersonalRatingValidator);
 
                 Console.Write("Debt: ");
-                var debt = Program.ReadInput(FieldsConverter.DebtConverter, validator.DebtValidator);
+                var debt = Program.ReadInput(UserConverter.DebtConverter, validator.DebtValidator);
 
                 Console.Write("Gender: ");
-                var gender = Program.ReadInput(FieldsConverter.GenderConverter, validator.GenderValidator);
+                var gender = Program.ReadInput(UserConverter.GenderConverter, validator.GenderValidator);
 
                 FileCabinetRecord record = new FileCabinetRecord()
                 {
+                    Id = id,
                     FirstName = firstName,
                     LastName = lastName,
                     DateOfBirth = birthDate,
@@ -312,13 +340,13 @@ namespace FileCabinetApp
                     Gender = gender,
                 };
 
-                Program.fileCabinetService.EditRecord(listValue, record);
+                Program.fileCabinetService.EditRecord(recordPosition, record);
 
                 Console.WriteLine($"Record #{id} is edited.");
             }
             catch (ArgumentException aex)
             {
-                _ = aex;
+                Console.WriteLine(aex.Message);
             }
         }
 

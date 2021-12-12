@@ -48,7 +48,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="id">Record's id.</param>
         /// <returns>Record's position in list.</returns>
-        int GetPositionInListRecordsById(int id);
+        int GetRecordPosition(int id);
 
         /// <summary>
         /// Method return all stored records.

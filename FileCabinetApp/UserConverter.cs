@@ -6,7 +6,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Contains various converters.
     /// </summary>
-    public static class FieldsConverter
+    public static class UserConverter
     {
         /// <summary>
         /// Converts input string to string.
