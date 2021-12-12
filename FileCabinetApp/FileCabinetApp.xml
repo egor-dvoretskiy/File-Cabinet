@@ -169,7 +169,7 @@
             <param name="lastName">Person's last name.</param>
             <returns>All records with the same lastname.</returns>
         </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.GetPositionInListRecordsById(System.Int32)">
+        <member name="M:FileCabinetApp.IFileCabinetService.GetRecordPosition(System.Int32)">
             <summary>
             Method find record position in list by ID.
             </summary>
@@ -293,7 +293,7 @@
         <member name="M:FileCabinetApp.FileCabinetFileSystemService.FindByLastName(System.String)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFileSystemService.GetPositionInListRecordsById(System.Int32)">
+        <member name="M:FileCabinetApp.FileCabinetFileSystemService.GetRecordPosition(System.Int32)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFileSystemService.GetRecords">
@@ -342,7 +342,7 @@
             </summary>
             <returns>Amount of records.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetPositionInListRecordsById(System.Int32)">
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetRecordPosition(System.Int32)">
             <summary>
             Method find record position in list by ID.
             </summary>

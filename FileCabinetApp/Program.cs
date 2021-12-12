@@ -309,13 +309,7 @@ namespace FileCabinetApp
 
             try
             {
-                int listValue = Program.fileCabinetService.GetPositionInListRecordsById(id);
-                if (listValue == -1)
-                {
-                    Console.WriteLine($"#{id} record is not found.");
-                    Program.fileCabinetService.EditRecord(listValue, new FileCabinetRecord());
-                    return;
-                }
+                int recordPosition = Program.fileCabinetService.GetRecordPosition(id);
 
                 Console.Write("First name: ");
                 var firstName = Program.ReadInput(UserConverter.StringConverter, validator.FirstNameValidator);
@@ -337,6 +331,7 @@ namespace FileCabinetApp
 
                 FileCabinetRecord record = new FileCabinetRecord()
                 {
+                    Id = id,
                     FirstName = firstName,
                     LastName = lastName,
                     DateOfBirth = birthDate,
@@ -345,13 +340,13 @@ namespace FileCabinetApp
                     Gender = gender,
                 };
 
-                Program.fileCabinetService.EditRecord(listValue, record);
+                Program.fileCabinetService.EditRecord(recordPosition, record);
 
                 Console.WriteLine($"Record #{id} is edited.");
             }
             catch (ArgumentException aex)
             {
-                _ = aex;
+                Console.WriteLine(aex.Message);
             }
         }
 
