@@ -163,7 +163,7 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public int GetStat()
         {
-            throw new NotImplementedException();
+            return this.recordsCount;
         }
 
         /// <inheritdoc/>
