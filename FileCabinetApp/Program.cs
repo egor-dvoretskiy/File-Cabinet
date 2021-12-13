@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using FileCabinetApp.Interfaces;
 using FileCabinetApp.Validators;
 
@@ -146,6 +147,8 @@ namespace FileCabinetApp
         {
             int indexArgs = 0;
 
+            args = ParseArgumentArray(args);
+
             while (indexArgs < args.Length)
             {
                 string arg = args[indexArgs].ToLower();
@@ -175,6 +178,27 @@ namespace FileCabinetApp
 
                 indexArgs += 2;
             }
+        }
+
+        private static string[] ParseArgumentArray(string[] args)
+        {
+            List<string> arguments = new List<string>();
+
+            foreach (string arg in args)
+            {
+                if (Regex.IsMatch(arg, @"^--[a-zA-Z]*-?[a-zA-Z]*=[a-zA-Z]*$"))
+                {
+                    var splitedArg = arg.Split('=');
+                    arguments.Add(splitedArg[0]);
+                    arguments.Add(splitedArg[1]);
+                }
+                else
+                {
+                    arguments.Add(arg);
+                }
+            }
+
+            return arguments.ToArray();
         }
 
         private static void PrintMissedCommandInfo(string command)
