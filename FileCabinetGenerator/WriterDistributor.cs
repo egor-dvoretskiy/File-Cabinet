@@ -24,7 +24,14 @@ namespace FileCabinetGenerator
 
         public static void WriteToXml(StreamWriter writer, int recordAmount)
         {
-            
+            FileCabinetRecord[] records = new FileCabinetRecord[recordAmount];
+
+            for (int i = 0; i < recordAmount; i++)
+            {
+                records[i] = RecordGenerator.GetRecord();
+            }
+
+            XmlWriter.Write(writer, records);
         }
     }
 }
