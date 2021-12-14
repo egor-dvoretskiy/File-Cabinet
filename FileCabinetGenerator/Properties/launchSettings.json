@@ -2,7 +2,7 @@
   "profiles": {
     "FileCabinetGenerator": {
       "commandName": "Project",
-      "commandLineArgs": "--output-type=csv --output=X:\\work\\_workspace_MVS\\__records\\records.csv --records-amount=10000 --start-id=30"
+      "commandLineArgs": "--output-type=csv --output=records.csv --records-amount=10000 --start-id=30"
     }
   }
 }

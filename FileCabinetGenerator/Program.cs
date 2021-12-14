@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using FileCabinetGenerator.Interfaces;
-using FileCabinetGenerator.FormatGenerators;
-using FileCabinetApp;
+using FileCabinetGenerator.FormatWriters;
 
 #pragma warning disable CS8601 // Possible null reference argument.
 
-namespace FileCabinetApp
+namespace FileCabinetGenerator
 {
     /// <summary>
     /// Available command line parameters.
@@ -53,17 +51,17 @@ namespace FileCabinetApp
             { "-i", CommandLineGeneratorParameters.StartId },
         };
 
-        private static Dictionary<string, IRecordWriter> dictFormatGenerators = new Dictionary<string, IRecordWriter>()
+        private static int numFormat = 0;
+
+        private static string[] availableFormatsToExport = new string[]
         {
-            { "csv", new FileCabinetRecordCsvWriter() },
-            { "xml", new FileCabinetRecordXmlWriter() },
+            "csv",
+            "xml",
         };
 
         private static string pathToFileWithRecords = string.Empty;
         private static int recordsAmount = -1;
         private static int startId = -1;
-
-        private static IRecordWriter recordGenerator = new FileCabinetRecordXmlWriter();
 
         /// <summary>
         /// Init Method.
@@ -88,8 +86,8 @@ namespace FileCabinetApp
 
                 switch (dictCommandLineParameters[arg])
                 {
-                    case CommandLineGeneratorParameters.OutputType when dictFormatGenerators.ContainsKey(parameter):
-                        recordGenerator = dictFormatGenerators[parameter];
+                    case CommandLineGeneratorParameters.OutputType when availableFormatsToExport.Contains(parameter):
+                        numFormat = Array.IndexOf(availableFormatsToExport, parameter);
                         break;
                     case CommandLineGeneratorParameters.Output:
                         pathToFileWithRecords = parameter;
@@ -107,6 +105,26 @@ namespace FileCabinetApp
 
                 indexArgs += 2;
             }
+
+            RecordGenerator.InitArrays(startId);
+
+            using (StreamWriter writer = new StreamWriter(pathToFileWithRecords))
+            {
+                switch(availableFormatsToExport[numFormat])
+                {
+                    case "csv":
+                        WriterDistributor.WriteToCsv(writer, recordsAmount);
+                        break;
+                    case "xml":
+                        WriterDistributor.WriteToXml(writer, recordsAmount);
+                        break;
+                    default:
+                        Console.WriteLine("Wrong type of file.");
+                        break;
+                }
+            }
+
+            Console.WriteLine($"{recordsAmount} records were written to {pathToFileWithRecords}");
         }
 
         private static string[] ParseInputArgs(string[] args)
