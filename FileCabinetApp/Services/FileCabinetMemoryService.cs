@@ -173,10 +173,19 @@ namespace FileCabinetApp
         /// <summary>
         /// Makes snapshot of FileCabinetService.
         /// </summary>
+        /// <param name="recordValidator">Validator for importing file.</param>
         /// <returns>Snapshot of FileCabinetService.</returns>
-        public FileCabinetServiceSnapshot MakeSnapshot()
+        public FileCabinetServiceSnapshot MakeSnapshot(IRecordValidator recordValidator)
         {
-            return new FileCabinetServiceSnapshot(this.list);
+            return new FileCabinetServiceSnapshot(this.list, recordValidator);
+        }
+
+        /// <summary>
+        /// Restores record's data from file.
+        /// </summary>
+        /// <param name="fileCabinetServiceSnapshot">Holds snapshot of data.</param>
+        public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
+        {
         }
 
         private void AddInformationToDictionary(string parametrName, ref Dictionary<string, List<FileCabinetRecord>> dict, FileCabinetRecord record)

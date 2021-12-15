@@ -106,25 +106,36 @@ namespace FileCabinetGenerator
                 indexArgs += 2;
             }
 
-            RecordGenerator.InitArrays(startId);
-
-            using (StreamWriter writer = new StreamWriter(pathToFileWithRecords))
+            try
             {
-                switch(availableFormatsToExport[numFormat])
-                {
-                    case "csv":
-                        WriterDistributor.WriteToCsv(writer, recordsAmount);
-                        break;
-                    case "xml":
-                        WriterDistributor.WriteToXml(writer, recordsAmount);
-                        break;
-                    default:
-                        Console.WriteLine("Wrong type of file.");
-                        break;
-                }
-            }
+                RecordGenerator.InitArrays(startId);
 
-            Console.WriteLine($"{recordsAmount} records were written to {pathToFileWithRecords}");
+                using (StreamWriter writer = new StreamWriter(pathToFileWithRecords))
+                {
+                    switch (availableFormatsToExport[numFormat])
+                    {
+                        case "csv":
+                            WriterDistributor.WriteToCsv(writer, recordsAmount);
+                            break;
+                        case "xml":
+                            WriterDistributor.WriteToXml(writer, recordsAmount);
+                            break;
+                        default:
+                            Console.WriteLine("Wrong type of file.");
+                            break;
+                    }
+                }
+
+                Console.WriteLine($"{recordsAmount} records were written to {pathToFileWithRecords}");
+            }
+            catch (FileNotFoundException fileNotFoundexception)
+            {
+                Console.WriteLine(fileNotFoundexception.Message);
+            }
+            catch (DirectoryNotFoundException directoryNotFoundException)
+            {
+                Console.WriteLine(directoryNotFoundException.Message);
+            }
         }
 
         private static string[] ParseInputArgs(string[] args)

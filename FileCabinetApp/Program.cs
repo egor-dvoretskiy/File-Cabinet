@@ -56,6 +56,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
+            new Tuple<string, Action<string>>("import", Import),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -68,6 +69,7 @@ namespace FileCabinetApp
             new string[] { "edit", "edit stored user data", "The 'edit' command edits stored user data." },
             new string[] { "find", "find stored user data by specific field", "The 'find' command searches for stored user data by specific field." },
             new string[] { "export", "export data list to specific format", "The 'export' command converts data list to specific format." },
+            new string[] { "import", "import data list from file", "The 'import' command converts file data to filesystem." },
         };
 
         private static string[] availableFormatsToExport = new string[]
@@ -466,7 +468,7 @@ namespace FileCabinetApp
             {
                 using (StreamWriter writer = new StreamWriter(pathToFile))
                 {
-                    var snapshot = fileCabinetService.MakeSnapshot();
+                    var snapshot = fileCabinetService.MakeSnapshot(Program.validator);
 
                     switch (exportFormat)
                     {
@@ -512,6 +514,55 @@ namespace FileCabinetApp
                 }
             }
             while (true);
+        }
+
+        private static void Import(string parameters)
+        {
+            var splitedParams = parameters.Split(' ');
+
+            if (splitedParams.Length != 2)
+            {
+                Console.WriteLine("Wrong command. Please, try again.");
+                return;
+            }
+
+            string exportFormat = splitedParams[0];
+            string pathToFile = splitedParams[1];
+
+            if (!availableFormatsToExport.Contains(exportFormat))
+            {
+                Console.WriteLine("Wrong format. Please, try again.");
+                return;
+            }
+
+            try
+            {
+                using (StreamReader reader = new StreamReader(pathToFile))
+                {
+                    var snapshot = fileCabinetService.MakeSnapshot(Program.validator);
+
+                    switch (exportFormat)
+                    {
+                        case "csv":
+                            snapshot.LoadFromCsv(reader);
+                            break;
+                        case "xml":
+                            snapshot.LoadFromXml(reader);
+                            break;
+                        default:
+                            Console.WriteLine("There is no such format to export.");
+                            break;
+                    }
+                }
+            }
+            catch (DirectoryNotFoundException directoryNotFoundException)
+            {
+                Console.WriteLine($"Import failed: {directoryNotFoundException.Message}.");
+            }
+            catch (FileNotFoundException fileNotFoundException)
+            {
+                Console.WriteLine($"Import failed: {fileNotFoundException.Message}.");
+            }
         }
     }
 }

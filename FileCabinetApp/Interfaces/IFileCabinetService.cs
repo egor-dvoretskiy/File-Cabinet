@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Interfaces
 {
     /// <summary>
     /// Records Processor interface.
@@ -65,7 +65,8 @@ namespace FileCabinetApp
         /// <summary>
         /// Makes snapshot of FileCabinetService.
         /// </summary>
+        /// <param name="recordValidator">Validator for importing files.</param>
         /// <returns>Snapshot of FileCabinetService.</returns>
-        FileCabinetServiceSnapshot MakeSnapshot();
+        FileCabinetServiceSnapshot MakeSnapshot(IRecordValidator recordValidator);
     }
 }

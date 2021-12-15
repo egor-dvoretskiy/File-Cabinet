@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FileCabinetApp.Interfaces;
 
 namespace FileCabinetApp
 {
@@ -208,7 +209,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public FileCabinetServiceSnapshot MakeSnapshot()
+        public FileCabinetServiceSnapshot MakeSnapshot(IRecordValidator recordValidator)
         {
             throw new NotImplementedException();
         }

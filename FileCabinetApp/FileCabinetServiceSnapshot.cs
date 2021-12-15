@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FileCabinetApp.FormatReaders;
+using FileCabinetApp.Interfaces;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetApp
 {
@@ -11,16 +15,27 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetServiceSnapshot
     {
+        private readonly IRecordValidator recordValidator = new DefaultValidator();
         private FileCabinetRecord[] records;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
         /// </summary>
+        /// <param name="recordValidator">Validator for import file.</param>
         /// <param name="list">Stocked list of records.</param>
-        public FileCabinetServiceSnapshot(List<FileCabinetRecord> list)
+        public FileCabinetServiceSnapshot(List<FileCabinetRecord> list, IRecordValidator recordValidator)
         {
             this.records = list.ToArray();
+            this.recordValidator = recordValidator;
         }
+
+        /// <summary>
+        /// Gets stored records.
+        /// </summary>
+        /// <value>
+        /// Stored records.
+        /// </value>
+        public ReadOnlyCollection<FileCabinetRecord> Records { get; } = new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
 
         /// <summary>
         /// Save records to csv file.
@@ -47,6 +62,25 @@ namespace FileCabinetApp
             var xmlWriter = new FileCabinetRecordXmlWriter(writer);
 
             xmlWriter.Write(this.records);
+        }
+
+        /// <summary>
+        /// Loads data from csv file using FileCabinetRecordCsvReader.
+        /// </summary>
+        /// <param name="reader">Stream reader.</param>
+        public void LoadFromCsv(StreamReader reader)
+        {
+            FileCabinetRecordCsvReader csvReader = new FileCabinetRecordCsvReader(reader, this.recordValidator);
+
+            _ = csvReader.ReadAll();
+        }
+
+        /// <summary>
+        /// Loads data from xml file using FileCabinetRecordXmlReader.
+        /// </summary>
+        /// <param name="reader">Stream reader.</param>
+        public void LoadFromXml(StreamReader reader)
+        {
         }
     }
 }
