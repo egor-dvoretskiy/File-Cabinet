@@ -565,6 +565,10 @@ namespace FileCabinetApp
             {
                 Console.WriteLine($"Import failed: {fileNotFoundException.Message}.");
             }
+            catch (ArgumentException argumentException)
+            {
+                Console.WriteLine(argumentException.Message);
+            }
         }
     }
 }

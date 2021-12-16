@@ -16,9 +16,10 @@ namespace FileCabinetApp
         private List<FileCabinetRecord> list = new ();
 
         private Dictionary<int, FileCabinetRecord> storedIdRecords = new Dictionary<int, FileCabinetRecord>();
-        private Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-        private Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-        private Dictionary<string, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+
+        private Dictionary<string, List<int>> firstNameDictionary = new Dictionary<string, List<int>>();
+        private Dictionary<string, List<int>> lastNameDictionary = new Dictionary<string, List<int>>();
+        private Dictionary<string, List<int>> dateOfBirthDictionary = new Dictionary<string, List<int>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
@@ -207,15 +208,15 @@ namespace FileCabinetApp
             this.LoadRecordsToList();
         }
 
-        private void AddInformationToDictionary(string parametrName, ref Dictionary<string, List<FileCabinetRecord>> dict, FileCabinetRecord record)
+        private void AddInformationToDictionary(string parametrName, ref Dictionary<string, List<int>> dict, FileCabinetRecord record)
         {
             if (!dict.ContainsKey(parametrName))
             {
-                dict.Add(parametrName, new List<FileCabinetRecord>() { record });
+                dict.Add(parametrName, new List<int>() { record.Id });
             }
             else
             {
-                dict[parametrName].Add(record);
+                dict[parametrName].Add(record.Id);
             }
         }
 
@@ -231,11 +232,11 @@ namespace FileCabinetApp
             }
         }
 
-        private void EditInformationInDictionary(string parameterName, ref Dictionary<string, List<FileCabinetRecord>> dict, FileCabinetRecord record)
+        private void EditInformationInDictionary(string parameterName, ref Dictionary<string, List<int>> dict, FileCabinetRecord record)
         {
             foreach (var element in dict)
             {
-                int index = element.Value.FindIndex(0, element.Value.Count, i => i.Id == record.Id);
+                int index = element.Value.IndexOf(record.Id);
 
                 if (index != -1)
                 {
@@ -253,11 +254,18 @@ namespace FileCabinetApp
             this.AddInformationToDictionary(parameterName, ref dict, record);
         }
 
-        private List<FileCabinetRecord> GetInformationFromDictionary(string parametrName, Dictionary<string, List<FileCabinetRecord>> dictionary)
+        private List<FileCabinetRecord> GetInformationFromDictionary(string parametrName, Dictionary<string, List<int>> dictionary)
         {
             if (dictionary.ContainsKey(parametrName))
             {
-                return dictionary[parametrName];
+                List<FileCabinetRecord> listOfPositions = new List<FileCabinetRecord>();
+
+                for (int i = 0; i < dictionary[parametrName].Count; i++)
+                {
+                    listOfPositions.Add(this.storedIdRecords[dictionary[parametrName][i]]);
+                }
+
+                return listOfPositions;
             }
 
             return new List<FileCabinetRecord>();
