@@ -35,7 +35,7 @@ namespace FileCabinetApp
         /// <value>
         /// Stored records.
         /// </value>
-        public ReadOnlyCollection<FileCabinetRecord> Records { get; } = new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
+        public ReadOnlyCollection<FileCabinetRecord> Records { get; private set; } = new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
 
         /// <summary>
         /// Save records to csv file.
@@ -72,7 +72,8 @@ namespace FileCabinetApp
         {
             FileCabinetRecordCsvReader csvReader = new FileCabinetRecordCsvReader(reader, this.recordValidator);
 
-            _ = csvReader.ReadAll();
+            var records = csvReader.ReadAll();
+            this.Records = new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
         /// <summary>

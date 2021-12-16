@@ -13,8 +13,9 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetMemoryService : IFileCabinetService
     {
-        private readonly List<FileCabinetRecord> list = new ();
+        private List<FileCabinetRecord> list = new ();
 
+        private Dictionary<int, FileCabinetRecord> storedIdRecords = new Dictionary<int, FileCabinetRecord>();
         private Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private Dictionary<string, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<string, List<FileCabinetRecord>>();
@@ -38,6 +39,8 @@ namespace FileCabinetApp
                 record.Id = this.list.Count + 1;
 
                 this.list.Add(record);
+
+                this.AddOrChangeInformationInIdDictionary(record.Id, ref this.storedIdRecords, record);
 
                 this.AddInformationToDictionary(record.FirstName, ref this.firstNameDictionary, record);
                 this.AddInformationToDictionary(record.LastName, ref this.lastNameDictionary, record);
@@ -70,6 +73,8 @@ namespace FileCabinetApp
             try
             {
                 this.list[id] = record;
+
+                this.AddOrChangeInformationInIdDictionary(record.Id, ref this.storedIdRecords, record);
 
                 this.EditInformationInDictionary(record.FirstName, ref this.firstNameDictionary, record);
                 this.EditInformationInDictionary(record.LastName, ref this.lastNameDictionary, record);
@@ -186,6 +191,20 @@ namespace FileCabinetApp
         /// <param name="fileCabinetServiceSnapshot">Holds snapshot of data.</param>
         public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
         {
+            var unloadRecords = fileCabinetServiceSnapshot.Records.ToList();
+
+            for (int i = 0; i < unloadRecords.Count; i++)
+            {
+                var record = unloadRecords[i];
+
+                this.AddOrChangeInformationInIdDictionary(record.Id, ref this.storedIdRecords, record);
+
+                this.EditInformationInDictionary(record.FirstName, ref this.firstNameDictionary, record);
+                this.EditInformationInDictionary(record.LastName, ref this.lastNameDictionary, record);
+                this.EditInformationInDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd"), ref this.dateOfBirthDictionary, record);
+            }
+
+            this.LoadRecordsToList();
         }
 
         private void AddInformationToDictionary(string parametrName, ref Dictionary<string, List<FileCabinetRecord>> dict, FileCabinetRecord record)
@@ -197,6 +216,18 @@ namespace FileCabinetApp
             else
             {
                 dict[parametrName].Add(record);
+            }
+        }
+
+        private void AddOrChangeInformationInIdDictionary(int parametrName, ref Dictionary<int, FileCabinetRecord> dict, FileCabinetRecord record)
+        {
+            if (!dict.ContainsKey(parametrName))
+            {
+                dict.Add(parametrName, record);
+            }
+            else
+            {
+                dict[parametrName] = record;
             }
         }
 
@@ -230,6 +261,16 @@ namespace FileCabinetApp
             }
 
             return new List<FileCabinetRecord>();
+        }
+
+        private void LoadRecordsToList()
+        {
+            this.list = new List<FileCabinetRecord>();
+
+            foreach (var item in this.storedIdRecords.Values)
+            {
+                this.list.Add(item);
+            }
         }
     }
 }

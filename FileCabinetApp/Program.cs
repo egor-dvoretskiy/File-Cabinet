@@ -251,22 +251,22 @@ namespace FileCabinetApp
         private static void Create(string parameters)
         {
             Console.Write("First name: ");
-            var firstName = Program.ReadInput(UserConverter.StringConverter, validator.FirstNameValidator);
+            var firstName = Program.ReadInput(InputConverter.StringConverter, validator.FirstNameValidator);
 
             Console.Write("Last name: ");
-            var lastName = Program.ReadInput(UserConverter.StringConverter, validator.LastNameValidator);
+            var lastName = Program.ReadInput(InputConverter.StringConverter, validator.LastNameValidator);
 
             Console.Write("Date of birth (month/day/year): ");
-            var birthDate = Program.ReadInput(UserConverter.BirthDateConverter, validator.DateOfBirthValidator);
+            var birthDate = Program.ReadInput(InputConverter.BirthDateConverter, validator.DateOfBirthValidator);
 
             Console.Write("Personal rating: ");
-            var personalRating = Program.ReadInput(UserConverter.PersonalRatingConverter, validator.PersonalRatingValidator);
+            var personalRating = Program.ReadInput(InputConverter.PersonalRatingConverter, validator.PersonalRatingValidator);
 
             Console.Write("Debt: ");
-            var debt = Program.ReadInput(UserConverter.DebtConverter, validator.DebtValidator);
+            var debt = Program.ReadInput(InputConverter.DebtConverter, validator.DebtValidator);
 
             Console.Write("Gender: ");
-            var gender = Program.ReadInput(UserConverter.GenderConverter, validator.GenderValidator);
+            var gender = Program.ReadInput(InputConverter.GenderConverter, validator.GenderValidator);
 
             FileCabinetRecord record = new FileCabinetRecord()
             {
@@ -338,22 +338,22 @@ namespace FileCabinetApp
                 int recordPosition = Program.fileCabinetService.GetRecordPosition(id);
 
                 Console.Write("First name: ");
-                var firstName = Program.ReadInput(UserConverter.StringConverter, validator.FirstNameValidator);
+                var firstName = Program.ReadInput(InputConverter.StringConverter, validator.FirstNameValidator);
 
                 Console.Write("Last name: ");
-                var lastName = Program.ReadInput(UserConverter.StringConverter, validator.LastNameValidator);
+                var lastName = Program.ReadInput(InputConverter.StringConverter, validator.LastNameValidator);
 
                 Console.Write("Date of birth (month/day/year): ");
-                var birthDate = Program.ReadInput(UserConverter.BirthDateConverter, validator.DateOfBirthValidator);
+                var birthDate = Program.ReadInput(InputConverter.BirthDateConverter, validator.DateOfBirthValidator);
 
                 Console.Write("Personal rating: ");
-                var personalRating = Program.ReadInput(UserConverter.PersonalRatingConverter, validator.PersonalRatingValidator);
+                var personalRating = Program.ReadInput(InputConverter.PersonalRatingConverter, validator.PersonalRatingValidator);
 
                 Console.Write("Debt: ");
-                var debt = Program.ReadInput(UserConverter.DebtConverter, validator.DebtValidator);
+                var debt = Program.ReadInput(InputConverter.DebtConverter, validator.DebtValidator);
 
                 Console.Write("Gender: ");
-                var gender = Program.ReadInput(UserConverter.GenderConverter, validator.GenderValidator);
+                var gender = Program.ReadInput(InputConverter.GenderConverter, validator.GenderValidator);
 
                 FileCabinetRecord record = new FileCabinetRecord()
                 {
@@ -537,10 +537,10 @@ namespace FileCabinetApp
 
             try
             {
+                var snapshot = fileCabinetService.MakeSnapshot(Program.validator);
+
                 using (StreamReader reader = new StreamReader(pathToFile))
                 {
-                    var snapshot = fileCabinetService.MakeSnapshot(Program.validator);
-
                     switch (exportFormat)
                     {
                         case "csv":
@@ -554,6 +554,8 @@ namespace FileCabinetApp
                             break;
                     }
                 }
+
+                Program.fileCabinetService.Restore(snapshot);
             }
             catch (DirectoryNotFoundException directoryNotFoundException)
             {

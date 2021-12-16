@@ -167,6 +167,53 @@
             </summary>
             <param name="records">Records to write.</param>
         </member>
+        <member name="T:FileCabinetApp.InputConverter">
+            <summary>
+            Contains various converters.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.InputConverter.StringConverter(System.String)">
+            <summary>
+            Converts input string to string.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
+        </member>
+        <member name="M:FileCabinetApp.InputConverter.BirthDateConverter(System.String)">
+            <summary>
+            Converts input string to DateTime.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
+        </member>
+        <member name="M:FileCabinetApp.InputConverter.PersonalRatingConverter(System.String)">
+            <summary>
+            Converts input string to short.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
+        </member>
+        <member name="M:FileCabinetApp.InputConverter.DebtConverter(System.String)">
+            <summary>
+            Converts input string to decimal.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
+        </member>
+        <member name="M:FileCabinetApp.InputConverter.GenderConverter(System.String)">
+            <summary>
+            Converts input string to char.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
+        </member>
+        <member name="M:FileCabinetApp.InputConverter.IdConverter(System.String)">
+            <summary>
+            Converts input string to Id value.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
+        </member>
         <member name="T:FileCabinetApp.Interfaces.IFileCabinetService">
             <summary>
             Records Processor interface.
@@ -234,6 +281,12 @@
             <param name="recordValidator">Validator for importing files.</param>
             <returns>Snapshot of FileCabinetService.</returns>
         </member>
+        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <summary>
+            Restores data from file.
+            </summary>
+            <param name="fileCabinetServiceSnapshot">Snapshot.</param>
+        </member>
         <member name="T:FileCabinetApp.Interfaces.IRecordValidator">
             <summary>
             Interface that hold validate parameters functional.
@@ -280,6 +333,13 @@
             </summary>
             <param name="input">gender.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.IRecordValidator.IsRecordValid(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Checks if record is valid.
+            </summary>
+            <param name="record">FileCabinetRecord.</param>
+            <returns>Record is valid.</returns>
         </member>
         <member name="T:FileCabinetApp.CommandLineParameters">
             <summary>
@@ -343,6 +403,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFileSystemService.MakeSnapshot(FileCabinetApp.Interfaces.IRecordValidator)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFileSystemService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
@@ -423,46 +486,6 @@
             </summary>
             <param name="fileCabinetServiceSnapshot">Holds snapshot of data.</param>
         </member>
-        <member name="T:FileCabinetApp.UserConverter">
-            <summary>
-            Contains various converters.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.UserConverter.StringConverter(System.String)">
-            <summary>
-            Converts input string to string.
-            </summary>
-            <param name="input">Input string.</param>
-            <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
-        </member>
-        <member name="M:FileCabinetApp.UserConverter.BirthDateConverter(System.String)">
-            <summary>
-            Converts input string to DateTime.
-            </summary>
-            <param name="input">Input string.</param>
-            <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
-        </member>
-        <member name="M:FileCabinetApp.UserConverter.PersonalRatingConverter(System.String)">
-            <summary>
-            Converts input string to short.
-            </summary>
-            <param name="input">Input string.</param>
-            <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
-        </member>
-        <member name="M:FileCabinetApp.UserConverter.DebtConverter(System.String)">
-            <summary>
-            Converts input string to decimal.
-            </summary>
-            <param name="input">Input string.</param>
-            <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
-        </member>
-        <member name="M:FileCabinetApp.UserConverter.GenderConverter(System.String)">
-            <summary>
-            Converts input string to char.
-            </summary>
-            <param name="input">Input string.</param>
-            <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
-        </member>
         <member name="T:FileCabinetApp.Validators.CustomValidator">
             <summary>
             Validator with specific rules.
@@ -510,6 +533,9 @@
             <param name="input">gender.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
+        <member name="M:FileCabinetApp.Validators.CustomValidator.IsRecordValid(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Validators.DefaultValidator">
             <summary>
             Default Validator.
@@ -556,6 +582,9 @@
             </summary>
             <param name="input">gender.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.IsRecordValid(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.WriterAssistant">
             <summary>

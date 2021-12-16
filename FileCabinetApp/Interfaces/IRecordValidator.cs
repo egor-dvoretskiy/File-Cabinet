@@ -52,5 +52,12 @@ namespace FileCabinetApp.Interfaces
         /// <param name="input">gender.</param>
         /// <returns>Tuple values (isValid, errorMessage).</returns>
         public Tuple<bool, string> GenderValidator(char input);
+
+        /// <summary>
+        /// Checks if record is valid.
+        /// </summary>
+        /// <param name="record">FileCabinetRecord.</param>
+        /// <returns>Record is valid.</returns>
+        public bool IsRecordValid(FileCabinetRecord record);
     }
 }

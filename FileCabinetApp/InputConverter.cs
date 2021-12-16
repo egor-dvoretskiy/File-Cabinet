@@ -6,7 +6,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Contains various converters.
     /// </summary>
-    public static class UserConverter
+    public static class InputConverter
     {
         /// <summary>
         /// Converts input string to string.
@@ -139,6 +139,35 @@ namespace FileCabinetApp
             }
 
             return new Tuple<bool, string, char>(isConvertingSuccessful, errorMessage, gender);
+        }
+
+        /// <summary>
+        /// Converts input string to Id value.
+        /// </summary>
+        /// <param name="input">Input string.</param>
+        /// <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
+        public static Tuple<bool, string, int> IdConverter(string input)
+        {
+            bool isConvertingSuccessful = true;
+            string errorMessage = string.Empty;
+            int id = -1;
+
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                isConvertingSuccessful = false;
+                errorMessage = "id Is Null Or White Space";
+            }
+            else
+            {
+                isConvertingSuccessful = int.TryParse(input, out id);
+
+                if (!isConvertingSuccessful)
+                {
+                    errorMessage = "Cannot parse id(int)";
+                }
+            }
+
+            return new Tuple<bool, string, int>(isConvertingSuccessful, errorMessage, id);
         }
     }
 }

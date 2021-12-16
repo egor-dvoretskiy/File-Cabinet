@@ -214,6 +214,12 @@ namespace FileCabinetApp
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc/>
+        public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
+        {
+            return;
+        }
+
         private byte[] PrepareStringToWrite(string stringToWrite)
         {
             var nameBytes = Encoding.ASCII.GetBytes(stringToWrite);

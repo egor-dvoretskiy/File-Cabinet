@@ -51,7 +51,7 @@ namespace FileCabinetGenerator
 
         private static void InitLastNameArray()
         {
-            using (FileStream fileStream = new FileStream("lastNames.txt", FileMode.Open, FileAccess.Read))
+            using (FileStream fileStream = new FileStream(@"..\\..\\..\\..\\..\\_file-cabinet-records\\lastNames.txt", FileMode.Open, FileAccess.Read))
             using (StreamReader streamReader = new StreamReader(fileStream))
             {
                 var fileContainer = streamReader.ReadToEnd();
@@ -61,7 +61,7 @@ namespace FileCabinetGenerator
 
         private static void InitFirstNameArray()
         {
-            using (FileStream fileStream = new FileStream("firstNames.txt", FileMode.Open, FileAccess.Read))
+            using (FileStream fileStream = new FileStream(@"..\\..\\..\\..\\..\\_file-cabinet-records\\firstNames.txt", FileMode.Open, FileAccess.Read))
             using (StreamReader streamReader = new StreamReader(fileStream))
             {
                 var fileContainer = streamReader.ReadToEnd();

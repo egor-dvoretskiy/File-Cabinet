@@ -125,5 +125,20 @@ namespace FileCabinetApp.Validators
 
             return new Tuple<bool, string>(isValid, errorMessage);
         }
+
+        /// <inheritdoc/>
+        public bool IsRecordValid(FileCabinetRecord record)
+        {
+            bool isFirstNameValid = this.FirstNameValidator(record.FirstName).Item1;
+            bool isLastNameValid = this.LastNameValidator(record.LastName).Item1;
+            bool isBirthDateValid = this.DateOfBirthValidator(record.DateOfBirth).Item1;
+            bool isPersonalRatingValid = this.PersonalRatingValidator(record.PersonalRating).Item1;
+            bool isDebtValid = this.DebtValidator(record.Debt).Item1;
+            bool isGenderValid = this.GenderValidator(record.Gender).Item1;
+
+            bool isRecordValid = isFirstNameValid & isLastNameValid & isBirthDateValid & isPersonalRatingValid & isDebtValid & isGenderValid;
+
+            return isRecordValid;
+        }
     }
 }

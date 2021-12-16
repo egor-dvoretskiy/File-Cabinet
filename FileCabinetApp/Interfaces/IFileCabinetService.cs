@@ -68,5 +68,11 @@ namespace FileCabinetApp.Interfaces
         /// <param name="recordValidator">Validator for importing files.</param>
         /// <returns>Snapshot of FileCabinetService.</returns>
         FileCabinetServiceSnapshot MakeSnapshot(IRecordValidator recordValidator);
+
+        /// <summary>
+        /// Restores data from file.
+        /// </summary>
+        /// <param name="fileCabinetServiceSnapshot">Snapshot.</param>
+        void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot);
     }
 }
