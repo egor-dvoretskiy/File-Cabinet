@@ -38,30 +38,37 @@ namespace FileCabinetApp.FormatReaders
 
             while (true)
             {
-                var csvLine = this.reader.ReadLine();
-
-                if (csvLine is null)
+                try
                 {
-                    break;
+                    var csvLine = this.reader.ReadLine();
+
+                    if (csvLine is null)
+                    {
+                        break;
+                    }
+
+                    var lineParameters = csvLine.Split(",");
+
+                    FileCabinetRecord record = new FileCabinetRecord();
+
+                    record.Id = InputConverter.IdConverter(lineParameters[0]).Item3;
+                    record.FirstName = InputConverter.StringConverter(lineParameters[1]).Item3;
+                    record.LastName = InputConverter.StringConverter(lineParameters[2]).Item3;
+                    record.DateOfBirth = InputConverter.BirthDateConverter(lineParameters[3]).Item3;
+                    record.PersonalRating = InputConverter.PersonalRatingConverter(lineParameters[4]).Item3;
+                    record.Debt = InputConverter.DebtConverter(lineParameters[5]).Item3;
+                    record.Gender = InputConverter.GenderConverter(lineParameters[6]).Item3;
+
+                    bool isRecordValid = this.recordValidator.IsRecordValid(record);
+
+                    if (isRecordValid)
+                    {
+                        records.Add(record);
+                    }
                 }
-
-                var lineParameters = csvLine.Split(",");
-
-                FileCabinetRecord record = new FileCabinetRecord();
-
-                record.Id = InputConverter.IdConverter(lineParameters[0]).Item3;
-                record.FirstName = InputConverter.StringConverter(lineParameters[1]).Item3;
-                record.LastName = InputConverter.StringConverter(lineParameters[2]).Item3;
-                record.DateOfBirth = InputConverter.BirthDateConverter(lineParameters[3]).Item3;
-                record.PersonalRating = InputConverter.PersonalRatingConverter(lineParameters[4]).Item3;
-                record.Debt = InputConverter.DebtConverter(lineParameters[5]).Item3;
-                record.Gender = InputConverter.GenderConverter(lineParameters[6]).Item3;
-
-                bool isRecordValid = this.recordValidator.IsRecordValid(record);
-
-                if (isRecordValid)
+                catch (ArgumentOutOfRangeException argumentOutOfRangeException)
                 {
-                    records.Add(record);
+                    Console.WriteLine($"csvReader parsing error: {argumentOutOfRangeException.Message}");
                 }
             }
 

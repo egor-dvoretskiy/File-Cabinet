@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using FileCabinetApp.FormatReaders;
 using FileCabinetApp.Interfaces;
 using FileCabinetApp.Validators;
@@ -16,6 +17,7 @@ namespace FileCabinetApp
     public class FileCabinetServiceSnapshot
     {
         private readonly IRecordValidator recordValidator = new DefaultValidator();
+
         private FileCabinetRecord[] records;
 
         /// <summary>

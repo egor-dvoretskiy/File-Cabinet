@@ -444,13 +444,19 @@ namespace FileCabinetApp
         {
             var splitedParams = parameters.Split(' ');
 
+            if (splitedParams.Length != 2)
+            {
+                Console.WriteLine("Wrong command. Please, try again.");
+                return;
+            }
+
             string exportFormat = splitedParams[0];
             string pathToFile = splitedParams[1];
             string fileName = pathToFile.Split('\\').Last();
 
-            if (splitedParams.Length != 2 || !availableFormatsToExport.Contains(exportFormat))
+            if (!availableFormatsToExport.Contains(exportFormat))
             {
-                Console.WriteLine("Wrong command. Please, try again.");
+                Console.WriteLine("Wrong format. Please, try again.");
                 return;
             }
 

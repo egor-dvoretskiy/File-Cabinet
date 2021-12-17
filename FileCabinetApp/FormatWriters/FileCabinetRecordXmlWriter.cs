@@ -32,7 +32,7 @@ namespace FileCabinetApp
         /// <param name="records">Records to write.</param>
         public void Write(FileCabinetRecord[] records)
         {
-            XmlDocument xmlDocument = new XmlDocument();
+            /*XmlDocument xmlDocument = new XmlDocument();
             XmlNode root = xmlDocument.CreateElement(nameof(records));
             xmlDocument.AppendChild(root);
 
@@ -111,7 +111,10 @@ namespace FileCabinetApp
                 //------------------------------------------------------ ^^^
             }
 
-            xmlDocument.Save(this.writer);
+            xmlDocument.Save(this.writer);*/
+
+            XmlSerializer serializer = new XmlSerializer(typeof(FileCabinetRecord[]), "records");
+            serializer.Serialize(this.writer, records);
         }
     }
 }

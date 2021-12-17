@@ -127,6 +127,24 @@
             </summary>
             <returns>List if data.</returns>
         </member>
+        <member name="T:FileCabinetApp.FormatReaders.FileCabinetRecordXmlReader">
+            <summary>
+            Class provides Xml file reading.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FormatReaders.FileCabinetRecordXmlReader.#ctor(System.IO.StreamReader,FileCabinetApp.Interfaces.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FormatReaders.FileCabinetRecordXmlReader"/> class.
+            </summary>
+            <param name="reader">Stream reader.</param>
+            <param name="validator">Record validator.</param>
+        </member>
+        <member name="M:FileCabinetApp.FormatReaders.FileCabinetRecordXmlReader.ReadAll">
+            <summary>
+            Reads all data from xml file.
+            </summary>
+            <returns>List of data.</returns>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
             <summary>
             Contains logics to work with csv.
