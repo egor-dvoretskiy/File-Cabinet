@@ -13,11 +13,13 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetMemoryService : IFileCabinetService
     {
-        private readonly List<FileCabinetRecord> list = new ();
+        private List<FileCabinetRecord> list = new ();
 
-        private Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-        private Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-        private Dictionary<string, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private Dictionary<int, FileCabinetRecord> storedIdRecords = new Dictionary<int, FileCabinetRecord>();
+
+        private Dictionary<string, List<int>> firstNameDictionary = new Dictionary<string, List<int>>();
+        private Dictionary<string, List<int>> lastNameDictionary = new Dictionary<string, List<int>>();
+        private Dictionary<string, List<int>> dateOfBirthDictionary = new Dictionary<string, List<int>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
@@ -38,6 +40,8 @@ namespace FileCabinetApp
                 record.Id = this.list.Count + 1;
 
                 this.list.Add(record);
+
+                this.AddOrChangeInformationInIdDictionary(record.Id, ref this.storedIdRecords, record);
 
                 this.AddInformationToDictionary(record.FirstName, ref this.firstNameDictionary, record);
                 this.AddInformationToDictionary(record.LastName, ref this.lastNameDictionary, record);
@@ -70,6 +74,8 @@ namespace FileCabinetApp
             try
             {
                 this.list[id] = record;
+
+                this.AddOrChangeInformationInIdDictionary(record.Id, ref this.storedIdRecords, record);
 
                 this.EditInformationInDictionary(record.FirstName, ref this.firstNameDictionary, record);
                 this.EditInformationInDictionary(record.LastName, ref this.lastNameDictionary, record);
@@ -173,29 +179,64 @@ namespace FileCabinetApp
         /// <summary>
         /// Makes snapshot of FileCabinetService.
         /// </summary>
+        /// <param name="recordValidator">Validator for importing file.</param>
         /// <returns>Snapshot of FileCabinetService.</returns>
-        public FileCabinetServiceSnapshot MakeSnapshot()
+        public FileCabinetServiceSnapshot MakeSnapshot(IRecordValidator recordValidator)
         {
-            return new FileCabinetServiceSnapshot(this.list);
+            return new FileCabinetServiceSnapshot(this.list, recordValidator);
         }
 
-        private void AddInformationToDictionary(string parametrName, ref Dictionary<string, List<FileCabinetRecord>> dict, FileCabinetRecord record)
+        /// <summary>
+        /// Restores record's data from file.
+        /// </summary>
+        /// <param name="fileCabinetServiceSnapshot">Holds snapshot of data.</param>
+        public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
+        {
+            var unloadRecords = fileCabinetServiceSnapshot.Records.ToList();
+
+            for (int i = 0; i < unloadRecords.Count; i++)
+            {
+                var record = unloadRecords[i];
+
+                this.AddOrChangeInformationInIdDictionary(record.Id, ref this.storedIdRecords, record);
+
+                this.EditInformationInDictionary(record.FirstName, ref this.firstNameDictionary, record);
+                this.EditInformationInDictionary(record.LastName, ref this.lastNameDictionary, record);
+                this.EditInformationInDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd"), ref this.dateOfBirthDictionary, record);
+            }
+
+            this.LoadRecordsToList();
+        }
+
+        private void AddInformationToDictionary(string parametrName, ref Dictionary<string, List<int>> dict, FileCabinetRecord record)
         {
             if (!dict.ContainsKey(parametrName))
             {
-                dict.Add(parametrName, new List<FileCabinetRecord>() { record });
+                dict.Add(parametrName, new List<int>() { record.Id });
             }
             else
             {
-                dict[parametrName].Add(record);
+                dict[parametrName].Add(record.Id);
             }
         }
 
-        private void EditInformationInDictionary(string parameterName, ref Dictionary<string, List<FileCabinetRecord>> dict, FileCabinetRecord record)
+        private void AddOrChangeInformationInIdDictionary(int parametrName, ref Dictionary<int, FileCabinetRecord> dict, FileCabinetRecord record)
+        {
+            if (!dict.ContainsKey(parametrName))
+            {
+                dict.Add(parametrName, record);
+            }
+            else
+            {
+                dict[parametrName] = record;
+            }
+        }
+
+        private void EditInformationInDictionary(string parameterName, ref Dictionary<string, List<int>> dict, FileCabinetRecord record)
         {
             foreach (var element in dict)
             {
-                int index = element.Value.FindIndex(0, element.Value.Count, i => i.Id == record.Id);
+                int index = element.Value.IndexOf(record.Id);
 
                 if (index != -1)
                 {
@@ -213,14 +254,31 @@ namespace FileCabinetApp
             this.AddInformationToDictionary(parameterName, ref dict, record);
         }
 
-        private List<FileCabinetRecord> GetInformationFromDictionary(string parametrName, Dictionary<string, List<FileCabinetRecord>> dictionary)
+        private List<FileCabinetRecord> GetInformationFromDictionary(string parametrName, Dictionary<string, List<int>> dictionary)
         {
             if (dictionary.ContainsKey(parametrName))
             {
-                return dictionary[parametrName];
+                List<FileCabinetRecord> listOfPositions = new List<FileCabinetRecord>();
+
+                for (int i = 0; i < dictionary[parametrName].Count; i++)
+                {
+                    listOfPositions.Add(this.storedIdRecords[dictionary[parametrName][i]]);
+                }
+
+                return listOfPositions;
             }
 
             return new List<FileCabinetRecord>();
+        }
+
+        private void LoadRecordsToList()
+        {
+            this.list = new List<FileCabinetRecord>();
+
+            foreach (var item in this.storedIdRecords.Values)
+            {
+                this.list.Add(item);
+            }
         }
     }
 }

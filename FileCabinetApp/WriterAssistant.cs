@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
 
 namespace FileCabinetApp
 {
@@ -31,7 +34,7 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                string? addStringValue = value.GetType() != typeof(DateTime) ? value.ToString() : ((DateTime)value).ToString("yyyy-MMM-dd");
+                string? addStringValue = value.GetType() != typeof(DateTime) ? value.ToString().Replace(",", ".") : ((DateTime)value).ToString("yyyy-MMM-dd", new CultureInfo("en-US"));
 
                 lstStringRecordValues.Add(addStringValue);
             }

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FileCabinetApp.Interfaces;
 
 namespace FileCabinetApp
 {
@@ -47,23 +48,19 @@ namespace FileCabinetApp
             {
                 this.fileStream.Seek(0, SeekOrigin.End);
 
-                record.Id = ++this.recordsCount;
-
-                if (!this.dictRecordsPositionOrder.ContainsKey(record.Id))
-                {
-                    this.dictRecordsPositionOrder.Add(record.Id, this.recordsCount - 1);
-                }
+                record.Id = this.recordsCount + 1;
 
                 byte[] buffer = this.WriteRecordToFile(record);
 
                 this.fileStream.Write(buffer, 0, buffer.Length);
-
                 this.fileStream.Flush(true);
 
-                this.AddIdToParamsDictionary(record.Id, this.recordsCount - 1, ref this.dictRecordsPositionOrder);
-                this.AddNameToParamsDictionary(record.FirstName, this.recordsCount - 1, ref this.firstNameDictionary);
-                this.AddNameToParamsDictionary(record.LastName, this.recordsCount - 1, ref this.lastNameDictionary);
-                this.AddDateTimeToParamsDictionary(record.DateOfBirth, this.recordsCount - 1, ref this.dateOfBirthDictionary);
+                this.AddIdToParamsDictionary(record.Id, this.recordsCount, ref this.dictRecordsPositionOrder);
+                this.AddNameToParamsDictionary(record.FirstName, record.Id, ref this.firstNameDictionary);
+                this.AddNameToParamsDictionary(record.LastName, record.Id, ref this.lastNameDictionary);
+                this.AddDateTimeToParamsDictionary(record.DateOfBirth, record.Id, ref this.dateOfBirthDictionary);
+
+                this.recordsCount++;
 
                 return record.Id;
             }
@@ -208,9 +205,43 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public FileCabinetServiceSnapshot MakeSnapshot()
+        public FileCabinetServiceSnapshot MakeSnapshot(IRecordValidator recordValidator)
         {
-            throw new NotImplementedException();
+            return new FileCabinetServiceSnapshot(this.GetRecords().ToList(), recordValidator);
+        }
+
+        /// <inheritdoc/>
+        public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
+        {
+            var unloadRecords = fileCabinetServiceSnapshot.Records.ToList();
+
+            for (int i = 0; i < unloadRecords.Count; i++)
+            {
+                var record = unloadRecords[i];
+
+                byte[] buffer = this.WriteRecordToFile(record);
+
+                if (this.dictRecordsPositionOrder.ContainsKey(record.Id))
+                {
+                    int positionOfExistingId = this.dictRecordsPositionOrder[record.Id] * RecordSize;
+
+                    this.fileStream.Seek(positionOfExistingId, SeekOrigin.Begin);
+                }
+                else
+                {
+                    this.dictRecordsPositionOrder.Add(record.Id, this.recordsCount);
+                    this.AddNameToParamsDictionary(record.FirstName, record.Id, ref this.firstNameDictionary);
+                    this.AddNameToParamsDictionary(record.LastName, record.Id, ref this.lastNameDictionary);
+                    this.AddDateTimeToParamsDictionary(record.DateOfBirth, record.Id, ref this.dateOfBirthDictionary);
+
+                    this.fileStream.Seek(0, SeekOrigin.End);
+                }
+
+                this.fileStream.Write(buffer, 0, buffer.Length);
+                this.fileStream.Flush(true);
+
+                this.recordsCount = (int)(this.fileStream.Length / RecordSize);
+            }
         }
 
         private byte[] PrepareStringToWrite(string stringToWrite)
@@ -248,9 +279,9 @@ namespace FileCabinetApp
                 FileCabinetRecord record = this.ReadRecordFromFile(bytes);
 
                 this.AddIdToParamsDictionary(record.Id, i, ref this.dictRecordsPositionOrder);
-                this.AddNameToParamsDictionary(record.FirstName, i, ref this.firstNameDictionary);
-                this.AddNameToParamsDictionary(record.LastName, i, ref this.lastNameDictionary);
-                this.AddDateTimeToParamsDictionary(record.DateOfBirth, i, ref this.dateOfBirthDictionary);
+                this.AddNameToParamsDictionary(record.FirstName, record.Id, ref this.firstNameDictionary);
+                this.AddNameToParamsDictionary(record.LastName, record.Id, ref this.lastNameDictionary);
+                this.AddDateTimeToParamsDictionary(record.DateOfBirth, record.Id, ref this.dateOfBirthDictionary);
             }
         }
 
@@ -262,27 +293,27 @@ namespace FileCabinetApp
             }
         }
 
-        private void AddNameToParamsDictionary(string param, int value, ref Dictionary<string, List<int>> valuePairs)
+        private void AddNameToParamsDictionary(string param, int id, ref Dictionary<string, List<int>> valuePairs)
         {
             if (!valuePairs.ContainsKey(param))
             {
-                valuePairs.Add(param, new List<int>() { value });
+                valuePairs.Add(param, new List<int>() { id });
             }
-            else if (valuePairs.ContainsKey(param) && !valuePairs[param].Contains(value))
+            else if (valuePairs.ContainsKey(param) && !valuePairs[param].Contains(id))
             {
-                valuePairs[param].Add(value);
+                valuePairs[param].Add(id);
             }
         }
 
-        private void AddDateTimeToParamsDictionary(DateTime param, int value, ref Dictionary<DateTime, List<int>> valuePairs)
+        private void AddDateTimeToParamsDictionary(DateTime param, int id, ref Dictionary<DateTime, List<int>> valuePairs)
         {
             if (!valuePairs.ContainsKey(param))
             {
-                valuePairs.Add(param, new List<int>() { value });
+                valuePairs.Add(param, new List<int>() { id });
             }
-            else if (valuePairs.ContainsKey(param) && !valuePairs[param].Contains(value))
+            else if (valuePairs.ContainsKey(param) && !valuePairs[param].Contains(id))
             {
-                valuePairs[param].Add(value);
+                valuePairs[param].Add(id);
             }
         }
 
@@ -336,9 +367,15 @@ namespace FileCabinetApp
                 writer.Write(lastNameBytes);
                 memoryStream.Seek(MaxNameLength - lastNameBytes.Length, SeekOrigin.Current);
 
-                writer.Write(record.DateOfBirth.Year);
-                writer.Write(record.DateOfBirth.Month);
-                writer.Write(record.DateOfBirth.Day);
+                int year = record.DateOfBirth.Year;
+                writer.Write(year);
+
+                int month = record.DateOfBirth.Month;
+                writer.Write(month);
+
+                int day = record.DateOfBirth.Day;
+                writer.Write(day);
+
                 writer.Write(record.PersonalRating);
                 writer.Write(record.Debt);
                 writer.Write(record.Gender);
@@ -351,7 +388,15 @@ namespace FileCabinetApp
         {
             if (dictionary.ContainsKey(parametrName))
             {
-                return dictionary[parametrName];
+                // List of id's, but need positions.
+                List<int> listOfPositions = new List<int>();
+
+                for (int i = 0; i < dictionary[parametrName].Count; i++)
+                {
+                    listOfPositions.Add(this.dictRecordsPositionOrder[dictionary[parametrName][i]]);
+                }
+
+                return listOfPositions;
             }
 
             return new List<int>();
@@ -362,7 +407,15 @@ namespace FileCabinetApp
             bool isDateValid = DateTime.TryParse(parametrName, out DateTime birthDate);
             if (isDateValid && dictionary.ContainsKey(birthDate))
             {
-                return dictionary[birthDate];
+                // List of id's, but need positions.
+                List<int> listOfPositions = new List<int>();
+
+                for (int i = 0; i < dictionary[birthDate].Count; i++)
+                {
+                    listOfPositions.Add(this.dictRecordsPositionOrder[dictionary[birthDate][i]]);
+                }
+
+                return listOfPositions;
             }
 
             return new List<int>();

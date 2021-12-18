@@ -1,38 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
+using FileCabinetApp;
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 
-namespace FileCabinetApp
+namespace FileCabinetGenerator.FormatWriters
 {
     /// <summary>
     /// Contains logics to work with xml.
     /// </summary>
-    public class FileCabinetRecordXmlWriter
+    public static class XmlWriter
     {
-        private readonly TextWriter writer;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetRecordXmlWriter"/> class.
-        /// </summary>
-        /// <param name="writer">Writer.</param>
-        public FileCabinetRecordXmlWriter(TextWriter writer)
-        {
-            this.writer = writer;
-        }
-
-        /// <summary>
-        /// Writes to xml file.
-        /// </summary>
-        /// <param name="records">Records to write.</param>
-        public void Write(FileCabinetRecord[] records)
-        {
+        public static void Write(StreamWriter writer, FileCabinetRecord[] records)
+        {           
             XmlDocument xmlDocument = new XmlDocument();
             XmlNode root = xmlDocument.CreateElement(nameof(records));
             xmlDocument.AppendChild(root);
@@ -94,7 +76,7 @@ namespace FileCabinetApp
                 //------------------------------------------------------ debt node
                 // add debt node
                 XmlNode debtNode = xmlDocument.CreateElement("debt");
-                debtNode.InnerText = records[i].Debt.ToString();
+                debtNode.InnerText = records[i].Debt.ToString().Replace(",", ".");
 
                 // add to doc debtNode
                 recordNode.AppendChild(debtNode);
@@ -112,7 +94,9 @@ namespace FileCabinetApp
                 //------------------------------------------------------ ^^^
             }
 
-            xmlDocument.Save(this.writer);
+            xmlDocument.Save(writer);
         }
     }
+
+
 }

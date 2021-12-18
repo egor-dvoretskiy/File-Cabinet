@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace FileCabinetApp
 {
     /// <summary>
     /// Class, that contains record parameters.
     /// </summary>
-    [Serializable]
     public class FileCabinetRecord
     {
         /// <summary>
