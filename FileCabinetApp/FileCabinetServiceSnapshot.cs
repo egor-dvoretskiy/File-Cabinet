@@ -17,7 +17,6 @@ namespace FileCabinetApp
     public class FileCabinetServiceSnapshot
     {
         private readonly IRecordValidator recordValidator = new DefaultValidator();
-
         private FileCabinetRecord[] records;
 
         /// <summary>
@@ -84,6 +83,10 @@ namespace FileCabinetApp
         /// <param name="reader">Stream reader.</param>
         public void LoadFromXml(StreamReader reader)
         {
+            FileCabinetRecordXmlReader xmlReader = new FileCabinetRecordXmlReader(reader, this.recordValidator);
+
+            var records = xmlReader.ReadAll();
+            this.Records = new ReadOnlyCollection<FileCabinetRecord>(records);
         }
     }
 }

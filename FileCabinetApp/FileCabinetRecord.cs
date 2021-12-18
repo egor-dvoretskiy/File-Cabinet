@@ -10,7 +10,6 @@ namespace FileCabinetApp
     /// <summary>
     /// Class, that contains record parameters.
     /// </summary>
-    [Serializable]
     public class FileCabinetRecord
     {
         /// <summary>
@@ -19,7 +18,6 @@ namespace FileCabinetApp
         /// <value>
         /// Unique idetifier of record.
         /// </value>
-        [XmlAttribute("id")]
         public int Id { get; set; }
 
         /// <summary>
@@ -28,7 +26,6 @@ namespace FileCabinetApp
         /// <value>
         /// Person's first name.
         /// </value>
-        [XmlElement("name")]
         public string FirstName { get; set; } = string.Empty;
 
         /// <summary>
@@ -45,7 +42,6 @@ namespace FileCabinetApp
         /// <value>
         /// Person's birth date.
         /// </value>
-        [XmlElement("birthDate")]
         public DateTime DateOfBirth { get; set; }
 
         /// <summary>
@@ -54,7 +50,6 @@ namespace FileCabinetApp
         /// <value>
         /// Person's personal rating.
         /// </value>
-        [XmlElement("personalRating")]
         public short PersonalRating { get; set; }
 
         /// <summary>
@@ -63,7 +58,6 @@ namespace FileCabinetApp
         /// <value>
         /// Person's amount of debt.
         /// </value>
-        [XmlElement("debt")]
         public decimal Debt { get; set; }
 
         /// <summary>
@@ -72,7 +66,6 @@ namespace FileCabinetApp
         /// <value>
         /// Person's gender.
         /// </value>
-        [XmlElement("gender")]
         public char Gender { get; set; }
     }
 }

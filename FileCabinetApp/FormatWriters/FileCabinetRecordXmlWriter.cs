@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ namespace FileCabinetApp
         /// <param name="records">Records to write.</param>
         public void Write(FileCabinetRecord[] records)
         {
-            /*XmlDocument xmlDocument = new XmlDocument();
+            XmlDocument xmlDocument = new XmlDocument();
             XmlNode root = xmlDocument.CreateElement(nameof(records));
             xmlDocument.AppendChild(root);
 
@@ -73,7 +74,7 @@ namespace FileCabinetApp
                 //------------------------------------------------------ birth date node
                 // add dateBirth node
                 XmlNode dateNode = xmlDocument.CreateElement("dateOfBirth");
-                dateNode.InnerText = records[i].DateOfBirth.ToString("yyyy-MMM-dd");
+                dateNode.InnerText = records[i].DateOfBirth.ToString("yyyy-MMM-dd", new CultureInfo("en-US"));
 
                 // add to doc dateNode
                 recordNode.AppendChild(dateNode);
@@ -111,10 +112,7 @@ namespace FileCabinetApp
                 //------------------------------------------------------ ^^^
             }
 
-            xmlDocument.Save(this.writer);*/
-
-            XmlSerializer serializer = new XmlSerializer(typeof(FileCabinetRecord[]), "records");
-            serializer.Serialize(this.writer, records);
+            xmlDocument.Save(this.writer);
         }
     }
 }
