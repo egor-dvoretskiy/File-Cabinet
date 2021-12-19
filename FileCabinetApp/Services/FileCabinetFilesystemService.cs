@@ -21,12 +21,13 @@ namespace FileCabinetApp
         // first argument - record's id, second element - record's position in file.
         private Dictionary<int, int> dictRecordsPositionOrder = new Dictionary<int, int>();
 
-        // first argument - record's param to search, second element - record's position in file.
+        // first argument - record's param to search, second element - list of id's.
         private Dictionary<string, List<int>> firstNameDictionary = new Dictionary<string, List<int>>();
         private Dictionary<string, List<int>> lastNameDictionary = new Dictionary<string, List<int>>();
         private Dictionary<DateTime, List<int>> dateOfBirthDictionary = new Dictionary<DateTime, List<int>>();
 
         private int recordsCount = 0;
+        private int recordMarkedAsDeletedCount = 0;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFileSystemService"/> class.
@@ -60,7 +61,7 @@ namespace FileCabinetApp
                 this.AddNameToParamsDictionary(record.LastName, record.Id, ref this.lastNameDictionary);
                 this.AddDateTimeToParamsDictionary(record.DateOfBirth, record.Id, ref this.dateOfBirthDictionary);
 
-                this.recordsCount++;
+                this.UpdateRecordCount();
 
                 return record.Id;
             }
@@ -112,7 +113,14 @@ namespace FileCabinetApp
                 byte[] bytes = new byte[RecordSize];
                 this.fileStream.Read(bytes, 0, RecordSize);
 
-                FileCabinetRecord record = this.ReadRecordFromFile(bytes);
+                var tupleReadFromFile = this.ReadRecordFromFile(bytes);
+
+                if (tupleReadFromFile.Item2 == 1)
+                {
+                    continue;
+                }
+
+                FileCabinetRecord record = tupleReadFromFile.Item1;
 
                 records.Add(record);
             }
@@ -132,7 +140,14 @@ namespace FileCabinetApp
                 byte[] bytes = new byte[RecordSize];
                 this.fileStream.Read(bytes, 0, RecordSize);
 
-                FileCabinetRecord record = this.ReadRecordFromFile(bytes);
+                var tupleReadFromFile = this.ReadRecordFromFile(bytes);
+
+                if (tupleReadFromFile.Item2 == 1)
+                {
+                    continue;
+                }
+
+                FileCabinetRecord record = tupleReadFromFile.Item1;
 
                 records.Add(record);
             }
@@ -152,7 +167,14 @@ namespace FileCabinetApp
                 byte[] bytes = new byte[RecordSize];
                 this.fileStream.Read(bytes, 0, RecordSize);
 
-                FileCabinetRecord record = this.ReadRecordFromFile(bytes);
+                var tupleReadFromFile = this.ReadRecordFromFile(bytes);
+
+                if (tupleReadFromFile.Item2 == 1)
+                {
+                    continue;
+                }
+
+                FileCabinetRecord record = tupleReadFromFile.Item1;
 
                 records.Add(record);
             }
@@ -185,7 +207,14 @@ namespace FileCabinetApp
                     byte[] bytes = new byte[RecordSize];
                     this.fileStream.Read(bytes, 0, RecordSize);
 
-                    FileCabinetRecord record = this.ReadRecordFromFile(bytes);
+                    var tupleReadFromFile = this.ReadRecordFromFile(bytes);
+
+                    if (tupleReadFromFile.Item2 == 1)
+                    {
+                        continue;
+                    }
+
+                    FileCabinetRecord record = tupleReadFromFile.Item1;
 
                     records.Add(record);
                 }
@@ -240,14 +269,44 @@ namespace FileCabinetApp
                 this.fileStream.Write(buffer, 0, buffer.Length);
                 this.fileStream.Flush(true);
 
-                this.recordsCount = (int)(this.fileStream.Length / RecordSize);
+                this.UpdateRecordCount();
             }
         }
 
         /// <inheritdoc/>
         public void RemoveRecordById(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                short deleteByte = 1;
+
+                byte[] buffer = new byte[sizeof(short)];
+                using (MemoryStream memoryStream = new MemoryStream(buffer))
+                using (BinaryWriter writer = new BinaryWriter(memoryStream))
+                {
+                    writer.Write(deleteByte);
+                }
+
+                int recordPosition = this.GetRecordPosition(id);
+
+                this.fileStream.Seek(recordPosition * RecordSize, SeekOrigin.Begin);
+
+                this.fileStream.Write(buffer, 0, buffer.Length);
+                this.fileStream.Flush(true);
+
+                this.ClearDictionaries();
+                this.AssignRecordValuesToDictionaries();
+
+                this.UpdateRecordCount();
+            }
+            catch (ArgumentNullException anex)
+            {
+                Console.WriteLine(anex.Message);
+            }
+            catch (ArgumentException aex)
+            {
+                Console.WriteLine(aex.Message);
+            }
         }
 
         private byte[] PrepareStringToWrite(string stringToWrite)
@@ -282,7 +341,15 @@ namespace FileCabinetApp
                 byte[] bytes = new byte[RecordSize];
                 this.fileStream.Read(bytes, 0, RecordSize);
 
-                FileCabinetRecord record = this.ReadRecordFromFile(bytes);
+                var tupleReadFromFile = this.ReadRecordFromFile(bytes);
+
+                if (tupleReadFromFile.Item2 == 1)
+                {
+                    this.recordMarkedAsDeletedCount++;
+                    continue;
+                }
+
+                FileCabinetRecord record = tupleReadFromFile.Item1;
 
                 this.AddIdToParamsDictionary(record.Id, i, ref this.dictRecordsPositionOrder);
                 this.AddNameToParamsDictionary(record.FirstName, record.Id, ref this.firstNameDictionary);
@@ -323,14 +390,15 @@ namespace FileCabinetApp
             }
         }
 
-        private FileCabinetRecord ReadRecordFromFile(byte[] bytesRecord)
+        private Tuple<FileCabinetRecord, short> ReadRecordFromFile(byte[] bytesRecord)
         {
+            short isRecordDeleted = 0;
             FileCabinetRecord record = new FileCabinetRecord();
 
             using (MemoryStream memoryStream = new MemoryStream(bytesRecord))
             using (BinaryReader reader = new BinaryReader(memoryStream))
             {
-                _ = reader.ReadInt16();
+                isRecordDeleted = reader.ReadInt16();
 
                 record.Id = reader.ReadInt32();
 
@@ -352,7 +420,7 @@ namespace FileCabinetApp
                 record.Gender = reader.ReadChar();
             }
 
-            return record;
+            return new Tuple<FileCabinetRecord, short>(record, isRecordDeleted);
         }
 
         private byte[] WriteRecordToFile(FileCabinetRecord record)
@@ -361,7 +429,8 @@ namespace FileCabinetApp
             using (MemoryStream memoryStream = new MemoryStream(buffer))
             using (BinaryWriter writer = new BinaryWriter(memoryStream))
             {
-                writer.Seek(sizeof(short), SeekOrigin.Begin); // status reservation.
+                short isRecordDeleted = 0;
+                writer.Write(isRecordDeleted);
 
                 writer.Write(record.Id);
 
@@ -425,6 +494,11 @@ namespace FileCabinetApp
             }
 
             return new List<int>();
+        }
+
+        private void UpdateRecordCount()
+        {
+            this.recordsCount = (int)this.fileStream.Length / RecordSize;
         }
     }
 }

@@ -590,6 +590,8 @@ namespace FileCabinetApp
             }
 
             Program.fileCabinetService.RemoveRecordById(recordIdToRemove);
+
+            Console.WriteLine($"Record #{recordIdToRemove} is removed.");
         }
     }
 }
