@@ -237,6 +237,12 @@ namespace FileCabinetApp
             }
         }
 
+        /// <inheritdoc/>
+        public void Purge()
+        {
+            Console.WriteLine("Wrong service, plesase switch memory mode to file system.");
+        }
+
         private void AddInformationToDictionary(string parametrName, ref Dictionary<string, List<int>> dict, FileCabinetRecord record)
         {
             if (!dict.ContainsKey(parametrName))

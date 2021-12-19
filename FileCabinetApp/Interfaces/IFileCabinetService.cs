@@ -80,5 +80,10 @@ namespace FileCabinetApp.Interfaces
         /// </summary>
         /// <param name="id">Record's id.</param>
         void RemoveRecordById(int id);
+
+        /// <summary>
+        /// Defragments the data file.
+        /// </summary>
+        void Purge();
     }
 }

@@ -58,6 +58,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
             new Tuple<string, Action<string>>("remove", Remove),
+            new Tuple<string, Action<string>>("purge", Purge),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -72,6 +73,7 @@ namespace FileCabinetApp
             new string[] { "export", "export data list to specific format", "The 'export' command converts data list to specific format." },
             new string[] { "import", "import data list from file", "The 'import' command converts file data to filesystem." },
             new string[] { "remove", "remove specific record by id", "The 'remove' command remove specific record by id." },
+            new string[] { "purge", "defragments the data file", "The 'purge' command defragments the data file." },
         };
 
         private static string[] availableFormatsToExport = new string[]
@@ -590,8 +592,17 @@ namespace FileCabinetApp
             }
 
             Program.fileCabinetService.RemoveRecordById(recordIdToRemove);
+        }
 
-            Console.WriteLine($"Record #{recordIdToRemove} is removed.");
+        private static void Purge(string parameters)
+        {
+            if (parameters != string.Empty)
+            {
+                Console.WriteLine("Wrong parameters. Please, try again.");
+                return;
+            }
+
+            Program.fileCabinetService.Purge();
         }
     }
 }

@@ -311,6 +311,11 @@
             </summary>
             <param name="id">Record's id.</param>
         </member>
+        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.Purge">
+            <summary>
+            Defragments the data file.
+            </summary>
+        </member>
         <member name="T:FileCabinetApp.Interfaces.IRecordValidator">
             <summary>
             Interface that hold validate parameters functional.
@@ -435,6 +440,9 @@
         <member name="M:FileCabinetApp.FileCabinetFileSystemService.RemoveRecordById(System.Int32)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFileSystemService.Purge">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
             <summary>
             Records Processor Class.
@@ -518,6 +526,9 @@
             Removes record by id.
             </summary>
             <param name="id">Id to remove.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Purge">
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Validators.CustomValidator">
             <summary>
