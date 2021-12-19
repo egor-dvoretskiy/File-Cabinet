@@ -57,6 +57,8 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
+            new Tuple<string, Action<string>>("remove", Remove),
+            new Tuple<string, Action<string>>("purge", Purge),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -70,6 +72,8 @@ namespace FileCabinetApp
             new string[] { "find", "find stored user data by specific field", "The 'find' command searches for stored user data by specific field." },
             new string[] { "export", "export data list to specific format", "The 'export' command converts data list to specific format." },
             new string[] { "import", "import data list from file", "The 'import' command converts file data to filesystem." },
+            new string[] { "remove", "remove specific record by id", "The 'remove' command remove specific record by id." },
+            new string[] { "purge", "defragments the data file", "The 'purge' command defragments the data file." },
         };
 
         private static string[] availableFormatsToExport = new string[]
@@ -244,8 +248,7 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.fileCabinetService.GetStat();
-            Console.WriteLine($"{recordsCount} record(s).");
+            Program.fileCabinetService.GetStat();
         }
 
         private static void Create(string parameters)
@@ -575,6 +578,30 @@ namespace FileCabinetApp
             {
                 Console.WriteLine(argumentException.Message);
             }
+        }
+
+        private static void Remove(string parameters)
+        {
+            bool isParameterValid = int.TryParse(parameters, out int recordIdToRemove);
+
+            if (!isParameterValid || recordIdToRemove < 1)
+            {
+                Console.WriteLine("Wrong parameters. Please, try again.");
+                return;
+            }
+
+            Program.fileCabinetService.RemoveRecordById(recordIdToRemove);
+        }
+
+        private static void Purge(string parameters)
+        {
+            if (parameters != string.Empty)
+            {
+                Console.WriteLine("Wrong parameters. Please, try again.");
+                return;
+            }
+
+            Program.fileCabinetService.Purge();
         }
     }
 }

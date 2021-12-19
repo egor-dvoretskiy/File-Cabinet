@@ -21,12 +21,13 @@ namespace FileCabinetApp
         // first argument - record's id, second element - record's position in file.
         private Dictionary<int, int> dictRecordsPositionOrder = new Dictionary<int, int>();
 
-        // first argument - record's param to search, second element - record's position in file.
+        // first argument - record's param to search, second element - list of id's.
         private Dictionary<string, List<int>> firstNameDictionary = new Dictionary<string, List<int>>();
         private Dictionary<string, List<int>> lastNameDictionary = new Dictionary<string, List<int>>();
         private Dictionary<DateTime, List<int>> dateOfBirthDictionary = new Dictionary<DateTime, List<int>>();
 
         private int recordsCount = 0;
+        private int recordMarkedAsDeletedCount = 0;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFileSystemService"/> class.
@@ -50,7 +51,7 @@ namespace FileCabinetApp
 
                 record.Id = this.recordsCount + 1;
 
-                byte[] buffer = this.WriteRecordToFile(record);
+                byte[] buffer = this.WriteRecordToBuffer(record);
 
                 this.fileStream.Write(buffer, 0, buffer.Length);
                 this.fileStream.Flush(true);
@@ -60,7 +61,7 @@ namespace FileCabinetApp
                 this.AddNameToParamsDictionary(record.LastName, record.Id, ref this.lastNameDictionary);
                 this.AddDateTimeToParamsDictionary(record.DateOfBirth, record.Id, ref this.dateOfBirthDictionary);
 
-                this.recordsCount++;
+                this.UpdateRecordCount();
 
                 return record.Id;
             }
@@ -81,7 +82,7 @@ namespace FileCabinetApp
         {
             try
             {
-                byte[] buffer = this.WriteRecordToFile(record);
+                byte[] buffer = this.WriteRecordToBuffer(record);
                 this.fileStream.Seek(recordPosition * RecordSize, SeekOrigin.Begin);
 
                 this.fileStream.Write(buffer, 0, buffer.Length);
@@ -112,7 +113,14 @@ namespace FileCabinetApp
                 byte[] bytes = new byte[RecordSize];
                 this.fileStream.Read(bytes, 0, RecordSize);
 
-                FileCabinetRecord record = this.ReadRecordFromFile(bytes);
+                var tupleReadFromFile = this.ReadRecordFromBuffer(bytes);
+
+                if (tupleReadFromFile.Item2 == 1)
+                {
+                    continue;
+                }
+
+                FileCabinetRecord record = tupleReadFromFile.Item1;
 
                 records.Add(record);
             }
@@ -132,7 +140,14 @@ namespace FileCabinetApp
                 byte[] bytes = new byte[RecordSize];
                 this.fileStream.Read(bytes, 0, RecordSize);
 
-                FileCabinetRecord record = this.ReadRecordFromFile(bytes);
+                var tupleReadFromFile = this.ReadRecordFromBuffer(bytes);
+
+                if (tupleReadFromFile.Item2 == 1)
+                {
+                    continue;
+                }
+
+                FileCabinetRecord record = tupleReadFromFile.Item1;
 
                 records.Add(record);
             }
@@ -152,7 +167,14 @@ namespace FileCabinetApp
                 byte[] bytes = new byte[RecordSize];
                 this.fileStream.Read(bytes, 0, RecordSize);
 
-                FileCabinetRecord record = this.ReadRecordFromFile(bytes);
+                var tupleReadFromFile = this.ReadRecordFromBuffer(bytes);
+
+                if (tupleReadFromFile.Item2 == 1)
+                {
+                    continue;
+                }
+
+                FileCabinetRecord record = tupleReadFromFile.Item1;
 
                 records.Add(record);
             }
@@ -185,7 +207,14 @@ namespace FileCabinetApp
                     byte[] bytes = new byte[RecordSize];
                     this.fileStream.Read(bytes, 0, RecordSize);
 
-                    FileCabinetRecord record = this.ReadRecordFromFile(bytes);
+                    var tupleReadFromFile = this.ReadRecordFromBuffer(bytes);
+
+                    if (tupleReadFromFile.Item2 == 1)
+                    {
+                        continue;
+                    }
+
+                    FileCabinetRecord record = tupleReadFromFile.Item1;
 
                     records.Add(record);
                 }
@@ -199,9 +228,9 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public int GetStat()
+        public void GetStat()
         {
-            return this.recordsCount;
+            Console.WriteLine($"{this.recordsCount} record(s). {this.recordMarkedAsDeletedCount} is marked as deleted.");
         }
 
         /// <inheritdoc/>
@@ -219,7 +248,7 @@ namespace FileCabinetApp
             {
                 var record = unloadRecords[i];
 
-                byte[] buffer = this.WriteRecordToFile(record);
+                byte[] buffer = this.WriteRecordToBuffer(record);
 
                 if (this.dictRecordsPositionOrder.ContainsKey(record.Id))
                 {
@@ -240,7 +269,102 @@ namespace FileCabinetApp
                 this.fileStream.Write(buffer, 0, buffer.Length);
                 this.fileStream.Flush(true);
 
-                this.recordsCount = (int)(this.fileStream.Length / RecordSize);
+                this.UpdateRecordCount();
+            }
+        }
+
+        /// <inheritdoc/>
+        public void RemoveRecordById(int id)
+        {
+            try
+            {
+                short deleteByte = 1;
+
+                byte[] buffer = new byte[sizeof(short)];
+                using (MemoryStream memoryStream = new MemoryStream(buffer))
+                using (BinaryWriter writer = new BinaryWriter(memoryStream))
+                {
+                    writer.Write(deleteByte);
+                }
+
+                int recordPosition = this.GetRecordPosition(id);
+
+                this.fileStream.Seek(recordPosition * RecordSize, SeekOrigin.Begin);
+
+                this.fileStream.Write(buffer, 0, buffer.Length);
+                this.fileStream.Flush(true);
+
+                this.UpdateRecordCount();
+                this.ClearDictionaries();
+                this.AssignRecordValuesToDictionaries();
+
+                Console.WriteLine($"Record #{id} is removed.");
+            }
+            catch (ArgumentNullException anex)
+            {
+                Console.WriteLine(anex.Message);
+            }
+            catch (ArgumentException aex)
+            {
+                Console.WriteLine(aex.Message);
+            }
+        }
+
+        /// <inheritdoc/>
+        public void Purge()
+        {
+            try
+            {
+                int currentPosition = 0;
+                int previousDeletedCount = 0;
+
+                for (int i = 0; i < this.recordsCount; i++)
+                {
+                    this.fileStream.Seek(i * RecordSize, SeekOrigin.Begin);
+
+                    byte[] bytes = new byte[RecordSize];
+                    this.fileStream.Read(bytes, 0, RecordSize);
+
+                    var tupleReadFromFile = this.ReadRecordFromBuffer(bytes);
+
+                    if (tupleReadFromFile.Item2 == 1)
+                    {
+                        previousDeletedCount++;
+                    }
+                    else if ((tupleReadFromFile.Item2 == 0 && previousDeletedCount > 0) || currentPosition != i)
+                    {
+                        byte[] buffer = this.WriteRecordToBuffer(tupleReadFromFile.Item1);
+
+                        this.fileStream.Seek(currentPosition * RecordSize, SeekOrigin.Begin);
+
+                        this.fileStream.Write(buffer, 0, buffer.Length);
+
+                        previousDeletedCount--;
+                        currentPosition++;
+                    }
+                    else
+                    {
+                        currentPosition++;
+                    }
+                }
+
+                this.fileStream.Flush(true);
+                this.fileStream.SetLength(currentPosition * RecordSize);
+
+                Console.WriteLine($"Data file processing is completed: {this.recordMarkedAsDeletedCount} of {this.recordsCount} records were purged.");
+
+                this.UpdateRecordCount();
+                this.ClearDictionaries();
+                this.AssignRecordValuesToDictionaries();
+
+            }
+            catch (ArgumentNullException anex)
+            {
+                Console.WriteLine(anex.Message);
+            }
+            catch (ArgumentException aex)
+            {
+                Console.WriteLine(aex.Message);
             }
         }
 
@@ -269,6 +393,7 @@ namespace FileCabinetApp
 
         private void AssignRecordValuesToDictionaries()
         {
+            this.recordMarkedAsDeletedCount = 0;
             this.fileStream.Seek(0, SeekOrigin.Begin);
 
             for (int i = 0; i < this.recordsCount; i++)
@@ -276,7 +401,15 @@ namespace FileCabinetApp
                 byte[] bytes = new byte[RecordSize];
                 this.fileStream.Read(bytes, 0, RecordSize);
 
-                FileCabinetRecord record = this.ReadRecordFromFile(bytes);
+                var tupleReadFromFile = this.ReadRecordFromBuffer(bytes);
+
+                if (tupleReadFromFile.Item2 == 1)
+                {
+                    this.recordMarkedAsDeletedCount++;
+                    continue;
+                }
+
+                FileCabinetRecord record = tupleReadFromFile.Item1;
 
                 this.AddIdToParamsDictionary(record.Id, i, ref this.dictRecordsPositionOrder);
                 this.AddNameToParamsDictionary(record.FirstName, record.Id, ref this.firstNameDictionary);
@@ -317,14 +450,15 @@ namespace FileCabinetApp
             }
         }
 
-        private FileCabinetRecord ReadRecordFromFile(byte[] bytesRecord)
+        private Tuple<FileCabinetRecord, short> ReadRecordFromBuffer(byte[] bytesRecord)
         {
+            short isRecordDeleted = 0;
             FileCabinetRecord record = new FileCabinetRecord();
 
             using (MemoryStream memoryStream = new MemoryStream(bytesRecord))
             using (BinaryReader reader = new BinaryReader(memoryStream))
             {
-                _ = reader.ReadInt16();
+                isRecordDeleted = reader.ReadInt16();
 
                 record.Id = reader.ReadInt32();
 
@@ -346,16 +480,17 @@ namespace FileCabinetApp
                 record.Gender = reader.ReadChar();
             }
 
-            return record;
+            return new Tuple<FileCabinetRecord, short>(record, isRecordDeleted);
         }
 
-        private byte[] WriteRecordToFile(FileCabinetRecord record)
+        private byte[] WriteRecordToBuffer(FileCabinetRecord record)
         {
             byte[] buffer = new byte[RecordSize];
             using (MemoryStream memoryStream = new MemoryStream(buffer))
             using (BinaryWriter writer = new BinaryWriter(memoryStream))
             {
-                writer.Seek(sizeof(short), SeekOrigin.Begin); // status reservation.
+                short isRecordDeleted = 0;
+                writer.Write(isRecordDeleted);
 
                 writer.Write(record.Id);
 
@@ -419,6 +554,11 @@ namespace FileCabinetApp
             }
 
             return new List<int>();
+        }
+
+        private void UpdateRecordCount()
+        {
+            this.recordsCount = (int)this.fileStream.Length / RecordSize;
         }
     }
 }

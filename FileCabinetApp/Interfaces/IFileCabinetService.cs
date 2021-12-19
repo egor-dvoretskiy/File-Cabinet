@@ -59,8 +59,7 @@ namespace FileCabinetApp.Interfaces
         /// <summary>
         /// Method return records count.
         /// </summary>
-        /// <returns>Amount of records.</returns>
-        int GetStat();
+        void GetStat();
 
         /// <summary>
         /// Makes snapshot of FileCabinetService.
@@ -74,5 +73,16 @@ namespace FileCabinetApp.Interfaces
         /// </summary>
         /// <param name="fileCabinetServiceSnapshot">Snapshot.</param>
         void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot);
+
+        /// <summary>
+        /// Removes record from container.
+        /// </summary>
+        /// <param name="id">Record's id.</param>
+        void RemoveRecordById(int id);
+
+        /// <summary>
+        /// Defragments the data file.
+        /// </summary>
+        void Purge();
     }
 }
