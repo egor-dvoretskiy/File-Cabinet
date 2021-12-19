@@ -305,6 +305,12 @@
             </summary>
             <param name="fileCabinetServiceSnapshot">Snapshot.</param>
         </member>
+        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.RemoveRecordById(System.Int32)">
+            <summary>
+            Removes record from container.
+            </summary>
+            <param name="id">Record's id.</param>
+        </member>
         <member name="T:FileCabinetApp.Interfaces.IRecordValidator">
             <summary>
             Interface that hold validate parameters functional.
@@ -426,6 +432,9 @@
         <member name="M:FileCabinetApp.FileCabinetFileSystemService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFileSystemService.RemoveRecordById(System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
             <summary>
             Records Processor Class.
@@ -503,6 +512,12 @@
             Restores record's data from file.
             </summary>
             <param name="fileCabinetServiceSnapshot">Holds snapshot of data.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.RemoveRecordById(System.Int32)">
+            <summary>
+            Removes record by id.
+            </summary>
+            <param name="id">Id to remove.</param>
         </member>
         <member name="T:FileCabinetApp.Validators.CustomValidator">
             <summary>

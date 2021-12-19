@@ -244,6 +244,12 @@ namespace FileCabinetApp
             }
         }
 
+        /// <inheritdoc/>
+        public void RemoveRecordById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         private byte[] PrepareStringToWrite(string stringToWrite)
         {
             var nameBytes = Encoding.ASCII.GetBytes(stringToWrite);

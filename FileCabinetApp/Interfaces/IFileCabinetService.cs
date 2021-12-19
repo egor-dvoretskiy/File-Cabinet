@@ -74,5 +74,11 @@ namespace FileCabinetApp.Interfaces
         /// </summary>
         /// <param name="fileCabinetServiceSnapshot">Snapshot.</param>
         void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot);
+
+        /// <summary>
+        /// Removes record from container.
+        /// </summary>
+        /// <param name="id">Record's id.</param>
+        void RemoveRecordById(int id);
     }
 }

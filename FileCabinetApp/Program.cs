@@ -57,6 +57,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
+            new Tuple<string, Action<string>>("remove", Remove),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -70,6 +71,7 @@ namespace FileCabinetApp
             new string[] { "find", "find stored user data by specific field", "The 'find' command searches for stored user data by specific field." },
             new string[] { "export", "export data list to specific format", "The 'export' command converts data list to specific format." },
             new string[] { "import", "import data list from file", "The 'import' command converts file data to filesystem." },
+            new string[] { "remove", "remove specific record by id", "The 'remove' command remove specific record by id." },
         };
 
         private static string[] availableFormatsToExport = new string[]
@@ -575,6 +577,19 @@ namespace FileCabinetApp
             {
                 Console.WriteLine(argumentException.Message);
             }
+        }
+
+        private static void Remove(string parameters)
+        {
+            bool isParameterValid = int.TryParse(parameters, out int recordIdToRemove);
+
+            if (!isParameterValid || recordIdToRemove < 1)
+            {
+                Console.WriteLine("Wrong parameters. Please, try again.");
+                return;
+            }
+
+            Program.fileCabinetService.RemoveRecordById(recordIdToRemove);
         }
     }
 }

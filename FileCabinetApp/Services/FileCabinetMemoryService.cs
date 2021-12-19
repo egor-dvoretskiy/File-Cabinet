@@ -208,6 +208,35 @@ namespace FileCabinetApp
             this.LoadRecordsToList();
         }
 
+        /// <summary>
+        /// Removes record by id.
+        /// </summary>
+        /// <param name="id">Id to remove.</param>
+        public void RemoveRecordById(int id)
+        {
+            try
+            {
+                int positionInList = this.GetRecordPosition(id);
+
+                this.list.RemoveAt(positionInList);
+
+                string firstName = this.storedIdRecords[id].FirstName;
+                this.RemoveRecordFromDictionary(firstName, id, ref this.firstNameDictionary);
+
+                string lastName = this.storedIdRecords[id].LastName;
+                this.RemoveRecordFromDictionary(lastName, id, ref this.lastNameDictionary);
+
+                string dateOfBirth = this.storedIdRecords[id].DateOfBirth.ToString("yyyy-MMM-dd");
+                this.RemoveRecordFromDictionary(dateOfBirth, id, ref this.dateOfBirthDictionary);
+
+                this.storedIdRecords.Remove(id);
+            }
+            catch (ArgumentException argumentException)
+            {
+                Console.WriteLine(argumentException.Message);
+            }
+        }
+
         private void AddInformationToDictionary(string parametrName, ref Dictionary<string, List<int>> dict, FileCabinetRecord record)
         {
             if (!dict.ContainsKey(parametrName))
@@ -252,6 +281,15 @@ namespace FileCabinetApp
             }
 
             this.AddInformationToDictionary(parameterName, ref dict, record);
+        }
+
+        private void RemoveRecordFromDictionary(string parameterName, int id, ref Dictionary<string, List<int>> dict)
+        {
+            dict[parameterName].Remove(id);
+            if (dict[parameterName].Count == 0)
+            {
+                dict.Remove(parameterName);
+            }
         }
 
         private List<FileCabinetRecord> GetInformationFromDictionary(string parametrName, Dictionary<string, List<int>> dictionary)
