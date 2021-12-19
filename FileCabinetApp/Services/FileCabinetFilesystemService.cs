@@ -228,9 +228,9 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public int GetStat()
+        public void GetStat()
         {
-            return this.recordsCount;
+            Console.WriteLine($"{this.recordsCount} record(s). {this.recordMarkedAsDeletedCount} is marked as deleted.");
         }
 
         /// <inheritdoc/>

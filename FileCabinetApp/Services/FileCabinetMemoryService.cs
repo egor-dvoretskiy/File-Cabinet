@@ -103,10 +103,9 @@ namespace FileCabinetApp
         /// <summary>
         /// Method return records count.
         /// </summary>
-        /// <returns>Amount of records.</returns>
-        public int GetStat()
+        public void GetStat()
         {
-            return this.list.Count;
+            Console.WriteLine($"{this.list.Count} record(s).");
         }
 
         /// <summary>

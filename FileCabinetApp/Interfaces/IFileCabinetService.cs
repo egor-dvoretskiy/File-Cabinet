@@ -59,8 +59,7 @@ namespace FileCabinetApp.Interfaces
         /// <summary>
         /// Method return records count.
         /// </summary>
-        /// <returns>Amount of records.</returns>
-        int GetStat();
+        void GetStat();
 
         /// <summary>
         /// Makes snapshot of FileCabinetService.

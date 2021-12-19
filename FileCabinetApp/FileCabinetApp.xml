@@ -290,7 +290,6 @@
             <summary>
             Method return records count.
             </summary>
-            <returns>Amount of records.</returns>
         </member>
         <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.MakeSnapshot(FileCabinetApp.Interfaces.IRecordValidator)">
             <summary>
@@ -478,7 +477,6 @@
             <summary>
             Method return records count.
             </summary>
-            <returns>Amount of records.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.GetRecordPosition(System.Int32)">
             <summary>
