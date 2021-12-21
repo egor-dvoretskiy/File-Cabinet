@@ -4,6 +4,76 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.CommandHandlers.AppCommandRequest">
+            <summary>
+            Holds current command request.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.AppCommandRequest.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.AppCommandRequest"/> class.
+            </summary>
+            <param name="command">Input command.</param>
+            <param name="parameters">Input parameters.</param>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.AppCommandRequest.Command">
+            <summary>
+            Gets user input command.
+            </summary>
+            <value>
+            User input command.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.AppCommandRequest.Parameters">
+            <summary>
+            Gets user input parameters.
+            </summary>
+            <value>
+            User input parameters.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.CommandHandler">
+            <summary>
+            Holds the current command.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.CommandHandlers.CommandHandler.CommandHelpIndex">
+            <summary>
+            Command help index.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.CommandHandlers.CommandHandler.DescriptionHelpIndex">
+            <summary>
+            Description help index.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.CommandHandlers.CommandHandler.ExplanationHelpIndex">
+            <summary>
+            Explanation Help index.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.CommandHandlers.CommandHandler.HelpMessages">
+            <summary>
+            Messages displays after entered help command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Holds command request.
+            </summary>
+            <param name="appCommandRequest">Command request.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.CommandHandlerBase">
+            <summary>
+            Abstract class for CommandHandler.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.SetNext(FileCabinetApp.Interfaces.ICommandHandler)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Class, that contains record parameters.
@@ -232,6 +302,23 @@
             <param name="input">Input string.</param>
             <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
         </member>
+        <member name="T:FileCabinetApp.Interfaces.ICommandHandler">
+            <summary>
+            Holds "Chain of Responsibility" methods.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.ICommandHandler.SetNext(FileCabinetApp.Interfaces.ICommandHandler)">
+            <summary>
+            Sets the next command.
+            </summary>
+            <param name="commandHandler">Command handler.</param>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.ICommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Hold the current command.
+            </summary>
+            <param name="appCommandRequest">Command Request.</param>
+        </member>
         <member name="T:FileCabinetApp.Interfaces.IFileCabinetService">
             <summary>
             Records Processor interface.
@@ -389,11 +476,40 @@
             Main Class.
             </summary>
         </member>
+        <member name="F:FileCabinetApp.Program.HintMessage">
+            <summary>
+            Hint message.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Program.IsRunning">
+            <summary>
+            App status.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Program.FileCabinetService">
+            <summary>
+            Current storage mode.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Program.Validator">
+            <summary>
+            Validator.
+            </summary>
+        </member>
         <member name="M:FileCabinetApp.Program.Main(System.String[])">
             <summary>
             Init Method.
             </summary>
             <param name="args">Default parameters.</param>
+        </member>
+        <member name="M:FileCabinetApp.Program.ReadInput``1(System.Func{System.String,System.Tuple{System.Boolean,System.String,``0}},System.Func{``0,System.Tuple{System.Boolean,System.String}})">
+            <summary>
+            Reads input string.
+            </summary>
+            <typeparam name="T">Depends on input.</typeparam>
+            <param name="converter">Converter depends on input.</param>
+            <param name="validator">Input validator.</param>
+            <returns>Type depends on input.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetFileSystemService">
             <summary>

@@ -356,7 +356,6 @@ namespace FileCabinetApp
                 this.UpdateRecordCount();
                 this.ClearDictionaries();
                 this.AssignRecordValuesToDictionaries();
-
             }
             catch (ArgumentNullException anex)
             {
