@@ -164,6 +164,25 @@ namespace FileCabinetApp
             while (true);
         }
 
+        /// <summary>
+        /// Print records in console.
+        /// </summary>
+        /// <param name="records">Data to print.</param>
+        public static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)
+        {
+            foreach (FileCabinetRecord record in records)
+            {
+                Console.WriteLine(
+                        $"#{record.Id}, " +
+                        $"{record.FirstName}, " +
+                        $"{record.LastName}, " +
+                        $"{record.DateOfBirth:yyyy-MMM-dd}, " +
+                        $"{record.PersonalRating}, " +
+                        $"{record.Debt}, " +
+                        $"{record.Gender}.");
+            }
+        }
+
         private static void ParseInputArgs(string[] args)
         {
             int indexArgs = 0;
@@ -224,16 +243,14 @@ namespace FileCabinetApp
 
         private static ICommandHandler CreateCommandHandlers()
         {
-            var recordPrinter = new DefaultRecordPrinter();
-
             var helpHandler = new HelpCommandHandler();
             var createHandler = new CreateCommandHandler(Program.fileCabinetService);
             var editHandler = new EditCommandHandler(Program.fileCabinetService);
             var exitHandler = new ExitCommandHandler(Program.SetAppRunningStatus);
             var exportHandler = new ExportCommandHandler(Program.fileCabinetService);
             var importHandler = new ImportCommandHandler(Program.fileCabinetService);
-            var findHandler = new FindCommandHandler(Program.fileCabinetService, recordPrinter);
-            var listHandler = new ListCommandHandler(Program.fileCabinetService, recordPrinter);
+            var findHandler = new FindCommandHandler(Program.fileCabinetService, Program.DefaultRecordPrint);
+            var listHandler = new ListCommandHandler(Program.fileCabinetService, Program.DefaultRecordPrint);
             var purgeHandler = new PurgeCommandHandler(Program.fileCabinetService);
             var removeHandler = new RemoveCommandHandler(Program.fileCabinetService);
             var statHandler = new StatCommandHandler(Program.fileCabinetService);

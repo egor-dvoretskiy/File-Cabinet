@@ -14,14 +14,14 @@ namespace FileCabinetApp.CommandHandlers
     public class ListCommandHandler : ServiceCommandHandlerBase
     {
         private const string CommandName = "list";
-        private IRecordPrinter recordPrinter;
+        private Action<IEnumerable<FileCabinetRecord>> recordPrinter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ListCommandHandler"/> class.
         /// </summary>
         /// <param name="service">File cabinet service.</param>
         /// <param name="recordPrinter">Records printer.</param>
-        public ListCommandHandler(IFileCabinetService service, IRecordPrinter recordPrinter)
+        public ListCommandHandler(IFileCabinetService service, Action<IEnumerable<FileCabinetRecord>> recordPrinter)
             : base(service)
         {
             this.recordPrinter = recordPrinter;
@@ -53,7 +53,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            this.recordPrinter.Print(records);
+            this.recordPrinter(records);
         }
     }
 }
