@@ -76,6 +76,12 @@
             Handler for exit command.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExitCommandHandler.#ctor(System.Action{System.Boolean})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ExitCommandHandler"/> class.
+            </summary>
+            <param name="action">Delegate.</param>
+        </member>
         <member name="M:FileCabinetApp.CommandHandlers.ExitCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
         </member>
@@ -631,11 +637,6 @@
         <member name="F:FileCabinetApp.Program.AvailableFormatsToExportImport">
             <summary>
             Available format to export/import.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Program.IsRunning">
-            <summary>
-            App status.
             </summary>
         </member>
         <member name="F:FileCabinetApp.Program.Validator">

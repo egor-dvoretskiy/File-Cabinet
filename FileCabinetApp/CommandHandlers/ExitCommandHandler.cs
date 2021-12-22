@@ -13,6 +13,17 @@ namespace FileCabinetApp.CommandHandlers
     {
         private const string CommandName = "exit";
 
+        private Action<bool> exitAction;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExitCommandHandler"/> class.
+        /// </summary>
+        /// <param name="action">Delegate.</param>
+        public ExitCommandHandler(Action<bool> action)
+        {
+            this.exitAction = action;
+        }
+
         /// <inheritdoc/>
         public override void Handle(AppCommandRequest appCommandRequest)
         {
@@ -32,7 +43,7 @@ namespace FileCabinetApp.CommandHandlers
         private void Exit(string parameters)
         {
             Console.WriteLine("Exiting an application...");
-            Program.IsRunning = false;
+            this.exitAction(false);
         }
     }
 }

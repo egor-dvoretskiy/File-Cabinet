@@ -47,11 +47,6 @@ namespace FileCabinetApp
         };
 
         /// <summary>
-        /// App status.
-        /// </summary>
-        public static bool IsRunning = true;
-
-        /// <summary>
         /// Validator.
         /// </summary>
         public static IRecordValidator Validator = new DefaultValidator();
@@ -64,6 +59,7 @@ namespace FileCabinetApp
         private const string CorrectStorageFilesystemInputArgsMessage = "Using storage filesystem mode.";
 
         private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService();
+        private static bool isRunning = true;
 
         private static FileStream fileStream = File.Open("cabinet-records.db", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
 
@@ -122,7 +118,7 @@ namespace FileCabinetApp
 
                 commandHandler.Handle(appCommandRequest);
             }
-            while (IsRunning);
+            while (isRunning);
         }
 
         /// <summary>
@@ -231,7 +227,7 @@ namespace FileCabinetApp
             var helpHandler = new HelpCommandHandler();
             var createHandler = new CreateCommandHandler(Program.fileCabinetService);
             var editHandler = new EditCommandHandler(Program.fileCabinetService);
-            var exitHandler = new ExitCommandHandler();
+            var exitHandler = new ExitCommandHandler(Program.SetAppRunningStatus);
             var exportHandler = new ExportCommandHandler(Program.fileCabinetService);
             var importHandler = new ImportCommandHandler(Program.fileCabinetService);
             var findHandler = new FindCommandHandler(Program.fileCabinetService);
@@ -252,6 +248,11 @@ namespace FileCabinetApp
             removeHandler.SetNext(statHandler);
 
             return createHandler;
+        }
+
+        private static void SetAppRunningStatus(bool value)
+        {
+            Program.isRunning = value;
         }
     }
 }
