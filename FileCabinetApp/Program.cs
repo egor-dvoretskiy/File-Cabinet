@@ -37,6 +37,15 @@ namespace FileCabinetApp
         public const string HintMessage = "Enter your command, or enter 'help' to get help.";
 
         /// <summary>
+        /// Available format to export/import.
+        /// </summary>
+        public static readonly string[] AvailableFormatsToExportImport = new string[]
+        {
+            "csv",
+            "xml",
+        };
+
+        /// <summary>
         /// App status.
         /// </summary>
         public static bool IsRunning = true;
@@ -111,7 +120,9 @@ namespace FileCabinetApp
                 var command = inputs[commandIndex];
                 var parameters = inputs.Length > 1 ? inputs[parametersIndex] : string.Empty;
 
-                commandHandler.Handle(new AppCommandRequest(command, parameters));
+                var appCommandRequest = new AppCommandRequest(command, parameters);
+
+                commandHandler.Handle(appCommandRequest);
             }
             while (IsRunning);
         }
@@ -219,8 +230,30 @@ namespace FileCabinetApp
 
         private static ICommandHandler CreateCommandHandlers()
         {
-            var commandHandler = new CommandHandler();
-            return commandHandler;
+            var helpHandler = new HelpCommandHandler();
+            var createHandler = new CreateCommandHandler();
+            var editHandler = new EditCommandHandler();
+            var exitHandler = new ExitCommandHandler();
+            var exportHandler = new ExportCommandHandler();
+            var importHandler = new ImportCommandHandler();
+            var findHandler = new FindCommandHandler();
+            var listHandler = new ListCommandHandler();
+            var purgeHandler = new PurgeCommandHandler();
+            var removeHandler = new RemoveCommandHandler();
+            var statHandler = new StatCommandHandler();
+
+            createHandler.SetNext(editHandler);
+            editHandler.SetNext(exitHandler);
+            exitHandler.SetNext(exportHandler);
+            exportHandler.SetNext(findHandler);
+            findHandler.SetNext(helpHandler);
+            helpHandler.SetNext(importHandler);
+            importHandler.SetNext(listHandler);
+            listHandler.SetNext(purgeHandler);
+            purgeHandler.SetNext(removeHandler);
+            removeHandler.SetNext(statHandler);
+
+            return createHandler;
         }
     }
 }

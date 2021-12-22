@@ -21,14 +21,20 @@ namespace FileCabinetApp.CommandHandlers
         /// <inheritdoc/>
         public virtual void Handle(AppCommandRequest appCommandRequest)
         {
-            throw new NotImplementedException();
+            if (this.nextHandler != null)
+            {
+                this.nextHandler.Handle(appCommandRequest);
+            }
+            else
+            {
+                Console.WriteLine("Wrong command, please try again!");
+            }
         }
 
         /// <inheritdoc/>
         public void SetNext(ICommandHandler commandHandler)
         {
             this.nextHandler = commandHandler;
-            throw new NotImplementedException();
         }
     }
 }
