@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FileCabinetApp.Interfaces;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Services
 {
     /// <summary>
     /// File system service.
@@ -230,7 +230,7 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public void GetStat()
         {
-            Console.WriteLine($"{this.recordsCount} record(s). {this.recordMarkedAsDeletedCount} is marked as deleted.");
+            Console.WriteLine($"{this.recordsCount} record(s). {this.recordMarkedAsDeletedCount} record(s) marked as deleted.");
         }
 
         /// <inheritdoc/>

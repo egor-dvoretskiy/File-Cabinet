@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FileCabinetApp.Interfaces;
+using FileCabinetApp.Services;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -12,6 +14,16 @@ namespace FileCabinetApp.CommandHandlers
     public class CreateCommandHandler : CommandHandlerBase
     {
         private const string CommandName = "create";
+        private IFileCabinetService service = new FileCabinetMemoryService();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreateCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">File cabinet service.</param>
+        public CreateCommandHandler(IFileCabinetService service)
+        {
+            this.service = service;
+        }
 
         /// <inheritdoc/>
         public override void Handle(AppCommandRequest appCommandRequest)
@@ -59,7 +71,7 @@ namespace FileCabinetApp.CommandHandlers
                 Gender = gender,
             };
 
-            int id = Program.FileCabinetService.CreateRecord(record);
+            int id = this.service.CreateRecord(record);
 
             Console.WriteLine($"Record #{id} is created.");
         }

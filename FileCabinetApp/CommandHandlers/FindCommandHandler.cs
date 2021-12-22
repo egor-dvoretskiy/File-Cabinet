@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FileCabinetApp.Interfaces;
+using FileCabinetApp.Services;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -12,6 +14,16 @@ namespace FileCabinetApp.CommandHandlers
     public class FindCommandHandler : CommandHandlerBase
     {
         private const string CommandName = "find";
+        private IFileCabinetService service = new FileCabinetMemoryService();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FindCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">File cabinet service.</param>
+        public FindCommandHandler(IFileCabinetService service)
+        {
+            this.service = service;
+        }
 
         /// <inheritdoc/>
         public override void Handle(AppCommandRequest appCommandRequest)
@@ -45,13 +57,13 @@ namespace FileCabinetApp.CommandHandlers
             switch (paramsFindContainer[0])
             {
                 case "firstname":
-                    foundDataContainer = Program.FileCabinetService.FindByFirstName(parameterToFind).ToArray();
+                    foundDataContainer = this.service.FindByFirstName(parameterToFind).ToArray();
                     break;
                 case "lastname":
-                    foundDataContainer = Program.FileCabinetService.FindByLastName(parameterToFind).ToArray();
+                    foundDataContainer = this.service.FindByLastName(parameterToFind).ToArray();
                     break;
                 case "dateofbirth":
-                    foundDataContainer = Program.FileCabinetService.FindByBirthDate(parameterToFind).ToArray();
+                    foundDataContainer = this.service.FindByBirthDate(parameterToFind).ToArray();
                     break;
                 default:
                     Console.WriteLine("There is no such parameter.");

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FileCabinetApp.Interfaces;
+using FileCabinetApp.Services;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -12,6 +14,16 @@ namespace FileCabinetApp.CommandHandlers
     public class ExportCommandHandler : CommandHandlerBase
     {
         private const string CommandName = "export";
+        private IFileCabinetService service = new FileCabinetMemoryService();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExportCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">File cabinet service.</param>
+        public ExportCommandHandler(IFileCabinetService service)
+        {
+            this.service = service;
+        }
 
         /// <inheritdoc/>
         public override void Handle(AppCommandRequest appCommandRequest)
@@ -63,7 +75,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 using (StreamWriter writer = new StreamWriter(pathToFile))
                 {
-                    var snapshot = Program.FileCabinetService.MakeSnapshot(Program.Validator);
+                    var snapshot = this.service.MakeSnapshot(Program.Validator);
 
                     switch (exportFormat)
                     {

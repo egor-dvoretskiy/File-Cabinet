@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.Interfaces;
+using FileCabinetApp.Services;
 using FileCabinetApp.Validators;
 
 #pragma warning disable CS8601 // Possible null reference argument.
@@ -51,11 +52,6 @@ namespace FileCabinetApp
         public static bool IsRunning = true;
 
         /// <summary>
-        /// Current storage mode.
-        /// </summary>
-        public static IFileCabinetService FileCabinetService = new FileCabinetMemoryService();
-
-        /// <summary>
         /// Validator.
         /// </summary>
         public static IRecordValidator Validator = new DefaultValidator();
@@ -66,6 +62,8 @@ namespace FileCabinetApp
         private const string CorrectDefaultInputArgsMessage = "Using default validation rules.";
         private const string CorrectStorageMemoryInputArgsMessage = "Using storage memory mode.";
         private const string CorrectStorageFilesystemInputArgsMessage = "Using storage filesystem mode.";
+
+        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService();
 
         private static FileStream fileStream = File.Open("cabinet-records.db", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
 
@@ -195,7 +193,7 @@ namespace FileCabinetApp
                         Console.WriteLine(dictCommandLineValidationParameter[parameter].Item2);
                         break;
                     case CommandLineParameters.Storage when dictCommandLineStorageParameter.ContainsKey(args[indexArgs + 1]):
-                        Program.FileCabinetService = dictCommandLineStorageParameter[parameter].Item1;
+                        Program.fileCabinetService = dictCommandLineStorageParameter[parameter].Item1;
                         Console.WriteLine(dictCommandLineStorageParameter[parameter].Item2);
                         break;
                     default:
@@ -231,16 +229,16 @@ namespace FileCabinetApp
         private static ICommandHandler CreateCommandHandlers()
         {
             var helpHandler = new HelpCommandHandler();
-            var createHandler = new CreateCommandHandler();
-            var editHandler = new EditCommandHandler();
+            var createHandler = new CreateCommandHandler(Program.fileCabinetService);
+            var editHandler = new EditCommandHandler(Program.fileCabinetService);
             var exitHandler = new ExitCommandHandler();
-            var exportHandler = new ExportCommandHandler();
-            var importHandler = new ImportCommandHandler();
-            var findHandler = new FindCommandHandler();
-            var listHandler = new ListCommandHandler();
-            var purgeHandler = new PurgeCommandHandler();
-            var removeHandler = new RemoveCommandHandler();
-            var statHandler = new StatCommandHandler();
+            var exportHandler = new ExportCommandHandler(Program.fileCabinetService);
+            var importHandler = new ImportCommandHandler(Program.fileCabinetService);
+            var findHandler = new FindCommandHandler(Program.fileCabinetService);
+            var listHandler = new ListCommandHandler(Program.fileCabinetService);
+            var purgeHandler = new PurgeCommandHandler(Program.fileCabinetService);
+            var removeHandler = new RemoveCommandHandler(Program.fileCabinetService);
+            var statHandler = new StatCommandHandler(Program.fileCabinetService);
 
             createHandler.SetNext(editHandler);
             editHandler.SetNext(exitHandler);

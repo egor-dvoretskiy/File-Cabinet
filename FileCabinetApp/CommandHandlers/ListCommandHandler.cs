@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FileCabinetApp.Interfaces;
+using FileCabinetApp.Services;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -12,6 +14,16 @@ namespace FileCabinetApp.CommandHandlers
     public class ListCommandHandler : CommandHandlerBase
     {
         private const string CommandName = "list";
+        private IFileCabinetService service = new FileCabinetMemoryService();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ListCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">File cabinet service.</param>
+        public ListCommandHandler(IFileCabinetService service)
+        {
+            this.service = service;
+        }
 
         /// <inheritdoc/>
         public override void Handle(AppCommandRequest appCommandRequest)
@@ -31,7 +43,7 @@ namespace FileCabinetApp.CommandHandlers
 
         private void List(string parameters)
         {
-            var records = Program.FileCabinetService.GetRecords();
+            var records = this.service.GetRecords();
 
             if (records.Count == 0)
             {

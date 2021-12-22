@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FileCabinetApp.Interfaces;
+using FileCabinetApp.Services;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -12,6 +14,16 @@ namespace FileCabinetApp.CommandHandlers
     public class EditCommandHandler : CommandHandlerBase
     {
         private const string CommandName = "edit";
+        private IFileCabinetService service = new FileCabinetMemoryService();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EditCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">File cabinet service.</param>
+        public EditCommandHandler(IFileCabinetService service)
+        {
+            this.service = service;
+        }
 
         /// <inheritdoc/>
         public override void Handle(AppCommandRequest appCommandRequest)
@@ -40,7 +52,7 @@ namespace FileCabinetApp.CommandHandlers
 
             try
             {
-                int recordPosition = Program.FileCabinetService.GetRecordPosition(id);
+                int recordPosition = this.service.GetRecordPosition(id);
 
                 Console.Write("First name: ");
                 var firstName = Program.ReadInput(InputConverter.StringConverter, Program.Validator.FirstNameValidator);
@@ -71,7 +83,7 @@ namespace FileCabinetApp.CommandHandlers
                     Gender = gender,
                 };
 
-                Program.FileCabinetService.EditRecord(recordPosition, record);
+                this.service.EditRecord(recordPosition, record);
 
                 Console.WriteLine($"Record #{id} is edited.");
             }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using FileCabinetApp.Interfaces;
 using FileCabinetApp.Validators;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Services
 {
     /// <summary>
     /// Records Processor Class.
