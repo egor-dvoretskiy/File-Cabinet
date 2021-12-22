@@ -11,18 +11,17 @@ namespace FileCabinetApp.CommandHandlers
     /// <summary>
     /// Handler for stat command.
     /// </summary>
-    public class StatCommandHandler : CommandHandlerBase
+    public class StatCommandHandler : ServiceCommandHandlerBase
     {
         private const string CommandName = "stat";
-        private IFileCabinetService service = new FileCabinetMemoryService();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StatCommandHandler"/> class.
         /// </summary>
         /// <param name="service">File cabinet service.</param>
         public StatCommandHandler(IFileCabinetService service)
+            : base(service)
         {
-            this.service = service;
         }
 
         /// <inheritdoc/>

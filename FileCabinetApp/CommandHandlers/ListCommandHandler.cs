@@ -11,18 +11,17 @@ namespace FileCabinetApp.CommandHandlers
     /// <summary>
     /// Handler for list command.
     /// </summary>
-    public class ListCommandHandler : CommandHandlerBase
+    public class ListCommandHandler : ServiceCommandHandlerBase
     {
         private const string CommandName = "list";
-        private IFileCabinetService service = new FileCabinetMemoryService();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ListCommandHandler"/> class.
         /// </summary>
         /// <param name="service">File cabinet service.</param>
         public ListCommandHandler(IFileCabinetService service)
+            : base(service)
         {
-            this.service = service;
         }
 
         /// <inheritdoc/>
