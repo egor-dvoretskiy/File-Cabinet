@@ -104,11 +104,12 @@
             Handler for find command.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.FindCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
+        <member name="M:FileCabinetApp.CommandHandlers.FindCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService,FileCabinetApp.Interfaces.IRecordPrinter)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.FindCommandHandler"/> class.
             </summary>
             <param name="service">File cabinet service.</param>
+            <param name="recordPrinter">Print records.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.FindCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
@@ -160,11 +161,12 @@
             Handler for list command.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
+        <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService,FileCabinetApp.Interfaces.IRecordPrinter)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ListCommandHandler"/> class.
             </summary>
             <param name="service">File cabinet service.</param>
+            <param name="recordPrinter">Records printer.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
@@ -226,6 +228,17 @@
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.StatCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.DefaultRecordPrinter">
+            <summary>
+            Print records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.DefaultRecordPrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Print records in console.
+            </summary>
+            <param name="records">Data to print.</param>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
@@ -554,6 +567,17 @@
             <summary>
             Defragments the data file.
             </summary>
+        </member>
+        <member name="T:FileCabinetApp.Interfaces.IRecordPrinter">
+            <summary>
+            Responsible for print records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.IRecordPrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Print records.
+            </summary>
+            <param name="records">Data to print.</param>
         </member>
         <member name="T:FileCabinetApp.Interfaces.IRecordValidator">
             <summary>

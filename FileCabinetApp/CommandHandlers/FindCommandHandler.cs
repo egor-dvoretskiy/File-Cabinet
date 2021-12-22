@@ -14,14 +14,17 @@ namespace FileCabinetApp.CommandHandlers
     public class FindCommandHandler : ServiceCommandHandlerBase
     {
         private const string CommandName = "find";
+        private IRecordPrinter recordPrinter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FindCommandHandler"/> class.
         /// </summary>
         /// <param name="service">File cabinet service.</param>
-        public FindCommandHandler(IFileCabinetService service)
+        /// <param name="recordPrinter">Print records.</param>
+        public FindCommandHandler(IFileCabinetService service, IRecordPrinter recordPrinter)
             : base(service)
         {
+            this.recordPrinter = recordPrinter;
         }
 
         /// <inheritdoc/>
@@ -75,22 +78,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            for (int i = 0; i < foundDataContainer.Length; i++)
-            {
-                this.PrintRecord(foundDataContainer[i]);
-            }
-        }
-
-        private void PrintRecord(FileCabinetRecord record)
-        {
-            Console.WriteLine(
-                    $"#{record.Id}, " +
-                    $"{record.FirstName}, " +
-                    $"{record.LastName}, " +
-                    $"{record.DateOfBirth:yyyy-MMM-dd}, " +
-                    $"{record.PersonalRating}, " +
-                    $"{record.Debt}, " +
-                    $"{record.Gender}.");
+            this.recordPrinter.Print(foundDataContainer);
         }
     }
 }
