@@ -24,14 +24,17 @@ namespace FileCabinetApp.Validators
         }
 
         /// <inheritdoc/>
-        public void ValidateParameters(FileCabinetRecord parameters)
+        public bool ValidateParameters(FileCabinetRecord parameters)
         {
+            bool isValid = true;
             var input = parameters.Gender;
 
             if (!this.genderChars.Contains(input))
             {
-                throw new ArgumentException($"Gender possible chars dont contains input gender value ({input}).");
+                isValid = false; // throw new ArgumentException($"Gender possible chars dont contains input gender value ({input}).");
             }
+
+            return isValid;
         }
     }
 }

@@ -51,7 +51,7 @@ namespace FileCabinetApp.CommandHandlers
 
             try
             {
-                int recordPosition = this.service.GetRecordPosition(id);
+                this.service.CheckRecordPresence(id);
 
                 Console.Write("First name: ");
                 var firstName = Program.ReadInput(InputConverter.StringConverter, Program.InputValidator.FirstNameValidator);
@@ -65,8 +65,8 @@ namespace FileCabinetApp.CommandHandlers
                 Console.Write("Personal rating: ");
                 var personalRating = Program.ReadInput(InputConverter.PersonalRatingConverter, Program.InputValidator.PersonalRatingValidator);
 
-                Console.Write("Debt: ");
-                var debt = Program.ReadInput(InputConverter.DebtConverter, Program.InputValidator.DebtValidator);
+                Console.Write("Salary: ");
+                var salary = Program.ReadInput(InputConverter.SalaryConverter, Program.InputValidator.SalaryValidator);
 
                 Console.Write("Gender: ");
                 var gender = Program.ReadInput(InputConverter.GenderConverter, Program.InputValidator.GenderValidator);
@@ -78,11 +78,11 @@ namespace FileCabinetApp.CommandHandlers
                     LastName = lastName,
                     DateOfBirth = birthDate,
                     PersonalRating = personalRating,
-                    Debt = debt,
+                    Salary = salary,
                     Gender = gender,
                 };
 
-                this.service.EditRecord(recordPosition, record);
+                this.service.EditRecord(id, record);
 
                 Console.WriteLine($"Record #{id} is edited.");
             }

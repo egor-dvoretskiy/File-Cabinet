@@ -58,7 +58,7 @@ namespace FileCabinetApp
         /// <value>
         /// Person's amount of debt.
         /// </value>
-        public decimal Debt { get; set; }
+        public decimal Salary { get; set; }
 
         /// <summary>
         /// Gets or sets person's gender.

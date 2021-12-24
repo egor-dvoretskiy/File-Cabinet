@@ -55,21 +55,13 @@ namespace FileCabinetApp.FormatReaders
                     continue;
                 }
 
-                try
+                FileCabinetRecord record = this.ParseNode(root[i]);
+
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (isValid)
                 {
-                    FileCabinetRecord record = this.ParseNode(root[i]);
-
-                    this.recordValidator.ValidateParameters(record);
-
                     records.Add(record);
-                }
-                catch (ArgumentOutOfRangeException argumentOutOfRangeException)
-                {
-                    _ = argumentOutOfRangeException;
-                }
-                catch (ArgumentException argumentException)
-                {
-                    _ = argumentException;
                 }
             }
 
@@ -85,7 +77,7 @@ namespace FileCabinetApp.FormatReaders
             record.LastName = this.GetNameValue(node.ChildNodes?[0]?.Attributes?[1].Value);
             record.DateOfBirth = this.GetBirthDate(node.ChildNodes?[1]?.InnerText);
             record.PersonalRating = this.GetPersonalRating(node.ChildNodes?[2]?.InnerText);
-            record.Debt = this.GetDebt(node.ChildNodes?[3]?.InnerText);
+            record.Salary = this.GetSalary(node.ChildNodes?[3]?.InnerText);
             record.Gender = this.GetGender(node.ChildNodes?[4]?.InnerText);
 
             return record;
@@ -139,16 +131,16 @@ namespace FileCabinetApp.FormatReaders
             return rating;
         }
 
-        private decimal GetDebt(string stringDebt)
+        private decimal GetSalary(string stringSalary)
         {
-            decimal debt = -1;
+            decimal salary = -1;
 
-            if (!string.IsNullOrEmpty(stringDebt))
+            if (!string.IsNullOrEmpty(stringSalary))
             {
-                debt = decimal.Parse(stringDebt);
+                salary = decimal.Parse(stringSalary);
             }
 
-            return debt;
+            return salary;
         }
 
         private char GetGender(string stringGender)

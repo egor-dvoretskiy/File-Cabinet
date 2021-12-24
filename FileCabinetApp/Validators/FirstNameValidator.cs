@@ -27,14 +27,17 @@ namespace FileCabinetApp.Validators
         }
 
         /// <inheritdoc/>
-        public void ValidateParameters(FileCabinetRecord parameters)
+        public bool ValidateParameters(FileCabinetRecord parameters)
         {
+            bool isValid = true;
             var input = parameters.FirstName;
 
             if (input.Length < this.minLength || input.Length > this.maxLength)
             {
-                throw new ArgumentOutOfRangeException("FirstName's length is not in the interval [2; 60].");
+                isValid = false; // throw new ArgumentOutOfRangeException("FirstName's length is not in the interval [2; 60].");
             }
+
+            return isValid;
         }
     }
 }

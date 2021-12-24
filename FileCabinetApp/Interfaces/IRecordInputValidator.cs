@@ -44,7 +44,7 @@ namespace FileCabinetApp.Interfaces
         /// </summary>
         /// <param name="input">debt.</param>
         /// <returns>Tuple values (isValid, errorMessage).</returns>
-        public Tuple<bool, string> DebtValidator(decimal input);
+        public Tuple<bool, string> SalaryValidator(decimal input);
 
         /// <summary>
         /// Validates gender value.

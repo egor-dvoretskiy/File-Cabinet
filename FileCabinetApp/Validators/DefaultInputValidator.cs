@@ -22,10 +22,10 @@ namespace FileCabinetApp.Validators
             bool isValid = true;
             string errorMessage = string.Empty;
 
-            if (input.Length < 2 || input.Length > 60)
+            if (input.Length < ValidatorSettingsDefault.MinimalLengthFirstName || input.Length > ValidatorSettingsDefault.MaximumLengthFirstName)
             {
                 isValid = false;
-                errorMessage = "FirstName's length is not in the interval [2; 60].";
+                errorMessage = $"FirstName's length is not in the interval [{ValidatorSettingsDefault.MinimalLengthFirstName}; {ValidatorSettingsDefault.MaximumLengthFirstName}].";
             }
 
             return new Tuple<bool, string>(isValid, errorMessage);
@@ -41,10 +41,10 @@ namespace FileCabinetApp.Validators
             bool isValid = true;
             string errorMessage = string.Empty;
 
-            if (input.Length < 2 || input.Length > 60)
+            if (input.Length < ValidatorSettingsDefault.MinimalLengthLastName || input.Length > ValidatorSettingsDefault.MaximumLengthLastName)
             {
                 isValid = false;
-                errorMessage = "LastName's length is not in the interval [2; 60].";
+                errorMessage = $"LastName's length is not in the interval [{ValidatorSettingsDefault.MinimalLengthLastName}; {ValidatorSettingsDefault.MaximumLengthLastName}].";
             }
 
             return new Tuple<bool, string>(isValid, errorMessage);
@@ -60,13 +60,10 @@ namespace FileCabinetApp.Validators
             bool isValid = true;
             string errorMessage = string.Empty;
 
-            DateTime leftDateLimit = new DateTime(1950, 1, 1);
-            DateTime rightDateLimit = DateTime.Now;
-
-            if (DateTime.Compare(input, leftDateLimit) < 0 || DateTime.Compare(input, rightDateLimit) > 0)
+            if (DateTime.Compare(input, ValidatorSettingsDefault.MinimalDate) < 0 || DateTime.Compare(input, ValidatorSettingsDefault.MaximumDate) > 0)
             {
                 isValid = false;
-                errorMessage = $"BirthDate is not into the interval [{leftDateLimit:yyyy-MMM-dd}, {rightDateLimit:yyyy-MMM-dd}].";
+                errorMessage = $"BirthDate is not into the interval [{ValidatorSettingsDefault.MinimalDate:yyyy-MMM-dd}, {ValidatorSettingsDefault.MaximumDate:yyyy-MMM-dd}].";
             }
 
             return new Tuple<bool, string>(isValid, errorMessage);
@@ -82,9 +79,10 @@ namespace FileCabinetApp.Validators
             bool isValid = true;
             string errorMessage = string.Empty;
 
-            if (input < -12)
+            if (input < ValidatorSettingsDefault.MinimalPersonalRating)
             {
-                errorMessage = $"PersonalRating value lesser than -12.";
+                isValid = false;
+                errorMessage = $"Personal rating value is less than {ValidatorSettingsDefault.MinimalSalary}.";
             }
 
             return new Tuple<bool, string>(isValid, errorMessage);
@@ -95,14 +93,15 @@ namespace FileCabinetApp.Validators
         /// </summary>
         /// <param name="input">debt.</param>
         /// <returns>Tuple values (isValid, errorMessage).</returns>
-        public Tuple<bool, string> DebtValidator(decimal input)
+        public Tuple<bool, string> SalaryValidator(decimal input)
         {
             bool isValid = true;
             string errorMessage = string.Empty;
 
-            if (input < 0)
+            if (input < ValidatorSettingsDefault.MinimalSalary)
             {
-                errorMessage = $"Debt value is less than zero.";
+                isValid = false;
+                errorMessage = $"Salary value is less than {ValidatorSettingsDefault.MinimalSalary}.";
             }
 
             return new Tuple<bool, string>(isValid, errorMessage);
@@ -120,6 +119,7 @@ namespace FileCabinetApp.Validators
 
             if (!char.IsLetter(input))
             {
+                isValid = false;
                 errorMessage = $"Gender value is not a letter.";
             }
 

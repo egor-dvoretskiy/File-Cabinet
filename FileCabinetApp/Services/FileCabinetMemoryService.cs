@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using FileCabinetApp.Interfaces;
@@ -41,7 +42,12 @@ namespace FileCabinetApp.Services
         {
             try
             {
-                this.recordValidator.ValidateParameters(record);
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (!isValid)
+                {
+                    return -1;
+                }
 
                 record.Id = this.list.Count + 1;
 
@@ -51,7 +57,7 @@ namespace FileCabinetApp.Services
 
                 this.AddInformationToDictionary(record.FirstName, ref this.firstNameDictionary, record);
                 this.AddInformationToDictionary(record.LastName, ref this.lastNameDictionary, record);
-                this.AddInformationToDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd"), ref this.dateOfBirthDictionary, record);
+                this.AddInformationToDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture), ref this.dateOfBirthDictionary, record);
 
                 return record.Id;
             }
@@ -77,21 +83,26 @@ namespace FileCabinetApp.Services
         /// <param name="id">Record's id in list.</param>
         /// <param name="record">Input parameter object.</param>
         /// <exception cref="ArgumentException">id.</exception>
-        public void EditRecord(
-            int id,
-            FileCabinetRecord record)
+        public void EditRecord(int id, FileCabinetRecord record)
         {
             try
             {
-                this.recordValidator.ValidateParameters(record);
+                bool isValid = this.recordValidator.ValidateParameters(record);
 
-                this.list[id] = record;
+                if (!isValid)
+                {
+                    return;
+                }
+
+                int index = this.list.FindIndex(x => x.Id == id);
+
+                this.list[index] = record;
 
                 this.AddOrChangeInformationInIdDictionary(record.Id, ref this.storedIdRecords, record);
 
                 this.EditInformationInDictionary(record.FirstName, ref this.firstNameDictionary, record);
                 this.EditInformationInDictionary(record.LastName, ref this.lastNameDictionary, record);
-                this.EditInformationInDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd"), ref this.dateOfBirthDictionary, record);
+                this.EditInformationInDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture), ref this.dateOfBirthDictionary, record);
             }
             catch (ArgumentNullException anex)
             {
@@ -128,37 +139,12 @@ namespace FileCabinetApp.Services
         /// Method find record position in list by ID.
         /// </summary>
         /// <param name="id">Record's id.</param>
-        /// <returns>Record's position in list.</returns>
-        public int GetRecordPosition(int id)
+        public void CheckRecordPresence(int id)
         {
-            int leftBorder = 0;
-            int rightBorder = this.list.Count;
-            int index = -1;
-            while (leftBorder < rightBorder)
-            {
-                int middle = (leftBorder + rightBorder) / 2;
-                int checkId = this.list[middle].Id;
-                if (checkId > id)
-                {
-                    rightBorder = middle - 1;
-                }
-                else if (checkId < id)
-                {
-                    leftBorder = middle + 1;
-                }
-                else
-                {
-                    index = middle;
-                    break;
-                }
-            }
-
-            if (index == -1)
+            if (!this.storedIdRecords.ContainsKey(id))
             {
                 throw new ArgumentException($"#{id} record is not found.");
             }
-
-            return index;
         }
 
         /// <summary>
@@ -216,7 +202,7 @@ namespace FileCabinetApp.Services
 
                 this.EditInformationInDictionary(record.FirstName, ref this.firstNameDictionary, record);
                 this.EditInformationInDictionary(record.LastName, ref this.lastNameDictionary, record);
-                this.EditInformationInDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd"), ref this.dateOfBirthDictionary, record);
+                this.EditInformationInDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture), ref this.dateOfBirthDictionary, record);
             }
 
             this.LoadRecordsToList();
@@ -230,7 +216,7 @@ namespace FileCabinetApp.Services
         {
             try
             {
-                int positionInList = this.GetRecordPosition(id);
+                int positionInList = this.list.FindIndex(x => x.Id == id);
 
                 this.list.RemoveAt(positionInList);
 
@@ -240,7 +226,7 @@ namespace FileCabinetApp.Services
                 string lastName = this.storedIdRecords[id].LastName;
                 this.RemoveRecordFromDictionary(lastName, id, ref this.lastNameDictionary);
 
-                string dateOfBirth = this.storedIdRecords[id].DateOfBirth.ToString("yyyy-MMM-dd");
+                string dateOfBirth = this.storedIdRecords[id].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
                 this.RemoveRecordFromDictionary(dateOfBirth, id, ref this.dateOfBirthDictionary);
 
                 this.storedIdRecords.Remove(id);
@@ -254,7 +240,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void Purge()
         {
-            Console.WriteLine("Wrong service, plesase switch memory mode to file system.");
+            Console.WriteLine("Wrong service, please switch memory mode to file system.");
         }
 
         private void AddInformationToDictionary(string parametrName, ref Dictionary<string, List<int>> dict, FileCabinetRecord record)

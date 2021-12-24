@@ -43,7 +43,7 @@ namespace FileCabinetGenerator
             record.LastName = GetLastName();
             record.DateOfBirth = GetBirthDate();
             record.PersonalRating = GetPersonalRating();
-            record.Debt = GetDebt();
+            record.Salary = GetSalary();
             record.Gender = GetGender();
 
             return record;
@@ -92,9 +92,10 @@ namespace FileCabinetGenerator
             return (short)random.Next(short.MinValue, short.MaxValue);
         }
 
-        private static decimal GetDebt()
+        private static decimal GetSalary()
         {
-            return Decimal.Round((decimal)random.NextDouble() * (decimal.MaxValue / 1e23m), 2);
+            decimal maxSalary = 1000000; //european tugrics
+            return Decimal.Round((decimal)random.NextDouble() * maxSalary, 2);
         }
 
         private static char GetGender()

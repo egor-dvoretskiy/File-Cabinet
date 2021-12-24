@@ -15,6 +15,7 @@ namespace FileCabinetApp.Interfaces
         /// Validate parameters.
         /// </summary>
         /// <param name="parameters">Record parameters.</param>
-        void ValidateParameters(FileCabinetRecord parameters);
+        /// <returns>Return validation result as boolean value.</returns>
+        bool ValidateParameters(FileCabinetRecord parameters);
     }
 }

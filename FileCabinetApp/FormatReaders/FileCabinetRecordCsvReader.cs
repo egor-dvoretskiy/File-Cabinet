@@ -49,27 +49,19 @@ namespace FileCabinetApp.FormatReaders
 
                 FileCabinetRecord record = new FileCabinetRecord();
 
-                try
+                record.Id = InputConverter.IdConverter(lineParameters[0]).Item3;
+                record.FirstName = InputConverter.StringConverter(lineParameters[1]).Item3;
+                record.LastName = InputConverter.StringConverter(lineParameters[2]).Item3;
+                record.DateOfBirth = InputConverter.BirthDateConverter(lineParameters[3]).Item3;
+                record.PersonalRating = InputConverter.PersonalRatingConverter(lineParameters[4]).Item3;
+                record.Salary = InputConverter.SalaryConverter(lineParameters[5]).Item3;
+                record.Gender = InputConverter.GenderConverter(lineParameters[6]).Item3;
+
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (isValid)
                 {
-                    record.Id = InputConverter.IdConverter(lineParameters[0]).Item3;
-                    record.FirstName = InputConverter.StringConverter(lineParameters[1]).Item3;
-                    record.LastName = InputConverter.StringConverter(lineParameters[2]).Item3;
-                    record.DateOfBirth = InputConverter.BirthDateConverter(lineParameters[3]).Item3;
-                    record.PersonalRating = InputConverter.PersonalRatingConverter(lineParameters[4]).Item3;
-                    record.Debt = InputConverter.DebtConverter(lineParameters[5]).Item3;
-                    record.Gender = InputConverter.GenderConverter(lineParameters[6]).Item3;
-
-                    this.recordValidator.ValidateParameters(record);
-
                     records.Add(record);
-                }
-                catch (ArgumentOutOfRangeException argumentOutOfRangeException)
-                {
-                    _ = argumentOutOfRangeException;
-                }
-                catch (ArgumentException argumentException)
-                {
-                    _ = argumentException;
                 }
             }
 

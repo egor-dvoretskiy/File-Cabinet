@@ -27,14 +27,17 @@ namespace FileCabinetApp.Validators
         }
 
         /// <inheritdoc/>
-        public void ValidateParameters(FileCabinetRecord parameters)
+        public bool ValidateParameters(FileCabinetRecord parameters)
         {
+            bool isValid = true;
             var input = parameters.DateOfBirth;
 
             if (DateTime.Compare(input, this.minimalDate) < 0 || DateTime.Compare(input, this.maximumDate) > 0)
             {
-                throw new ArgumentOutOfRangeException($"Birth date is not into the interval [{this.minimalDate:yyyy-MMM-dd}, {this.maximumDate:yyyy-MMM-dd}].");
+                isValid = false; // throw new ArgumentOutOfRangeException($"Birth date is not into the interval [{this.minimalDate:yyyy-MMM-dd}, {this.maximumDate:yyyy-MMM-dd}].");
             }
+
+            return isValid;
         }
     }
 }

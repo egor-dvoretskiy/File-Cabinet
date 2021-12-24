@@ -23,10 +23,10 @@ namespace FileCabinetApp.Validators
             bool isValid = true;
             string errorMessage = string.Empty;
 
-            if (input.Length < 2)
+            if (input.Length < ValidatorSettingsCustom.MinimalLengthFirstName || input.Length > ValidatorSettingsCustom.MaximumLengthFirstName)
             {
                 isValid = false;
-                errorMessage = "FirstName's length is less than 2.";
+                errorMessage = $"FirstName's length is not in the interval [{ValidatorSettingsDefault.MinimalLengthFirstName}; {ValidatorSettingsDefault.MaximumLengthFirstName}].";
             }
             else if (!Regex.IsMatch(input, @"^[a-zA-Z]+$"))
             {
@@ -47,10 +47,10 @@ namespace FileCabinetApp.Validators
             bool isValid = true;
             string errorMessage = string.Empty;
 
-            if (input.Length < 2)
+            if (input.Length < ValidatorSettingsCustom.MinimalLengthLastName || input.Length > ValidatorSettingsCustom.MaximumLengthLastName)
             {
                 isValid = false;
-                errorMessage = "LastName's length is less than 2.";
+                errorMessage = $"LastName's length is not in the interval [{ValidatorSettingsCustom.MinimalLengthLastName}; {ValidatorSettingsCustom.MaximumLengthLastName}].";
             }
             else if (!Regex.IsMatch(input, @"^[a-zA-Z]+$"))
             {
@@ -71,13 +71,10 @@ namespace FileCabinetApp.Validators
             bool isValid = true;
             string errorMessage = string.Empty;
 
-            DateTime leftDateLimit = new DateTime(1650, 1, 1);
-            DateTime rightDateLimit = DateTime.Now;
-
-            if (DateTime.Compare(input, leftDateLimit) < 0 || DateTime.Compare(input, rightDateLimit) > 0)
+            if (DateTime.Compare(input, ValidatorSettingsCustom.MinimalDate) < 0 || DateTime.Compare(input, ValidatorSettingsCustom.MaximumDate) > 0)
             {
                 isValid = false;
-                errorMessage = $"BirthDate is not into the interval [{leftDateLimit:yyyy-MMM-dd}, {rightDateLimit:yyyy-MMM-dd}].";
+                errorMessage = $"BirthDate is not into the interval [{ValidatorSettingsCustom.MinimalDate:yyyy-MMM-dd}, {ValidatorSettingsCustom.MaximumDate:yyyy-MMM-dd}].";
             }
 
             return new Tuple<bool, string>(isValid, errorMessage);
@@ -93,9 +90,10 @@ namespace FileCabinetApp.Validators
             bool isValid = true;
             string errorMessage = string.Empty;
 
-            if (input < 0)
+            if (input < ValidatorSettingsCustom.MinimalPersonalRating)
             {
-                errorMessage = $"PersonalRating value lesser than zero.";
+                isValid = false;
+                errorMessage = $"PersonalRating value lesser than {ValidatorSettingsCustom.MinimalPersonalRating}.";
             }
 
             return new Tuple<bool, string>(isValid, errorMessage);
@@ -106,14 +104,15 @@ namespace FileCabinetApp.Validators
         /// </summary>
         /// <param name="input">debt.</param>
         /// <returns>Tuple values (isValid, errorMessage).</returns>
-        public Tuple<bool, string> DebtValidator(decimal input)
+        public Tuple<bool, string> SalaryValidator(decimal input)
         {
             bool isValid = true;
             string errorMessage = string.Empty;
 
-            if (input < 0)
+            if (input < ValidatorSettingsCustom.MinimalSalary)
             {
-                errorMessage = $"Debt value is less than zero.";
+                isValid = false;
+                errorMessage = $"Salary value is less than {ValidatorSettingsCustom.MinimalSalary}.";
             }
 
             return new Tuple<bool, string>(isValid, errorMessage);
@@ -129,17 +128,9 @@ namespace FileCabinetApp.Validators
             bool isValid = true;
             string errorMessage = string.Empty;
 
-            char[] availableGenderChars = new char[]
+            if (!char.IsLetter(input))
             {
-                'M',
-                'F',
-                'T',
-                'N',
-                'O',
-            };
-
-            if (!availableGenderChars.Contains(input))
-            {
+                isValid = false;
                 errorMessage = $"The world doesnt know about entered gender at this moment.";
             }
 

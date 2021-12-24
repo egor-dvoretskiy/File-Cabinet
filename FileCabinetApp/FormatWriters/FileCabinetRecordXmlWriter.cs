@@ -74,7 +74,7 @@ namespace FileCabinetApp
                 //------------------------------------------------------ birth date node
                 // add dateBirth node
                 XmlNode dateNode = xmlDocument.CreateElement("dateOfBirth");
-                dateNode.InnerText = records[i].DateOfBirth.ToString("yyyy-MMM-dd", new CultureInfo("en-US"));
+                dateNode.InnerText = records[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
 
                 // add to doc dateNode
                 recordNode.AppendChild(dateNode);
@@ -92,12 +92,12 @@ namespace FileCabinetApp
                 //------------------------------------------------------ ^^^
 
                 //------------------------------------------------------ debt node
-                // add debt node
-                XmlNode debtNode = xmlDocument.CreateElement("debt");
-                debtNode.InnerText = records[i].Debt.ToString();
+                // add salary node
+                XmlNode salaryNode = xmlDocument.CreateElement("salary");
+                salaryNode.InnerText = records[i].Salary.ToString();
 
-                // add to doc debtNode
-                recordNode.AppendChild(debtNode);
+                // add to doc salaryNode
+                recordNode.AppendChild(salaryNode);
 
                 //------------------------------------------------------ ^^^
 

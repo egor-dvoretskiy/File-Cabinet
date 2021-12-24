@@ -44,11 +44,10 @@ namespace FileCabinetApp.Interfaces
         ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName);
 
         /// <summary>
-        /// Method find record position in list by ID.
+        /// Method checks record presence in list by ID.
         /// </summary>
         /// <param name="id">Record's id.</param>
-        /// <returns>Record's position in list.</returns>
-        int GetRecordPosition(int id);
+        void CheckRecordPresence(int id);
 
         /// <summary>
         /// Method return all stored records.

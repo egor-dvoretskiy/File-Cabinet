@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
 
 using FileCabinetApp.CommandHandlers;
@@ -6,7 +8,6 @@ using FileCabinetApp.Interfaces;
 using FileCabinetApp.Services;
 using FileCabinetApp.Validators;
 
-#pragma warning disable CS8601 // Possible null reference argument.
 #pragma warning disable SA1401 // Fields should be private
 
 namespace FileCabinetApp
@@ -177,15 +178,22 @@ namespace FileCabinetApp
         {
             foreach (FileCabinetRecord record in records)
             {
-                Console.WriteLine(
-                        $"#{record.Id}, " +
-                        $"{record.FirstName}, " +
-                        $"{record.LastName}, " +
-                        $"{record.DateOfBirth:yyyy-MMM-dd}, " +
-                        $"{record.PersonalRating}, " +
-                        $"{record.Debt}, " +
-                        $"{record.Gender}.");
+                Console.WriteLine(Program.GetRecordInStringRepresentation(record));
             }
+        }
+
+        private static string GetRecordInStringRepresentation(FileCabinetRecord record)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append($"#{record.Id}, ");
+            stringBuilder.Append($"{record.FirstName}, ");
+            stringBuilder.Append($"{record.LastName}, ");
+            stringBuilder.Append($"{record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, ");
+            stringBuilder.Append($"{record.PersonalRating}, ");
+            stringBuilder.Append($"{record.Salary}, ");
+            stringBuilder.Append($"{record.Gender}.");
+
+            return stringBuilder.ToString();
         }
 
         private static void ParseInputArgs(string[] args)

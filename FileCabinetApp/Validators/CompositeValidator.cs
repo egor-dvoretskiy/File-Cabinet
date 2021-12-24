@@ -24,12 +24,16 @@ namespace FileCabinetApp.Validators
         }
 
         /// <inheritdoc/>
-        public void ValidateParameters(FileCabinetRecord parameters)
+        public bool ValidateParameters(FileCabinetRecord parameters)
         {
+            bool isValid = true;
+
             foreach (var validator in this.validators)
             {
-                validator.ValidateParameters(parameters);
+                isValid &= validator.ValidateParameters(parameters);
             }
+
+            return isValid;
         }
     }
 }

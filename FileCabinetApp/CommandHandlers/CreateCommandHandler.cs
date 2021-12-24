@@ -55,7 +55,7 @@ namespace FileCabinetApp.CommandHandlers
             var personalRating = Program.ReadInput(InputConverter.PersonalRatingConverter, Program.InputValidator.PersonalRatingValidator);
 
             Console.Write("Debt: ");
-            var debt = Program.ReadInput(InputConverter.DebtConverter, Program.InputValidator.DebtValidator);
+            var debt = Program.ReadInput(InputConverter.SalaryConverter, Program.InputValidator.SalaryValidator);
 
             Console.Write("Gender: ");
             var gender = Program.ReadInput(InputConverter.GenderConverter, Program.InputValidator.GenderValidator);
@@ -66,7 +66,7 @@ namespace FileCabinetApp.CommandHandlers
                 LastName = lastName,
                 DateOfBirth = birthDate,
                 PersonalRating = personalRating,
-                Debt = debt,
+                Salary = debt,
                 Gender = gender,
             };
 

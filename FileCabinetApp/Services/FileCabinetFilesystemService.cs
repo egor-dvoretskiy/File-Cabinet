@@ -81,10 +81,12 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public void EditRecord(int recordPosition, FileCabinetRecord record)
+        public void EditRecord(int id, FileCabinetRecord record)
         {
             try
             {
+                int recordPosition = this.dictRecordsPositionOrder[id];
+
                 byte[] buffer = this.WriteRecordToBuffer(record);
                 this.fileStream.Seek(recordPosition * RecordSize, SeekOrigin.Begin);
 
@@ -186,14 +188,12 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public int GetRecordPosition(int id)
+        public void CheckRecordPresence(int id)
         {
             if (!this.dictRecordsPositionOrder.ContainsKey(id))
             {
                 throw new ArgumentException($"#{id} record is not found.");
             }
-
-            return this.dictRecordsPositionOrder[id];
         }
 
         /// <inheritdoc/>
@@ -290,7 +290,7 @@ namespace FileCabinetApp.Services
                     writer.Write(deleteByte);
                 }
 
-                int recordPosition = this.GetRecordPosition(id);
+                int recordPosition = this.dictRecordsPositionOrder[id];
 
                 this.fileStream.Seek(recordPosition * RecordSize, SeekOrigin.Begin);
 
@@ -310,6 +310,10 @@ namespace FileCabinetApp.Services
             catch (ArgumentException aex)
             {
                 Console.WriteLine(aex.Message);
+            }
+            catch (KeyNotFoundException keyNotFoundException)
+            {
+                Console.WriteLine(keyNotFoundException.Message);
             }
         }
 
@@ -478,7 +482,7 @@ namespace FileCabinetApp.Services
                 record.DateOfBirth = new DateTime(year, month, day);
 
                 record.PersonalRating = reader.ReadInt16();
-                record.Debt = reader.ReadDecimal();
+                record.Salary = reader.ReadDecimal();
                 record.Gender = reader.ReadChar();
             }
 
@@ -514,7 +518,7 @@ namespace FileCabinetApp.Services
                 writer.Write(day);
 
                 writer.Write(record.PersonalRating);
-                writer.Write(record.Debt);
+                writer.Write(record.Salary);
                 writer.Write(record.Gender);
             }
 

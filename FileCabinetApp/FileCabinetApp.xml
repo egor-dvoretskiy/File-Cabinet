@@ -274,7 +274,7 @@
             Person's personal rating.
             </value>
         </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.Debt">
+        <member name="P:FileCabinetApp.FileCabinetRecord.Salary">
             <summary>
             Gets or sets person's amount of debt.
             </summary>
@@ -436,7 +436,7 @@
             <param name="input">Input string.</param>
             <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
         </member>
-        <member name="M:FileCabinetApp.InputConverter.DebtConverter(System.String)">
+        <member name="M:FileCabinetApp.InputConverter.SalaryConverter(System.String)">
             <summary>
             Converts input string to decimal.
             </summary>
@@ -515,12 +515,11 @@
             <param name="lastName">Person's last name.</param>
             <returns>All records with the same lastname.</returns>
         </member>
-        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.GetRecordPosition(System.Int32)">
+        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.CheckRecordPresence(System.Int32)">
             <summary>
-            Method find record position in list by ID.
+            Method checks record presence in list by ID.
             </summary>
             <param name="id">Record's id.</param>
-            <returns>Record's position in list.</returns>
         </member>
         <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.GetRecords">
             <summary>
@@ -589,7 +588,7 @@
             <param name="input">personalRating.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Interfaces.IRecordInputValidator.DebtValidator(System.Decimal)">
+        <member name="M:FileCabinetApp.Interfaces.IRecordInputValidator.SalaryValidator(System.Decimal)">
             <summary>
             Validates debt value.
             </summary>
@@ -613,6 +612,7 @@
             Validate parameters.
             </summary>
             <param name="parameters">Record parameters.</param>
+            <returns>Return validation result as boolean value.</returns>
         </member>
         <member name="T:FileCabinetApp.CommandLineParameters">
             <summary>
@@ -697,7 +697,7 @@
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.FindByLastName(System.String)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.GetRecordPosition(System.Int32)">
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.CheckRecordPresence(System.Int32)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.GetRecords">
@@ -755,12 +755,11 @@
             Method return records count.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.GetRecordPosition(System.Int32)">
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.CheckRecordPresence(System.Int32)">
             <summary>
             Method find record position in list by ID.
             </summary>
             <param name="id">Record's id.</param>
-            <returns>Record's position in list.</returns>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.FindByFirstName(System.String)">
             <summary>
@@ -851,7 +850,7 @@
             <param name="input">personalRating.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.CustomInputValidator.DebtValidator(System.Decimal)">
+        <member name="M:FileCabinetApp.Validators.CustomInputValidator.SalaryValidator(System.Decimal)">
             <summary>
             Validates debt value.
             </summary>
@@ -913,7 +912,7 @@
             <param name="input">personalRating.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.DebtValidator(System.Decimal)">
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.SalaryValidator(System.Decimal)">
             <summary>
             Validates debt value.
             </summary>
@@ -956,20 +955,6 @@
         <member name="M:FileCabinetApp.Validators.GenderValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
         </member>
-        <member name="T:FileCabinetApp.Validators.HeightValidator">
-            <summary>
-            Validates record's height.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.Validators.HeightValidator.#ctor(System.Int16)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.HeightValidator"/> class.
-            </summary>
-            <param name="min">Minimal possible height.</param>
-        </member>
-        <member name="M:FileCabinetApp.Validators.HeightValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
-            <inheritdoc/>
-        </member>
         <member name="T:FileCabinetApp.Validators.LastNameValidator">
             <summary>
             Validates last name.
@@ -983,6 +968,34 @@
             <param name="max">Maximum length of first name.</param>
         </member>
         <member name="M:FileCabinetApp.Validators.LastNameValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.Validators.PersonalRatingValidator">
+            <summary>
+            Validates record's height.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.PersonalRatingValidator.#ctor(System.Int16)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.PersonalRatingValidator"/> class.
+            </summary>
+            <param name="min">Minimal possible height.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.PersonalRatingValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.Validators.SalaryValidator">
+            <summary>
+            Validates record's weight.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.SalaryValidator.#ctor(System.Decimal)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.SalaryValidator"/> class.
+            </summary>
+            <param name="min">Minimal value for record's weight.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.SalaryValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Validators.ValidatorBuilder">
@@ -1033,11 +1046,11 @@
             <param name="minHeight">Minimal possible height of record.</param>
             <returns>Validator Builder.</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateWeight(System.Decimal)">
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateSalary(System.Decimal)">
             <summary>
             Validates date of birth.
             </summary>
-            <param name="minWeight">Minimal possible weight of record.</param>
+            <param name="minSalary">Minimal possible weight of record.</param>
             <returns>Validator Builder.</returns>
         </member>
         <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateGender(System.Char[])">
@@ -1053,19 +1066,105 @@
             </summary>
             <returns>Specified validator.</returns>
         </member>
-        <member name="T:FileCabinetApp.Validators.WeightValidator">
+        <member name="T:FileCabinetApp.Validators.ValidatorSettingsCustom">
             <summary>
-            Validates record's weight.
+            Class contains custom validation settings.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Validators.WeightValidator.#ctor(System.Decimal)">
+        <member name="F:FileCabinetApp.Validators.ValidatorSettingsCustom.MinimalLengthFirstName">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.WeightValidator"/> class.
+            Minimal possible length of first name.
             </summary>
-            <param name="min">Minimal value for record's weight.</param>
         </member>
-        <member name="M:FileCabinetApp.Validators.WeightValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
-            <inheritdoc/>
+        <member name="F:FileCabinetApp.Validators.ValidatorSettingsCustom.MaximumLengthFirstName">
+            <summary>
+            Maximum possible length of first name.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.ValidatorSettingsCustom.MinimalLengthLastName">
+            <summary>
+            Minimal possible length of last name.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.ValidatorSettingsCustom.MaximumLengthLastName">
+            <summary>
+            Maximum possible length of last name.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.ValidatorSettingsCustom.MinimalDate">
+            <summary>
+            Minimal possible birth date.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.ValidatorSettingsCustom.MaximumDate">
+            <summary>
+            Maximum possible birth date.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.ValidatorSettingsCustom.MinimalPersonalRating">
+            <summary>
+            Minimal possible personal rating.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.ValidatorSettingsCustom.MinimalSalary">
+            <summary>
+            Minimal possible salary.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.ValidatorSettingsCustom.GenderChars">
+            <summary>
+            Existing genders.
+            </summary>
+        </member>
+        <member name="T:FileCabinetApp.Validators.ValidatorSettingsDefault">
+            <summary>
+            Class contains default validation settings.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.ValidatorSettingsDefault.MinimalLengthFirstName">
+            <summary>
+            Minimal possible length of first name.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.ValidatorSettingsDefault.MaximumLengthFirstName">
+            <summary>
+            Maximum possible length of first name.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.ValidatorSettingsDefault.MinimalLengthLastName">
+            <summary>
+            Minimal possible length of last name.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.ValidatorSettingsDefault.MaximumLengthLastName">
+            <summary>
+            Maximum possible length of last name.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.ValidatorSettingsDefault.MinimalDate">
+            <summary>
+            Minimal possible birth date.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.ValidatorSettingsDefault.MaximumDate">
+            <summary>
+            Maximum possible birth date.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.ValidatorSettingsDefault.MinimalPersonalRating">
+            <summary>
+            Minimal possible personal rating.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.ValidatorSettingsDefault.MinimalSalary">
+            <summary>
+            Minimal possible salary.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Validators.ValidatorSettingsDefault.GenderChars">
+            <summary>
+            Existing genders.
+            </summary>
         </member>
         <member name="T:FileCabinetApp.WriterAssistant">
             <summary>

@@ -20,32 +20,13 @@ namespace FileCabinetApp.Validators
         /// <returns>Composite validator.</returns>
         public IRecordValidator CreateDefault()
         {
-            int minimalLengthFirstName = 2;
-            int maximumLengthFirstName = 60;
-
-            int minimalLengthLastName = 2;
-            int maximumLengthLastName = 60;
-
-            DateTime minimalDate = new DateTime(1950, 1, 1);
-            DateTime maximumDate = DateTime.Now;
-
-            short minimalHeight = 0;
-
-            decimal minimalWeight = 0;
-
-            char[] genderChars = new char[]
-            {
-                'M',
-                'F',
-            };
-
             return this
-                .ValidateFirstName(minimalLengthFirstName, maximumLengthFirstName)
-                .ValidateLastName(minimalLengthLastName, maximumLengthLastName)
-                .ValidateBirthDate(minimalDate, maximumDate)
-                .ValidateHeight(minimalHeight)
-                .ValidateWeight(minimalWeight)
-                .ValidateGender(genderChars)
+                .ValidateFirstName(ValidatorSettingsDefault.MinimalLengthFirstName, ValidatorSettingsDefault.MaximumLengthFirstName)
+                .ValidateLastName(ValidatorSettingsDefault.MinimalLengthLastName, ValidatorSettingsDefault.MaximumLengthLastName)
+                .ValidateBirthDate(ValidatorSettingsDefault.MinimalDate, ValidatorSettingsDefault.MaximumDate)
+                .ValidateHeight(ValidatorSettingsDefault.MinimalPersonalRating)
+                .ValidateSalary(ValidatorSettingsDefault.MinimalSalary)
+                .ValidateGender(ValidatorSettingsDefault.GenderChars)
                 .Create();
         }
 
@@ -55,35 +36,13 @@ namespace FileCabinetApp.Validators
         /// <returns>Composite validator.</returns>
         public IRecordValidator CreateCustom()
         {
-            int minimalLengthFirstName = 2;
-            int maximumLengthFirstName = 60;
-
-            int minimalLengthLastName = 2;
-            int maximumLengthLastName = 60;
-
-            DateTime minimalDate = DateTime.MinValue;
-            DateTime maximumDate = DateTime.Now;
-
-            short minimalHeight = 130;
-
-            decimal minimalWeight = 15;
-
-            char[] genderChars = new char[]
-            {
-                'M',
-                'F',
-                'T',
-                'N',
-                'O',
-            };
-
             return this
-                .ValidateFirstName(minimalLengthFirstName, maximumLengthFirstName)
-                .ValidateLastName(minimalLengthLastName, maximumLengthLastName)
-                .ValidateBirthDate(minimalDate, maximumDate)
-                .ValidateHeight(minimalHeight)
-                .ValidateWeight(minimalWeight)
-                .ValidateGender(genderChars)
+                .ValidateFirstName(ValidatorSettingsCustom.MinimalLengthFirstName, ValidatorSettingsCustom.MaximumLengthFirstName)
+                .ValidateLastName(ValidatorSettingsCustom.MinimalLengthLastName, ValidatorSettingsCustom.MaximumLengthLastName)
+                .ValidateBirthDate(ValidatorSettingsCustom.MinimalDate, ValidatorSettingsCustom.MaximumDate)
+                .ValidateHeight(ValidatorSettingsCustom.MinimalPersonalRating)
+                .ValidateSalary(ValidatorSettingsCustom.MinimalSalary)
+                .ValidateGender(ValidatorSettingsCustom.GenderChars)
                 .Create();
         }
 
@@ -130,18 +89,18 @@ namespace FileCabinetApp.Validators
         /// <returns>Validator Builder.</returns>
         private ValidatorBuilder ValidateHeight(short minHeight)
         {
-            this.validators.Add(new HeightValidator(minHeight));
+            this.validators.Add(new PersonalRatingValidator(minHeight));
             return this;
         }
 
         /// <summary>
         /// Validates date of birth.
         /// </summary>
-        /// <param name="minWeight">Minimal possible weight of record.</param>
+        /// <param name="minSalary">Minimal possible weight of record.</param>
         /// <returns>Validator Builder.</returns>
-        private ValidatorBuilder ValidateWeight(decimal minWeight)
+        private ValidatorBuilder ValidateSalary(decimal minSalary)
         {
-            this.validators.Add(new WeightValidator(minWeight));
+            this.validators.Add(new SalaryValidator(minSalary));
             return this;
         }
 
