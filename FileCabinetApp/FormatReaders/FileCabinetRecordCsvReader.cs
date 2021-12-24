@@ -14,7 +14,7 @@ namespace FileCabinetApp.FormatReaders
     public class FileCabinetRecordCsvReader
     {
         private readonly StreamReader reader;
-        private readonly IRecordValidator recordValidator = new DefaultValidator();
+        private readonly IRecordValidator recordValidator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordCsvReader"/> class.
@@ -38,19 +38,19 @@ namespace FileCabinetApp.FormatReaders
 
             while (true)
             {
+                var csvLine = this.reader.ReadLine();
+
+                if (csvLine is null)
+                {
+                    break;
+                }
+
+                var lineParameters = csvLine.Split(",");
+
+                FileCabinetRecord record = new FileCabinetRecord();
+
                 try
                 {
-                    var csvLine = this.reader.ReadLine();
-
-                    if (csvLine is null)
-                    {
-                        break;
-                    }
-
-                    var lineParameters = csvLine.Split(",");
-
-                    FileCabinetRecord record = new FileCabinetRecord();
-
                     record.Id = InputConverter.IdConverter(lineParameters[0]).Item3;
                     record.FirstName = InputConverter.StringConverter(lineParameters[1]).Item3;
                     record.LastName = InputConverter.StringConverter(lineParameters[2]).Item3;
@@ -59,16 +59,17 @@ namespace FileCabinetApp.FormatReaders
                     record.Debt = InputConverter.DebtConverter(lineParameters[5]).Item3;
                     record.Gender = InputConverter.GenderConverter(lineParameters[6]).Item3;
 
-                    bool isRecordValid = this.recordValidator.IsRecordValid(record);
+                    this.recordValidator.ValidateParameters(record);
 
-                    if (isRecordValid)
-                    {
-                        records.Add(record);
-                    }
+                    records.Add(record);
                 }
                 catch (ArgumentOutOfRangeException argumentOutOfRangeException)
                 {
-                    Console.WriteLine($"csvReader parsing error: {argumentOutOfRangeException.Message}");
+                    _ = argumentOutOfRangeException;
+                }
+                catch (ArgumentException argumentException)
+                {
+                    _ = argumentException;
                 }
             }
 

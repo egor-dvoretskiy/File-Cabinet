@@ -533,11 +533,10 @@
             Method return records count.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.MakeSnapshot(FileCabinetApp.Interfaces.IRecordValidator)">
+        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.MakeSnapshot">
             <summary>
             Makes snapshot of FileCabinetService.
             </summary>
-            <param name="recordValidator">Validator for importing files.</param>
             <returns>Snapshot of FileCabinetService.</returns>
         </member>
         <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
@@ -557,59 +556,63 @@
             Defragments the data file.
             </summary>
         </member>
-        <member name="T:FileCabinetApp.Interfaces.IRecordValidator">
+        <member name="T:FileCabinetApp.Interfaces.IRecordInputValidator">
             <summary>
             Interface that hold validate parameters functional.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Interfaces.IRecordValidator.FirstNameValidator(System.String)">
+        <member name="M:FileCabinetApp.Interfaces.IRecordInputValidator.FirstNameValidator(System.String)">
             <summary>
             Validates firstName value.
             </summary>
             <param name="input">FirstName.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Interfaces.IRecordValidator.LastNameValidator(System.String)">
+        <member name="M:FileCabinetApp.Interfaces.IRecordInputValidator.LastNameValidator(System.String)">
             <summary>
             Validates lastName value.
             </summary>
             <param name="input">LastName.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Interfaces.IRecordValidator.DateOfBirthValidator(System.DateTime)">
+        <member name="M:FileCabinetApp.Interfaces.IRecordInputValidator.DateOfBirthValidator(System.DateTime)">
             <summary>
             Validates birthDate value.
             </summary>
             <param name="input">Birth Date.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Interfaces.IRecordValidator.PersonalRatingValidator(System.Int16)">
+        <member name="M:FileCabinetApp.Interfaces.IRecordInputValidator.PersonalRatingValidator(System.Int16)">
             <summary>
             Validates personalRating value.
             </summary>
             <param name="input">personalRating.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Interfaces.IRecordValidator.DebtValidator(System.Decimal)">
+        <member name="M:FileCabinetApp.Interfaces.IRecordInputValidator.DebtValidator(System.Decimal)">
             <summary>
             Validates debt value.
             </summary>
             <param name="input">debt.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Interfaces.IRecordValidator.GenderValidator(System.Char)">
+        <member name="M:FileCabinetApp.Interfaces.IRecordInputValidator.GenderValidator(System.Char)">
             <summary>
             Validates gender value.
             </summary>
             <param name="input">gender.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Interfaces.IRecordValidator.IsRecordValid(FileCabinetApp.FileCabinetRecord)">
+        <member name="T:FileCabinetApp.Interfaces.IRecordValidator">
             <summary>
-            Checks if record is valid.
+            Record validator's methods.
             </summary>
-            <param name="record">FileCabinetRecord.</param>
-            <returns>Record is valid.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.IRecordValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Validate parameters.
+            </summary>
+            <param name="parameters">Record parameters.</param>
         </member>
         <member name="T:FileCabinetApp.CommandLineParameters">
             <summary>
@@ -641,7 +644,7 @@
             Available format to export/import.
             </summary>
         </member>
-        <member name="F:FileCabinetApp.Program.Validator">
+        <member name="F:FileCabinetApp.Program.InputValidator">
             <summary>
             Validator.
             </summary>
@@ -672,11 +675,12 @@
             File system service.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.#ctor(System.IO.FileStream)">
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.#ctor(System.IO.FileStream,FileCabinetApp.Interfaces.IRecordValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetFileSystemService"/> class.
             </summary>
             <param name="fileStream">File stream.</param>
+            <param name="recordValidator">Validator for record.</param>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.CreateRecord(FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
@@ -702,7 +706,7 @@
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.GetStat">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.MakeSnapshot(FileCabinetApp.Interfaces.IRecordValidator)">
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.MakeSnapshot">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
@@ -719,10 +723,11 @@
             Records Processor Class.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.#ctor">
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.#ctor(FileCabinetApp.Interfaces.IRecordValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetMemoryService"/> class.
             </summary>
+            <param name="recordValidator">Validator for records.</param>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.CreateRecord(FileCabinetApp.FileCabinetRecord)">
             <summary>
@@ -778,11 +783,10 @@
             <param name="birthDate">Person's date of birth.</param>
             <returns>All records with the same date of birth.</returns>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.MakeSnapshot(FileCabinetApp.Interfaces.IRecordValidator)">
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.MakeSnapshot">
             <summary>
             Makes snapshot of FileCabinetService.
             </summary>
-            <param name="recordValidator">Validator for importing file.</param>
             <returns>Snapshot of FileCabinetService.</returns>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
@@ -800,104 +804,267 @@
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Purge">
             <inheritdoc/>
         </member>
-        <member name="T:FileCabinetApp.Validators.CustomValidator">
+        <member name="T:FileCabinetApp.Validators.CompositeValidator">
+            <summary>
+            Container in 'composite pattern'.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CompositeValidator.#ctor(System.Collections.Generic.IEnumerable{FileCabinetApp.Interfaces.IRecordValidator})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.CompositeValidator"/> class.
+            </summary>
+            <param name="validators">List of validators.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CompositeValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.Validators.CustomInputValidator">
             <summary>
             Validator with specific rules.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.FirstNameValidator(System.String)">
+        <member name="M:FileCabinetApp.Validators.CustomInputValidator.FirstNameValidator(System.String)">
             <summary>
             Validates firstName value.
             </summary>
             <param name="input">FirstName.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.LastNameValidator(System.String)">
+        <member name="M:FileCabinetApp.Validators.CustomInputValidator.LastNameValidator(System.String)">
             <summary>
             Validates lastName value.
             </summary>
             <param name="input">LastName.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.DateOfBirthValidator(System.DateTime)">
+        <member name="M:FileCabinetApp.Validators.CustomInputValidator.DateOfBirthValidator(System.DateTime)">
             <summary>
             Validates birthDate value.
             </summary>
             <param name="input">Birth Date.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.PersonalRatingValidator(System.Int16)">
+        <member name="M:FileCabinetApp.Validators.CustomInputValidator.PersonalRatingValidator(System.Int16)">
             <summary>
             Validates personalRating value.
             </summary>
             <param name="input">personalRating.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.DebtValidator(System.Decimal)">
+        <member name="M:FileCabinetApp.Validators.CustomInputValidator.DebtValidator(System.Decimal)">
             <summary>
             Validates debt value.
             </summary>
             <param name="input">debt.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.GenderValidator(System.Char)">
+        <member name="M:FileCabinetApp.Validators.CustomInputValidator.GenderValidator(System.Char)">
             <summary>
             Validates gender value.
             </summary>
             <param name="input">gender.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.IsRecordValid(FileCabinetApp.FileCabinetRecord)">
+        <member name="T:FileCabinetApp.Validators.DateOfBirthValidator">
+            <summary>
+            Validates date of birth.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DateOfBirthValidator.#ctor(System.DateTime,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.DateOfBirthValidator"/> class.
+            </summary>
+            <param name="from">Minimal acceptable to valid date.</param>
+            <param name="to">Maximum acceptable to valid date.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DateOfBirthValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
         </member>
-        <member name="T:FileCabinetApp.Validators.DefaultValidator">
+        <member name="T:FileCabinetApp.Validators.DefaultInputValidator">
             <summary>
             Default Validator.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.FirstNameValidator(System.String)">
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.FirstNameValidator(System.String)">
             <summary>
             Validates firstName value.
             </summary>
             <param name="input">FirstName.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.LastNameValidator(System.String)">
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.LastNameValidator(System.String)">
             <summary>
             Validates lastName value.
             </summary>
             <param name="input">LastName.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.DateOfBirthValidator(System.DateTime)">
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.DateOfBirthValidator(System.DateTime)">
             <summary>
             Validates birthDate value.
             </summary>
             <param name="input">Birth Date.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.PersonalRatingValidator(System.Int16)">
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.PersonalRatingValidator(System.Int16)">
             <summary>
             Validates personalRating value.
             </summary>
             <param name="input">personalRating.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.DebtValidator(System.Decimal)">
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.DebtValidator(System.Decimal)">
             <summary>
             Validates debt value.
             </summary>
             <param name="input">debt.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.GenderValidator(System.Char)">
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.GenderValidator(System.Char)">
             <summary>
             Validates gender value.
             </summary>
             <param name="input">gender.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.IsRecordValid(FileCabinetApp.FileCabinetRecord)">
+        <member name="T:FileCabinetApp.Validators.FirstNameValidator">
+            <summary>
+            Validates first name.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.FirstNameValidator.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.FirstNameValidator"/> class.
+            </summary>
+            <param name="min">Minimal length of first name.</param>
+            <param name="max">Maximum length of first name.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.FirstNameValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.Validators.GenderValidator">
+            <summary>
+            Validates record's gender.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.GenderValidator.#ctor(System.Char[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.GenderValidator"/> class.
+            </summary>
+            <param name="possibleGenderChars">All possible chars for gender value.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.GenderValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.Validators.HeightValidator">
+            <summary>
+            Validates record's height.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.HeightValidator.#ctor(System.Int16)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.HeightValidator"/> class.
+            </summary>
+            <param name="min">Minimal possible height.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.HeightValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.Validators.LastNameValidator">
+            <summary>
+            Validates last name.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.LastNameValidator.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.LastNameValidator"/> class.
+            </summary>
+            <param name="min">Minimal length of first name.</param>
+            <param name="max">Maximum length of first name.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.LastNameValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.Validators.ValidatorBuilder">
+            <summary>
+            Class used as builer in 'builder fluent interface'.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.CreateDefault">
+            <summary>
+            Creates settings for default validator.
+            </summary>
+            <returns>Composite validator.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.CreateCustom">
+            <summary>
+            Creates settings for default validator.
+            </summary>
+            <returns>Composite validator.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateFirstName(System.Int32,System.Int32)">
+            <summary>
+            Validates first name.
+            </summary>
+            <param name="min">Minimal length of first name.</param>
+            <param name="max">Maximum length of first name.</param>
+            <returns>Validator Builder.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateLastName(System.Int32,System.Int32)">
+            <summary>
+            Validates last name.
+            </summary>
+            <param name="min">Minimal length of last name.</param>
+            <param name="max">Maximum length of last name.</param>
+            <returns>Validator Builder.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateBirthDate(System.DateTime,System.DateTime)">
+            <summary>
+            Validates date of birth.
+            </summary>
+            <param name="min">Minimal acceptable to valid date.</param>
+            <param name="max">Maximum acceptable to valid date.</param>
+            <returns>Validator Builder.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateHeight(System.Int16)">
+            <summary>
+            Validates date of birth.
+            </summary>
+            <param name="minHeight">Minimal possible height of record.</param>
+            <returns>Validator Builder.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateWeight(System.Decimal)">
+            <summary>
+            Validates date of birth.
+            </summary>
+            <param name="minWeight">Minimal possible weight of record.</param>
+            <returns>Validator Builder.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateGender(System.Char[])">
+            <summary>
+            Validates date of birth.
+            </summary>
+            <param name="possibleGenderChars">Possible to use gender chars.</param>
+            <returns>Validator Builder.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.Create">
+            <summary>
+            Creates validator.
+            </summary>
+            <returns>Specified validator.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Validators.WeightValidator">
+            <summary>
+            Validates record's weight.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.WeightValidator.#ctor(System.Decimal)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.WeightValidator"/> class.
+            </summary>
+            <param name="min">Minimal value for record's weight.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.WeightValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.WriterAssistant">

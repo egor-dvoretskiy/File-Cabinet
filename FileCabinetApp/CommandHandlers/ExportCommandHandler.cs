@@ -74,7 +74,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 using (StreamWriter writer = new StreamWriter(pathToFile))
                 {
-                    var snapshot = this.service.MakeSnapshot(Program.Validator);
+                    var snapshot = this.service.MakeSnapshot();
 
                     switch (exportFormat)
                     {

@@ -17,6 +17,7 @@ namespace FileCabinetApp.Services
         private const int RecordSize = sizeof(short) + sizeof(int) + (MaxNameLength * 2) + (sizeof(int) * 3) + sizeof(short) + sizeof(decimal) + sizeof(char);
 
         private FileStream fileStream;
+        private IRecordValidator recordValidator;
 
         // first argument - record's id, second element - record's position in file.
         private Dictionary<int, int> dictRecordsPositionOrder = new Dictionary<int, int>();
@@ -33,9 +34,11 @@ namespace FileCabinetApp.Services
         /// Initializes a new instance of the <see cref="FileCabinetFileSystemService"/> class.
         /// </summary>
         /// <param name="fileStream">File stream.</param>
-        public FileCabinetFileSystemService(FileStream fileStream)
+        /// <param name="recordValidator">Validator for record.</param>
+        public FileCabinetFileSystemService(FileStream fileStream, IRecordValidator recordValidator)
         {
             this.fileStream = fileStream;
+            this.recordValidator = recordValidator;
 
             this.recordsCount = (int)(fileStream.Length / RecordSize);
 
@@ -234,9 +237,9 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public FileCabinetServiceSnapshot MakeSnapshot(IRecordValidator recordValidator)
+        public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            return new FileCabinetServiceSnapshot(this.GetRecords().ToList(), recordValidator);
+            return new FileCabinetServiceSnapshot(this.GetRecords().ToList(), this.recordValidator);
         }
 
         /// <inheritdoc/>

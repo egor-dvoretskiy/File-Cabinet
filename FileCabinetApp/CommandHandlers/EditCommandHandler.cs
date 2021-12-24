@@ -54,22 +54,22 @@ namespace FileCabinetApp.CommandHandlers
                 int recordPosition = this.service.GetRecordPosition(id);
 
                 Console.Write("First name: ");
-                var firstName = Program.ReadInput(InputConverter.StringConverter, Program.Validator.FirstNameValidator);
+                var firstName = Program.ReadInput(InputConverter.StringConverter, Program.InputValidator.FirstNameValidator);
 
                 Console.Write("Last name: ");
-                var lastName = Program.ReadInput(InputConverter.StringConverter, Program.Validator.LastNameValidator);
+                var lastName = Program.ReadInput(InputConverter.StringConverter, Program.InputValidator.LastNameValidator);
 
                 Console.Write("Date of birth (month/day/year): ");
-                var birthDate = Program.ReadInput(InputConverter.BirthDateConverter, Program.Validator.DateOfBirthValidator);
+                var birthDate = Program.ReadInput(InputConverter.BirthDateConverter, Program.InputValidator.DateOfBirthValidator);
 
                 Console.Write("Personal rating: ");
-                var personalRating = Program.ReadInput(InputConverter.PersonalRatingConverter, Program.Validator.PersonalRatingValidator);
+                var personalRating = Program.ReadInput(InputConverter.PersonalRatingConverter, Program.InputValidator.PersonalRatingValidator);
 
                 Console.Write("Debt: ");
-                var debt = Program.ReadInput(InputConverter.DebtConverter, Program.Validator.DebtValidator);
+                var debt = Program.ReadInput(InputConverter.DebtConverter, Program.InputValidator.DebtValidator);
 
                 Console.Write("Gender: ");
-                var gender = Program.ReadInput(InputConverter.GenderConverter, Program.Validator.GenderValidator);
+                var gender = Program.ReadInput(InputConverter.GenderConverter, Program.InputValidator.GenderValidator);
 
                 FileCabinetRecord record = new FileCabinetRecord()
                 {

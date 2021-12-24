@@ -17,7 +17,7 @@ namespace FileCabinetApp.FormatReaders
     public class FileCabinetRecordXmlReader
     {
         private readonly StreamReader reader;
-        private readonly IRecordValidator recordValidator = new DefaultValidator();
+        private readonly IRecordValidator recordValidator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordXmlReader"/> class.
@@ -55,13 +55,21 @@ namespace FileCabinetApp.FormatReaders
                     continue;
                 }
 
-                FileCabinetRecord record = this.ParseNode(root[i]);
-
-                bool isRecordValid = this.recordValidator.IsRecordValid(record);
-
-                if (isRecordValid)
+                try
                 {
+                    FileCabinetRecord record = this.ParseNode(root[i]);
+
+                    this.recordValidator.ValidateParameters(record);
+
                     records.Add(record);
+                }
+                catch (ArgumentOutOfRangeException argumentOutOfRangeException)
+                {
+                    _ = argumentOutOfRangeException;
+                }
+                catch (ArgumentException argumentException)
+                {
+                    _ = argumentException;
                 }
             }
 

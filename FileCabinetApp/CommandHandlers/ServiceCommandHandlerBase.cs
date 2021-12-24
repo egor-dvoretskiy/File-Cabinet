@@ -18,7 +18,7 @@ namespace FileCabinetApp.CommandHandlers
         /// <summary>
         /// File cabinet service.
         /// </summary>
-        protected IFileCabinetService service = new FileCabinetMemoryService();
+        protected IFileCabinetService service;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceCommandHandlerBase"/> class.

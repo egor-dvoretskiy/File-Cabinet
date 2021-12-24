@@ -13,6 +13,8 @@ namespace FileCabinetApp.Services
     /// </summary>
     public class FileCabinetMemoryService : IFileCabinetService
     {
+        private IRecordValidator recordValidator;
+
         private List<FileCabinetRecord> list = new ();
 
         private Dictionary<int, FileCabinetRecord> storedIdRecords = new Dictionary<int, FileCabinetRecord>();
@@ -24,8 +26,10 @@ namespace FileCabinetApp.Services
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
         /// </summary>
-        public FileCabinetMemoryService()
+        /// <param name="recordValidator">Validator for records.</param>
+        public FileCabinetMemoryService(IRecordValidator recordValidator)
         {
+            this.recordValidator = recordValidator;
         }
 
         /// <summary>
@@ -37,6 +41,8 @@ namespace FileCabinetApp.Services
         {
             try
             {
+                this.recordValidator.ValidateParameters(record);
+
                 record.Id = this.list.Count + 1;
 
                 this.list.Add(record);
@@ -52,6 +58,10 @@ namespace FileCabinetApp.Services
             catch (ArgumentNullException anex)
             {
                 Console.WriteLine(anex.Message);
+            }
+            catch (ArgumentOutOfRangeException aorex)
+            {
+                Console.WriteLine(aorex.Message);
             }
             catch (ArgumentException aex)
             {
@@ -73,6 +83,8 @@ namespace FileCabinetApp.Services
         {
             try
             {
+                this.recordValidator.ValidateParameters(record);
+
                 this.list[id] = record;
 
                 this.AddOrChangeInformationInIdDictionary(record.Id, ref this.storedIdRecords, record);
@@ -84,6 +96,10 @@ namespace FileCabinetApp.Services
             catch (ArgumentNullException anex)
             {
                 Console.WriteLine(anex.Message);
+            }
+            catch (ArgumentOutOfRangeException aorex)
+            {
+                Console.WriteLine(aorex.Message);
             }
             catch (ArgumentException aex)
             {
@@ -178,11 +194,10 @@ namespace FileCabinetApp.Services
         /// <summary>
         /// Makes snapshot of FileCabinetService.
         /// </summary>
-        /// <param name="recordValidator">Validator for importing file.</param>
         /// <returns>Snapshot of FileCabinetService.</returns>
-        public FileCabinetServiceSnapshot MakeSnapshot(IRecordValidator recordValidator)
+        public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            return new FileCabinetServiceSnapshot(this.list, recordValidator);
+            return new FileCabinetServiceSnapshot(this.list, this.recordValidator);
         }
 
         /// <summary>

@@ -61,7 +61,7 @@ namespace FileCabinetApp.CommandHandlers
 
             try
             {
-                var snapshot = this.service.MakeSnapshot(Program.Validator);
+                var snapshot = this.service.MakeSnapshot();
 
                 using (StreamReader reader = new StreamReader(pathToFile))
                 {
