@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FileCabinetApp.Interfaces;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Services
 {
     /// <summary>
     /// File system service.
@@ -17,6 +17,7 @@ namespace FileCabinetApp
         private const int RecordSize = sizeof(short) + sizeof(int) + (MaxNameLength * 2) + (sizeof(int) * 3) + sizeof(short) + sizeof(decimal) + sizeof(char);
 
         private FileStream fileStream;
+        private IRecordValidator recordValidator;
 
         // first argument - record's id, second element - record's position in file.
         private Dictionary<int, int> dictRecordsPositionOrder = new Dictionary<int, int>();
@@ -33,9 +34,11 @@ namespace FileCabinetApp
         /// Initializes a new instance of the <see cref="FileCabinetFileSystemService"/> class.
         /// </summary>
         /// <param name="fileStream">File stream.</param>
-        public FileCabinetFileSystemService(FileStream fileStream)
+        /// <param name="recordValidator">Validator for record.</param>
+        public FileCabinetFileSystemService(FileStream fileStream, IRecordValidator recordValidator)
         {
             this.fileStream = fileStream;
+            this.recordValidator = recordValidator;
 
             this.recordsCount = (int)(fileStream.Length / RecordSize);
 
@@ -78,10 +81,12 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public void EditRecord(int recordPosition, FileCabinetRecord record)
+        public void EditRecord(int id, FileCabinetRecord record)
         {
             try
             {
+                int recordPosition = this.dictRecordsPositionOrder[id];
+
                 byte[] buffer = this.WriteRecordToBuffer(record);
                 this.fileStream.Seek(recordPosition * RecordSize, SeekOrigin.Begin);
 
@@ -183,14 +188,12 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public int GetRecordPosition(int id)
+        public void CheckRecordPresence(int id)
         {
             if (!this.dictRecordsPositionOrder.ContainsKey(id))
             {
                 throw new ArgumentException($"#{id} record is not found.");
             }
-
-            return this.dictRecordsPositionOrder[id];
         }
 
         /// <inheritdoc/>
@@ -230,13 +233,13 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public void GetStat()
         {
-            Console.WriteLine($"{this.recordsCount} record(s). {this.recordMarkedAsDeletedCount} is marked as deleted.");
+            Console.WriteLine($"{this.recordsCount} record(s). {this.recordMarkedAsDeletedCount} record(s) marked as deleted.");
         }
 
         /// <inheritdoc/>
-        public FileCabinetServiceSnapshot MakeSnapshot(IRecordValidator recordValidator)
+        public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            return new FileCabinetServiceSnapshot(this.GetRecords().ToList(), recordValidator);
+            return new FileCabinetServiceSnapshot(this.GetRecords().ToList(), this.recordValidator);
         }
 
         /// <inheritdoc/>
@@ -287,7 +290,7 @@ namespace FileCabinetApp
                     writer.Write(deleteByte);
                 }
 
-                int recordPosition = this.GetRecordPosition(id);
+                int recordPosition = this.dictRecordsPositionOrder[id];
 
                 this.fileStream.Seek(recordPosition * RecordSize, SeekOrigin.Begin);
 
@@ -307,6 +310,10 @@ namespace FileCabinetApp
             catch (ArgumentException aex)
             {
                 Console.WriteLine(aex.Message);
+            }
+            catch (KeyNotFoundException keyNotFoundException)
+            {
+                Console.WriteLine(keyNotFoundException.Message);
             }
         }
 
@@ -356,7 +363,6 @@ namespace FileCabinetApp
                 this.UpdateRecordCount();
                 this.ClearDictionaries();
                 this.AssignRecordValuesToDictionaries();
-
             }
             catch (ArgumentNullException anex)
             {
@@ -476,7 +482,7 @@ namespace FileCabinetApp
                 record.DateOfBirth = new DateTime(year, month, day);
 
                 record.PersonalRating = reader.ReadInt16();
-                record.Debt = reader.ReadDecimal();
+                record.Salary = reader.ReadDecimal();
                 record.Gender = reader.ReadChar();
             }
 
@@ -512,7 +518,7 @@ namespace FileCabinetApp
                 writer.Write(day);
 
                 writer.Write(record.PersonalRating);
-                writer.Write(record.Debt);
+                writer.Write(record.Salary);
                 writer.Write(record.Gender);
             }
 

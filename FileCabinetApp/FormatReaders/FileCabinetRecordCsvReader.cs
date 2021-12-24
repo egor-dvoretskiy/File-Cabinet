@@ -14,7 +14,7 @@ namespace FileCabinetApp.FormatReaders
     public class FileCabinetRecordCsvReader
     {
         private readonly StreamReader reader;
-        private readonly IRecordValidator recordValidator = new DefaultValidator();
+        private readonly IRecordValidator recordValidator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordCsvReader"/> class.
@@ -38,37 +38,30 @@ namespace FileCabinetApp.FormatReaders
 
             while (true)
             {
-                try
+                var csvLine = this.reader.ReadLine();
+
+                if (csvLine is null)
                 {
-                    var csvLine = this.reader.ReadLine();
-
-                    if (csvLine is null)
-                    {
-                        break;
-                    }
-
-                    var lineParameters = csvLine.Split(",");
-
-                    FileCabinetRecord record = new FileCabinetRecord();
-
-                    record.Id = InputConverter.IdConverter(lineParameters[0]).Item3;
-                    record.FirstName = InputConverter.StringConverter(lineParameters[1]).Item3;
-                    record.LastName = InputConverter.StringConverter(lineParameters[2]).Item3;
-                    record.DateOfBirth = InputConverter.BirthDateConverter(lineParameters[3]).Item3;
-                    record.PersonalRating = InputConverter.PersonalRatingConverter(lineParameters[4]).Item3;
-                    record.Debt = InputConverter.DebtConverter(lineParameters[5]).Item3;
-                    record.Gender = InputConverter.GenderConverter(lineParameters[6]).Item3;
-
-                    bool isRecordValid = this.recordValidator.IsRecordValid(record);
-
-                    if (isRecordValid)
-                    {
-                        records.Add(record);
-                    }
+                    break;
                 }
-                catch (ArgumentOutOfRangeException argumentOutOfRangeException)
+
+                var lineParameters = csvLine.Split(",");
+
+                FileCabinetRecord record = new FileCabinetRecord();
+
+                record.Id = InputConverter.IdConverter(lineParameters[0]).Item3;
+                record.FirstName = InputConverter.StringConverter(lineParameters[1]).Item3;
+                record.LastName = InputConverter.StringConverter(lineParameters[2]).Item3;
+                record.DateOfBirth = InputConverter.BirthDateConverter(lineParameters[3]).Item3;
+                record.PersonalRating = InputConverter.PersonalRatingConverter(lineParameters[4]).Item3;
+                record.Salary = InputConverter.SalaryConverter(lineParameters[5]).Item3;
+                record.Gender = InputConverter.GenderConverter(lineParameters[6]).Item3;
+
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (isValid)
                 {
-                    Console.WriteLine($"csvReader parsing error: {argumentOutOfRangeException.Message}");
+                    records.Add(record);
                 }
             }
 

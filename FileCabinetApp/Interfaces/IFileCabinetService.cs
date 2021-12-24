@@ -44,11 +44,10 @@ namespace FileCabinetApp.Interfaces
         ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName);
 
         /// <summary>
-        /// Method find record position in list by ID.
+        /// Method checks record presence in list by ID.
         /// </summary>
         /// <param name="id">Record's id.</param>
-        /// <returns>Record's position in list.</returns>
-        int GetRecordPosition(int id);
+        void CheckRecordPresence(int id);
 
         /// <summary>
         /// Method return all stored records.
@@ -64,9 +63,8 @@ namespace FileCabinetApp.Interfaces
         /// <summary>
         /// Makes snapshot of FileCabinetService.
         /// </summary>
-        /// <param name="recordValidator">Validator for importing files.</param>
         /// <returns>Snapshot of FileCabinetService.</returns>
-        FileCabinetServiceSnapshot MakeSnapshot(IRecordValidator recordValidator);
+        FileCabinetServiceSnapshot MakeSnapshot();
 
         /// <summary>
         /// Restores data from file.

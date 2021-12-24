@@ -16,7 +16,7 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetServiceSnapshot
     {
-        private readonly IRecordValidator recordValidator = new DefaultValidator();
+        private readonly IRecordValidator recordValidator;
         private FileCabinetRecord[] records;
 
         /// <summary>

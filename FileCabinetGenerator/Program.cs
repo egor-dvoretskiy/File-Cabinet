@@ -2,8 +2,6 @@
 using System.Text.RegularExpressions;
 using FileCabinetGenerator.FormatWriters;
 
-#pragma warning disable CS8601 // Possible null reference argument.
-
 namespace FileCabinetGenerator
 {
     /// <summary>

@@ -89,27 +89,27 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="input">Input string.</param>
         /// <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
-        public static Tuple<bool, string, decimal> DebtConverter(string input)
+        public static Tuple<bool, string, decimal> SalaryConverter(string input)
         {
             bool isConvertingSuccessful = true;
             string errorMessage = string.Empty;
-            decimal debt = 0;
+            decimal salary = 0;
 
             if (string.IsNullOrWhiteSpace(input))
             {
                 isConvertingSuccessful = false;
-                errorMessage = "debt Is Null Or White Space";
+                errorMessage = "salary Is Null Or White Space";
             }
             else
             {
-                isConvertingSuccessful = decimal.TryParse(input, out debt);
+                isConvertingSuccessful = decimal.TryParse(input, out salary);
                 if (!isConvertingSuccessful)
                 {
-                    errorMessage = "Cannot parse debt(decimal)";
+                    errorMessage = "Cannot parse salary(decimal)";
                 }
             }
 
-            return new Tuple<bool, string, decimal>(isConvertingSuccessful, errorMessage, debt);
+            return new Tuple<bool, string, decimal>(isConvertingSuccessful, errorMessage, salary);
         }
 
         /// <summary>
