@@ -614,6 +614,21 @@
             <param name="parameters">Record parameters.</param>
             <returns>Return validation result as boolean value.</returns>
         </member>
+        <member name="T:FileCabinetApp.ServiceMeterMode">
+            <summary>
+            Validator settings types.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.ServiceMeterMode.Default">
+            <summary>
+            Default settings for validators.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.ServiceMeterMode.TimeMeasuring">
+            <summary>
+            Custom setting for validators.
+            </summary>
+        </member>
         <member name="T:FileCabinetApp.SettingsType">
             <summary>
             Validator settings types.
@@ -684,6 +699,53 @@
             Print records in console.
             </summary>
             <param name="records">Data to print.</param>
+        </member>
+        <member name="T:FileCabinetApp.ServiceMeter">
+            <summary>
+            Measures working time of service methods.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ServiceMeter"/> class.
+            </summary>
+            <param name="service">Service to measure time.</param>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.CheckRecordPresence(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.CreateRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByBirthDate(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.RemoveRecordById(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Services.FileCabinetFileSystemService">
             <summary>

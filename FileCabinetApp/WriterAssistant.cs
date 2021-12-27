@@ -34,7 +34,7 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                string? addStringValue = value.GetType() != typeof(DateTime) ? value.ToString().Replace(",", ".") : ((DateTime)value).ToString("yyyy-MMM-dd", new CultureInfo("en-US"));
+                string? addStringValue = value.GetType() != typeof(DateTime) ? value.ToString().Replace(",", ".") : ((DateTime)value).ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
 
                 lstStringRecordValues.Add(addStringValue);
             }

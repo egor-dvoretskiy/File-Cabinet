@@ -16,6 +16,22 @@ namespace FileCabinetApp
     /// <summary>
     /// Validator settings types.
     /// </summary>
+    public enum ServiceMeterMode
+    {
+        /// <summary>
+        /// Default settings for validators.
+        /// </summary>
+        Default,
+
+        /// <summary>
+        /// Custom setting for validators.
+        /// </summary>
+        TimeMeasuring,
+    }
+
+    /// <summary>
+    /// Validator settings types.
+    /// </summary>
     public enum SettingsType
     {
         /// <summary>
@@ -79,7 +95,9 @@ namespace FileCabinetApp
         private const string NoInputStorageArgsMessage = "There is no specified storage mode. Using file system storage mode.";
         private const string CorrectStorageMemoryInputArgsMessage = "Using storage memory mode.";
         private const string CorrectStorageFilesystemInputArgsMessage = "Using storage filesystem mode.";
+        private const string CorrectServiceMeterInputArgsMessage = "Using service time measuring.";
 
+        private static ServiceMeterMode serviceMeterMode = ServiceMeterMode.Default;
         private static IRecordValidator recordValidator;
         private static IFileCabinetService fileCabinetService;
         private static bool isRunning = true;
@@ -117,6 +135,10 @@ namespace FileCabinetApp
             try
             {
                 ParseInputArgs(args);
+            }
+            catch (ArgumentNullException argumentNullException)
+            {
+                Console.WriteLine(argumentNullException.Message);
             }
             catch (ArgumentException argumentException)
             {
@@ -224,13 +246,25 @@ namespace FileCabinetApp
         {
             args = ParseArgumentArray(args);
 
-            if (args.Length % 2 != 0)
-            {
-                throw new ArgumentException($"{Program.WrongInputArgsMessage}: amount of args is not even.");
-            }
-
             args.SetValidators();
             args.SetService();
+            args.SetServiceMeterMode();
+        }
+
+        private static void SetServiceMeterMode(this string[] args)
+        {
+            string meterModeStringToFind = "-use-stopwatch";
+            int serviceMeterModeIndex = Array.FindIndex(args, 0, args.Length, i => i.Equals(meterModeStringToFind, StringComparison.OrdinalIgnoreCase));
+
+            if (serviceMeterModeIndex != -1)
+            {
+                serviceMeterMode = ServiceMeterMode.TimeMeasuring;
+
+                ServiceMeter serviceMeter = new ServiceMeter(Program.fileCabinetService);
+                Program.fileCabinetService = serviceMeter;
+
+                Console.WriteLine(Program.CorrectServiceMeterInputArgsMessage);
+            }
         }
 
         private static string[] ParseArgumentArray(string[] args)
@@ -258,13 +292,18 @@ namespace FileCabinetApp
         {
             int validationModeIndex = Array.FindIndex(args, 0, args.Length, i => dictCommandLineParameters.ContainsKey(i) && dictCommandLineParameters[i] == CommandLineParameters.Validation);
 
-            if (validationModeIndex != -1 && validationModeIndex % 2 == 0)
+            if (validationModeIndex != -1)
             {
+                if (validationModeIndex + 1 >= args.Length)
+                {
+                    throw new ArgumentOutOfRangeException($"Wrong input validation args order.");
+                }
+
                 var validationValue = args[validationModeIndex + 1];
 
                 if (!dictSettingsType.ContainsKey(validationValue))
                 {
-                    throw new ArgumentException($"{Program.WrongInputValidationArgsMessage}: {nameof(dictSettingsType)} doesn't have such parameter as {validationValue}");
+                    throw new ArgumentException($"Validation args doesn't have such parameter as {validationValue}");
                 }
 
                 var type = dictSettingsType[validationValue];
@@ -287,10 +326,6 @@ namespace FileCabinetApp
                         break;
                 }
             }
-            else if (validationModeIndex % 2 != 0)
-            {
-                throw new ArgumentException(Program.WrongInputArgsMessage);
-            }
             else
             {
                 Console.WriteLine(Program.NoInputValidationArgsMessage);
@@ -301,8 +336,13 @@ namespace FileCabinetApp
         {
             int storageModeIndex = Array.FindIndex(args, 0, args.Length, i => dictCommandLineParameters[i] == CommandLineParameters.Storage);
 
-            if (storageModeIndex != -1 && storageModeIndex % 2 == 0)
+            if (storageModeIndex != -1)
             {
+                if (storageModeIndex + 1 >= args.Length)
+                {
+                    throw new ArgumentOutOfRangeException($"Wrong input storage args order.");
+                }
+
                 var storageValue = args[storageModeIndex + 1];
 
                 int indexStorageMode = Array.IndexOf(args, storageValue);
@@ -318,12 +358,8 @@ namespace FileCabinetApp
                         Console.WriteLine(Program.CorrectStorageFilesystemInputArgsMessage);
                         break;
                     default:
-                        throw new ArgumentException($"{Program.WrongInputStorageArgsMessage}: {nameof(storageModes)} doesn't have such parameter as {storageValue}");
+                        throw new ArgumentException($"Storage args doesn't have such parameter as {storageValue}");
                 }
-            }
-            else if (storageModeIndex % 2 != 0)
-            {
-                throw new ArgumentException(Program.WrongInputArgsMessage);
             }
             else
             {
