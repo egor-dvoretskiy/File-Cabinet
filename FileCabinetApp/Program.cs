@@ -16,22 +16,6 @@ namespace FileCabinetApp
     /// <summary>
     /// Validator settings types.
     /// </summary>
-    public enum ServiceMeterMode
-    {
-        /// <summary>
-        /// Default settings for validators.
-        /// </summary>
-        Default,
-
-        /// <summary>
-        /// Custom setting for validators.
-        /// </summary>
-        TimeMeasuring,
-    }
-
-    /// <summary>
-    /// Validator settings types.
-    /// </summary>
     public enum SettingsType
     {
         /// <summary>
@@ -96,8 +80,8 @@ namespace FileCabinetApp
         private const string CorrectStorageMemoryInputArgsMessage = "Using storage memory mode.";
         private const string CorrectStorageFilesystemInputArgsMessage = "Using storage filesystem mode.";
         private const string CorrectServiceMeterInputArgsMessage = "Using service time measuring.";
+        private const string CorrectServiceLoggerInputArgsMessage = "Using service logger.";
 
-        private static ServiceMeterMode serviceMeterMode = ServiceMeterMode.Default;
         private static IRecordValidator recordValidator;
         private static IFileCabinetService fileCabinetService;
         private static bool isRunning = true;
@@ -249,6 +233,21 @@ namespace FileCabinetApp
             args.SetValidators();
             args.SetService();
             args.SetServiceMeterMode();
+            args.SetServiceLoggerMode();
+        }
+
+        private static void SetServiceLoggerMode(this string[] args)
+        {
+            string loggerModeStringToFind = "-use-logger";
+            int serviceMeterModeIndex = Array.FindIndex(args, 0, args.Length, i => i.Equals(loggerModeStringToFind, StringComparison.OrdinalIgnoreCase));
+
+            if (serviceMeterModeIndex != -1)
+            {
+                ServiceLogger serviceLogger = new ServiceLogger(Program.fileCabinetService);
+                Program.fileCabinetService = serviceLogger;
+
+                Console.WriteLine(Program.CorrectServiceLoggerInputArgsMessage);
+            }
         }
 
         private static void SetServiceMeterMode(this string[] args)
@@ -258,8 +257,6 @@ namespace FileCabinetApp
 
             if (serviceMeterModeIndex != -1)
             {
-                serviceMeterMode = ServiceMeterMode.TimeMeasuring;
-
                 ServiceMeter serviceMeter = new ServiceMeter(Program.fileCabinetService);
                 Program.fileCabinetService = serviceMeter;
 
@@ -334,7 +331,7 @@ namespace FileCabinetApp
 
         private static void SetService(this string[] args)
         {
-            int storageModeIndex = Array.FindIndex(args, 0, args.Length, i => dictCommandLineParameters[i] == CommandLineParameters.Storage);
+            int storageModeIndex = Array.FindIndex(args, 0, args.Length, i => dictCommandLineParameters.ContainsKey(i) && dictCommandLineParameters[i] == CommandLineParameters.Storage);
 
             if (storageModeIndex != -1)
             {
@@ -345,7 +342,7 @@ namespace FileCabinetApp
 
                 var storageValue = args[storageModeIndex + 1];
 
-                int indexStorageMode = Array.IndexOf(args, storageValue);
+                int indexStorageMode = Array.IndexOf(storageModes, storageValue);
 
                 switch (indexStorageMode)
                 {

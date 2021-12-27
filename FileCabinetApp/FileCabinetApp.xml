@@ -614,21 +614,6 @@
             <param name="parameters">Record parameters.</param>
             <returns>Return validation result as boolean value.</returns>
         </member>
-        <member name="T:FileCabinetApp.ServiceMeterMode">
-            <summary>
-            Validator settings types.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.ServiceMeterMode.Default">
-            <summary>
-            Default settings for validators.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.ServiceMeterMode.TimeMeasuring">
-            <summary>
-            Custom setting for validators.
-            </summary>
-        </member>
         <member name="T:FileCabinetApp.SettingsType">
             <summary>
             Validator settings types.
@@ -699,6 +684,53 @@
             Print records in console.
             </summary>
             <param name="records">Data to print.</param>
+        </member>
+        <member name="T:FileCabinetApp.ServiceLogger">
+            <summary>
+            Add call stack logs to file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ServiceLogger"/> class.
+            </summary>
+            <param name="service">Service to watch for the call stack.</param>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.CheckRecordPresence(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.CreateRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByBirthDate(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.RemoveRecordById(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.ServiceMeter">
             <summary>
