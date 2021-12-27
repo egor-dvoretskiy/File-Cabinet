@@ -49,7 +49,7 @@ namespace FileCabinetApp.Services
                     return -1;
                 }
 
-                record.Id = this.list.Count + 1;
+                record.Id = this.GetUniqueId();
 
                 this.list.Add(record);
 
@@ -241,6 +241,18 @@ namespace FileCabinetApp.Services
         public void Purge()
         {
             Console.WriteLine("Wrong service, please switch memory mode to file system.");
+        }
+
+        private int GetUniqueId()
+        {
+            int id = 1;
+
+            while (this.storedIdRecords.ContainsKey(id))
+            {
+                id++;
+            }
+
+            return id;
         }
 
         private void AddInformationToDictionary(string parametrName, ref Dictionary<string, List<int>> dict, FileCabinetRecord record)
