@@ -2,7 +2,7 @@
   "profiles": {
     "FileCabinetApp": {
       "commandName": "Project",
-      "commandLineArgs": "--storage=file -v default"
+      "commandLineArgs": "-use-stopwatch --storage=file -use-logger -v default"
     }
   }
 }

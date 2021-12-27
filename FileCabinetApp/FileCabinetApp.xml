@@ -614,6 +614,21 @@
             <param name="parameters">Record parameters.</param>
             <returns>Return validation result as boolean value.</returns>
         </member>
+        <member name="T:FileCabinetApp.SettingsType">
+            <summary>
+            Validator settings types.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.SettingsType.Default">
+            <summary>
+            Default settings for validators.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.SettingsType.Custom">
+            <summary>
+            Custom setting for validators.
+            </summary>
+        </member>
         <member name="T:FileCabinetApp.CommandLineParameters">
             <summary>
             Available command line parameters.
@@ -669,6 +684,100 @@
             Print records in console.
             </summary>
             <param name="records">Data to print.</param>
+        </member>
+        <member name="T:FileCabinetApp.ServiceLogger">
+            <summary>
+            Add call stack logs to file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ServiceLogger"/> class.
+            </summary>
+            <param name="service">Service to watch for the call stack.</param>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.CheckRecordPresence(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.CreateRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByBirthDate(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.RemoveRecordById(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.ServiceMeter">
+            <summary>
+            Measures working time of service methods.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ServiceMeter"/> class.
+            </summary>
+            <param name="service">Service to measure time.</param>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.CheckRecordPresence(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.CreateRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByBirthDate(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.RemoveRecordById(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Services.FileCabinetFileSystemService">
             <summary>
@@ -1066,105 +1175,88 @@
             </summary>
             <returns>Specified validator.</returns>
         </member>
-        <member name="T:FileCabinetApp.Validators.ValidatorSettingsCustom">
+        <member name="T:FileCabinetApp.Validators.ValidatorSettings">
             <summary>
-            Class contains custom validation settings.
+            Class contains validation settings.
             </summary>
         </member>
-        <member name="F:FileCabinetApp.Validators.ValidatorSettingsCustom.MinimalLengthFirstName">
+        <member name="P:FileCabinetApp.Validators.ValidatorSettings.MinimalLengthFirstName">
             <summary>
+            Gets minimal possible length of first name.
+            </summary>
+            <value>
             Minimal possible length of first name.
-            </summary>
+            </value>
         </member>
-        <member name="F:FileCabinetApp.Validators.ValidatorSettingsCustom.MaximumLengthFirstName">
+        <member name="P:FileCabinetApp.Validators.ValidatorSettings.MaximumLengthFirstName">
             <summary>
+            Gets maximum possible length of first name.
+            </summary>
+            <value>
             Maximum possible length of first name.
-            </summary>
+            </value>
         </member>
-        <member name="F:FileCabinetApp.Validators.ValidatorSettingsCustom.MinimalLengthLastName">
+        <member name="P:FileCabinetApp.Validators.ValidatorSettings.MinimalLengthLastName">
             <summary>
+            Gets minimal possible length of last name.
+            </summary>
+            <value>
             Minimal possible length of last name.
-            </summary>
+            </value>
         </member>
-        <member name="F:FileCabinetApp.Validators.ValidatorSettingsCustom.MaximumLengthLastName">
+        <member name="P:FileCabinetApp.Validators.ValidatorSettings.MaximumLengthLastName">
             <summary>
+            Gets maximum possible length of last name.
+            </summary>
+            <value>
             Maximum possible length of last name.
-            </summary>
+            </value>
         </member>
-        <member name="F:FileCabinetApp.Validators.ValidatorSettingsCustom.MinimalDate">
+        <member name="P:FileCabinetApp.Validators.ValidatorSettings.MinimalDate">
             <summary>
+            Gets minimal possible birth date.
+            </summary>
+            <value>
             Minimal possible birth date.
-            </summary>
+            </value>
         </member>
-        <member name="F:FileCabinetApp.Validators.ValidatorSettingsCustom.MaximumDate">
+        <member name="P:FileCabinetApp.Validators.ValidatorSettings.MaximumDate">
             <summary>
+            Gets maximum possible birth date.
+            </summary>
+            <value>
             Maximum possible birth date.
-            </summary>
+            </value>
         </member>
-        <member name="F:FileCabinetApp.Validators.ValidatorSettingsCustom.MinimalPersonalRating">
+        <member name="P:FileCabinetApp.Validators.ValidatorSettings.MinimalPersonalRating">
             <summary>
+            Gets minimal possible personal rating.
+            </summary>
+            <value>
             Minimal possible personal rating.
-            </summary>
+            </value>
         </member>
-        <member name="F:FileCabinetApp.Validators.ValidatorSettingsCustom.MinimalSalary">
+        <member name="P:FileCabinetApp.Validators.ValidatorSettings.MinimalSalary">
             <summary>
+            Gets minimal possible salary.
+            </summary>
+            <value>
             Minimal possible salary.
-            </summary>
+            </value>
         </member>
-        <member name="F:FileCabinetApp.Validators.ValidatorSettingsCustom.GenderChars">
+        <member name="P:FileCabinetApp.Validators.ValidatorSettings.GenderChars">
             <summary>
+            Gets existing genders.
+            </summary>
+            <value>
             Existing genders.
-            </summary>
+            </value>
         </member>
-        <member name="T:FileCabinetApp.Validators.ValidatorSettingsDefault">
+        <member name="M:FileCabinetApp.Validators.ValidatorSettings.LoadSpecifiedSettings(FileCabinetApp.SettingsType)">
             <summary>
-            Class contains default validation settings.
+            Sets custom settings from json file.
             </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.ValidatorSettingsDefault.MinimalLengthFirstName">
-            <summary>
-            Minimal possible length of first name.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.ValidatorSettingsDefault.MaximumLengthFirstName">
-            <summary>
-            Maximum possible length of first name.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.ValidatorSettingsDefault.MinimalLengthLastName">
-            <summary>
-            Minimal possible length of last name.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.ValidatorSettingsDefault.MaximumLengthLastName">
-            <summary>
-            Maximum possible length of last name.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.ValidatorSettingsDefault.MinimalDate">
-            <summary>
-            Minimal possible birth date.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.ValidatorSettingsDefault.MaximumDate">
-            <summary>
-            Maximum possible birth date.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.ValidatorSettingsDefault.MinimalPersonalRating">
-            <summary>
-            Minimal possible personal rating.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.ValidatorSettingsDefault.MinimalSalary">
-            <summary>
-            Minimal possible salary.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.ValidatorSettingsDefault.GenderChars">
-            <summary>
-            Existing genders.
-            </summary>
+            <param name="settingsType">Type of settings.</param>
         </member>
         <member name="T:FileCabinetApp.WriterAssistant">
             <summary>

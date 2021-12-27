@@ -20,14 +20,9 @@ namespace FileCabinetApp.Validators
         /// <returns>Composite validator.</returns>
         public IRecordValidator CreateDefault()
         {
-            return this
-                .ValidateFirstName(ValidatorSettingsDefault.MinimalLengthFirstName, ValidatorSettingsDefault.MaximumLengthFirstName)
-                .ValidateLastName(ValidatorSettingsDefault.MinimalLengthLastName, ValidatorSettingsDefault.MaximumLengthLastName)
-                .ValidateBirthDate(ValidatorSettingsDefault.MinimalDate, ValidatorSettingsDefault.MaximumDate)
-                .ValidateHeight(ValidatorSettingsDefault.MinimalPersonalRating)
-                .ValidateSalary(ValidatorSettingsDefault.MinimalSalary)
-                .ValidateGender(ValidatorSettingsDefault.GenderChars)
-                .Create();
+            ValidatorSettings.LoadSpecifiedSettings(SettingsType.Default);
+
+            return this.GetUniversalBuilder();
         }
 
         /// <summary>
@@ -36,13 +31,20 @@ namespace FileCabinetApp.Validators
         /// <returns>Composite validator.</returns>
         public IRecordValidator CreateCustom()
         {
+            ValidatorSettings.LoadSpecifiedSettings(SettingsType.Custom);
+
+            return this.GetUniversalBuilder();
+        }
+
+        private IRecordValidator GetUniversalBuilder()
+        {
             return this
-                .ValidateFirstName(ValidatorSettingsCustom.MinimalLengthFirstName, ValidatorSettingsCustom.MaximumLengthFirstName)
-                .ValidateLastName(ValidatorSettingsCustom.MinimalLengthLastName, ValidatorSettingsCustom.MaximumLengthLastName)
-                .ValidateBirthDate(ValidatorSettingsCustom.MinimalDate, ValidatorSettingsCustom.MaximumDate)
-                .ValidateHeight(ValidatorSettingsCustom.MinimalPersonalRating)
-                .ValidateSalary(ValidatorSettingsCustom.MinimalSalary)
-                .ValidateGender(ValidatorSettingsCustom.GenderChars)
+                .ValidateFirstName(ValidatorSettings.MinimalLengthFirstName, ValidatorSettings.MaximumLengthFirstName)
+                .ValidateLastName(ValidatorSettings.MinimalLengthLastName, ValidatorSettings.MaximumLengthLastName)
+                .ValidateBirthDate(ValidatorSettings.MinimalDate, ValidatorSettings.MaximumDate)
+                .ValidateHeight(ValidatorSettings.MinimalPersonalRating)
+                .ValidateSalary(ValidatorSettings.MinimalSalary)
+                .ValidateGender(ValidatorSettings.GenderChars)
                 .Create();
         }
 

@@ -52,7 +52,7 @@ namespace FileCabinetApp.Services
             {
                 this.fileStream.Seek(0, SeekOrigin.End);
 
-                record.Id = this.recordsCount + 1;
+                record.Id = this.GetUniqueId();
 
                 byte[] buffer = this.WriteRecordToBuffer(record);
 
@@ -372,6 +372,18 @@ namespace FileCabinetApp.Services
             {
                 Console.WriteLine(aex.Message);
             }
+        }
+
+        private int GetUniqueId()
+        {
+            int id = 1;
+
+            while (this.dictRecordsPositionOrder.ContainsKey(id))
+            {
+                id++;
+            }
+
+            return id;
         }
 
         private byte[] PrepareStringToWrite(string stringToWrite)
