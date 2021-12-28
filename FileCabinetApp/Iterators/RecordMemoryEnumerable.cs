@@ -31,7 +31,12 @@ namespace FileCabinetApp.Iterators
         /// <inheritdoc/>
         public IEnumerator<FileCabinetRecord> GetEnumerator()
         {
-            return new RecordMemoryEnumerator(this.records, this.listPositionsId);
+            var recordEnumerator = new RecordMemoryEnumerator(this.records, this.listPositionsId);
+
+            while (recordEnumerator.MoveNext())
+            {
+                yield return recordEnumerator.Current;
+            }
         }
 
         /// <inheritdoc/>
