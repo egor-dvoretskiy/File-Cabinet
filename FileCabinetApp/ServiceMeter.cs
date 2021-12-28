@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using FileCabinetApp.Interfaces;
@@ -35,8 +36,7 @@ namespace FileCabinetApp
             this.service.CheckRecordPresence(id);
             this.stopwatch.Stop();
 
-            var elapsed = this.stopwatch.ElapsedTicks;
-            Console.WriteLine($"CheckRecordPresence method execution duration is {elapsed} ticks.");
+            this.GetElapsedTime(this.GetCallerName());
         }
 
         /// <inheritdoc/>
@@ -46,8 +46,7 @@ namespace FileCabinetApp
             int id = this.service.CreateRecord(record);
             this.stopwatch.Stop();
 
-            var elapsed = this.stopwatch.ElapsedTicks;
-            Console.WriteLine($"Create method execution duration is {elapsed} ticks.");
+            this.GetElapsedTime(this.GetCallerName());
 
             return id;
         }
@@ -59,45 +58,41 @@ namespace FileCabinetApp
             this.service.EditRecord(id, record);
             this.stopwatch.Stop();
 
-            var elapsed = this.stopwatch.ElapsedTicks;
-            Console.WriteLine($"Edit method execution duration is {elapsed} ticks.");
+            this.GetElapsedTime(this.GetCallerName());
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByBirthDate(string birthDate)
+        public IRecordIterator FindByBirthDate(string birthDate)
         {
             this.stopwatch.Restart();
             var collection = this.service.FindByBirthDate(birthDate);
             this.stopwatch.Stop();
 
-            var elapsed = this.stopwatch.ElapsedTicks;
-            Console.WriteLine($"FindByBirthDate method execution duration is {elapsed} ticks.");
+            this.GetElapsedTime(this.GetCallerName());
 
             return collection;
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IRecordIterator FindByFirstName(string firstName)
         {
             this.stopwatch.Restart();
             var collection = this.service.FindByFirstName(firstName);
             this.stopwatch.Stop();
 
-            var elapsed = this.stopwatch.ElapsedTicks;
-            Console.WriteLine($"FindByFirstName method execution duration is {elapsed} ticks.");
+            this.GetElapsedTime(this.GetCallerName());
 
             return collection;
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IRecordIterator FindByLastName(string lastName)
         {
             this.stopwatch.Restart();
             var collection = this.service.FindByLastName(lastName);
             this.stopwatch.Stop();
 
-            var elapsed = this.stopwatch.ElapsedTicks;
-            Console.WriteLine($"FindByLastName method execution duration is {elapsed} ticks.");
+            this.GetElapsedTime(this.GetCallerName());
 
             return collection;
         }
@@ -109,8 +104,7 @@ namespace FileCabinetApp
             var records = this.service.GetRecords();
             this.stopwatch.Stop();
 
-            var elapsed = this.stopwatch.ElapsedTicks;
-            Console.WriteLine($"GetRecords method execution duration is {elapsed} ticks.");
+            this.GetElapsedTime(this.GetCallerName());
 
             return records;
         }
@@ -122,8 +116,7 @@ namespace FileCabinetApp
             this.service.GetStat();
             this.stopwatch.Stop();
 
-            var elapsed = this.stopwatch.ElapsedTicks;
-            Console.WriteLine($"GetStat method execution duration is {elapsed} ticks.");
+            this.GetElapsedTime(this.GetCallerName());
         }
 
         /// <inheritdoc/>
@@ -133,8 +126,7 @@ namespace FileCabinetApp
             var snapshot = this.service.MakeSnapshot();
             this.stopwatch.Stop();
 
-            var elapsed = this.stopwatch.ElapsedTicks;
-            Console.WriteLine($"MakeSnapshot method execution duration is {elapsed} ticks.");
+            this.GetElapsedTime(this.GetCallerName());
 
             return snapshot;
         }
@@ -146,8 +138,7 @@ namespace FileCabinetApp
             this.service.Purge();
             this.stopwatch.Stop();
 
-            var elapsed = this.stopwatch.ElapsedTicks;
-            Console.WriteLine($"Purge method execution duration is {elapsed} ticks.");
+            this.GetElapsedTime(this.GetCallerName());
         }
 
         /// <inheritdoc/>
@@ -157,8 +148,7 @@ namespace FileCabinetApp
             this.service.RemoveRecordById(id);
             this.stopwatch.Stop();
 
-            var elapsed = this.stopwatch.ElapsedTicks;
-            Console.WriteLine($"RemoveRecordById method execution duration is {elapsed} ticks.");
+            this.GetElapsedTime(this.GetCallerName());
         }
 
         /// <inheritdoc/>
@@ -168,8 +158,18 @@ namespace FileCabinetApp
             this.service.Restore(fileCabinetServiceSnapshot);
             this.stopwatch.Stop();
 
-            var elapsed = this.stopwatch.ElapsedTicks;
-            Console.WriteLine($"Restore method execution duration is {elapsed} ticks.");
+            this.GetElapsedTime(this.GetCallerName());
+        }
+
+        private void GetElapsedTime(string methodName)
+        {
+            var elapsed = this.stopwatch.Elapsed.TotalMilliseconds; // ms
+            Console.WriteLine($"{methodName} method execution duration is {elapsed} ms.");
+        }
+
+        private string GetCallerName([CallerMemberName] string name = "")
+        {
+            return name;
         }
     }
 }

@@ -300,7 +300,7 @@ namespace FileCabinetApp
 
                 if (!dictSettingsType.ContainsKey(validationValue))
                 {
-                    throw new ArgumentException($"Validation args doesn't have such parameter as {validationValue}");
+                    throw new ArgumentException($"Validation args don't have such parameter as {validationValue}");
                 }
 
                 var type = dictSettingsType[validationValue];

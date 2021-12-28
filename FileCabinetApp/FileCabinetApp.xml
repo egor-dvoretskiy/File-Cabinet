@@ -410,6 +410,25 @@
             </summary>
             <param name="records">Records to write.</param>
         </member>
+        <member name="T:FileCabinetApp.FormatWriters.WriterAssistant">
+            <summary>
+            Class contains additional methods to work with writers.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FormatWriters.WriterAssistant.GetPropertiesValuesString(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Gets properties values in class using reflection.
+            </summary>
+            <param name="record">Neccessary type to get values in.</param>
+            <returns>Concatenated properties values.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FormatWriters.WriterAssistant.GetPropertiesNameString(System.Type)">
+            <summary>
+            Gets properties names in class using reflection.
+            </summary>
+            <param name="type">Neccessary type to get names in.</param>
+            <returns>Concatenated properties values.</returns>
+        </member>
         <member name="T:FileCabinetApp.InputConverter">
             <summary>
             Contains various converters.
@@ -602,6 +621,23 @@
             <param name="input">gender.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
+        <member name="T:FileCabinetApp.Interfaces.IRecordIterator">
+            <summary>
+            Applied to 'iterator' pattern.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.IRecordIterator.GetNext">
+            <summary>
+            Moves iterator to next element.
+            </summary>
+            <returns>Returns next record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.IRecordIterator.HasMore">
+            <summary>
+            Checks if there are more records.
+            </summary>
+            <returns>Returns availability of records.</returns>
+        </member>
         <member name="T:FileCabinetApp.Interfaces.IRecordValidator">
             <summary>
             Record validator's methods.
@@ -613,6 +649,42 @@
             </summary>
             <param name="parameters">Record parameters.</param>
             <returns>Return validation result as boolean value.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Iterators.FilesystemIterator">
+            <summary>
+            Iterator for <see cref="T:FileCabinetApp.Services.FileCabinetFileSystemService"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.#ctor(System.IO.FileStream,System.Collections.Generic.List{System.Int32})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.FilesystemIterator"/> class.
+            </summary>
+            <param name="fileStream">Using for reading data from file.</param>
+            <param name="listPositionsId">List of record's positions in file.</param>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.GetNext">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.HasMore">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.Iterators.MemoryIterator">
+            <summary>
+            Iterator for <see cref="T:FileCabinetApp.Services.FileCabinetMemoryService"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.#ctor(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord},System.Collections.Generic.List{System.Int32})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.MemoryIterator"/> class.
+            </summary>
+            <param name="records">List of records.</param>
+            <param name="listPositionsId">Stored parameter's id.</param>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.GetNext">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.HasMore">
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.SettingsType">
             <summary>
@@ -784,12 +856,29 @@
             File system service.
             </summary>
         </member>
+        <member name="F:FileCabinetApp.Services.FileCabinetFileSystemService.MaxNameLength">
+            <summary>
+            According to maximum length of name: 60 * sizeof(char).
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Services.FileCabinetFileSystemService.RecordSize">
+            <summary>
+            Summary size of single record in file.
+            </summary>
+        </member>
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.#ctor(System.IO.FileStream,FileCabinetApp.Interfaces.IRecordValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetFileSystemService"/> class.
             </summary>
             <param name="fileStream">File stream.</param>
             <param name="recordValidator">Validator for record.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.ReadRecordFromBuffer(System.Byte[])">
+            <summary>
+            Reads fixed size buffer.
+            </summary>
+            <param name="bytesRecord">Acquired from file buffer.</param>
+            <returns>Returns read record and isDeleted flag.</returns>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.CreateRecord(FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
@@ -830,6 +919,11 @@
         <member name="T:FileCabinetApp.Services.FileCabinetMemoryService">
             <summary>
             Records Processor Class.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Services.FileCabinetMemoryService.storedIdRecords">
+            <summary>
+            1st arg - record's id, 2nd arg - position in list.
             </summary>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.#ctor(FileCabinetApp.Interfaces.IRecordValidator)">
@@ -1257,25 +1351,6 @@
             Sets custom settings from json file.
             </summary>
             <param name="settingsType">Type of settings.</param>
-        </member>
-        <member name="T:FileCabinetApp.WriterAssistant">
-            <summary>
-            Class contains additional methods to work with writers.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.WriterAssistant.GetPropertiesValuesString(FileCabinetApp.FileCabinetRecord)">
-            <summary>
-            Gets properties values in class using reflection.
-            </summary>
-            <param name="record">Neccessary type to get values in.</param>
-            <returns>Concatenated properties values.</returns>
-        </member>
-        <member name="M:FileCabinetApp.WriterAssistant.GetPropertiesNameString(System.Type)">
-            <summary>
-            Gets properties names in class using reflection.
-            </summary>
-            <param name="type">Neccessary type to get names in.</param>
-            <returns>Concatenated properties values.</returns>
         </member>
     </members>
 </doc>

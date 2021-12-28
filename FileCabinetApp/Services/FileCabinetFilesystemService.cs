@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FileCabinetApp.Interfaces;
+using FileCabinetApp.Iterators;
 
 namespace FileCabinetApp.Services
 {
@@ -13,8 +14,15 @@ namespace FileCabinetApp.Services
     /// </summary>
     public class FileCabinetFileSystemService : IFileCabinetService
     {
-        private const byte MaxNameLength = 120;
-        private const int RecordSize = sizeof(short) + sizeof(int) + (MaxNameLength * 2) + (sizeof(int) * 3) + sizeof(short) + sizeof(decimal) + sizeof(char);
+        /// <summary>
+        /// According to maximum length of name: 60 * sizeof(char).
+        /// </summary>
+        public const byte MaxNameLength = 120;
+
+        /// <summary>
+        /// Summary size of single record in file.
+        /// </summary>
+        public const int RecordSize = sizeof(short) + sizeof(int) + (MaxNameLength * 2) + (sizeof(int) * 3) + sizeof(short) + sizeof(decimal) + sizeof(char);
 
         private FileStream fileStream;
         private IRecordValidator recordValidator;
@@ -43,6 +51,44 @@ namespace FileCabinetApp.Services
             this.recordsCount = (int)(fileStream.Length / RecordSize);
 
             this.AssignRecordValuesToDictionaries();
+        }
+
+        /// <summary>
+        /// Reads fixed size buffer.
+        /// </summary>
+        /// <param name="bytesRecord">Acquired from file buffer.</param>
+        /// <returns>Returns read record and isDeleted flag.</returns>
+        public static Tuple<FileCabinetRecord, short> ReadRecordFromBuffer(byte[] bytesRecord)
+        {
+            short isRecordDeleted = 0;
+            FileCabinetRecord record = new FileCabinetRecord();
+
+            using (MemoryStream memoryStream = new MemoryStream(bytesRecord))
+            using (BinaryReader reader = new BinaryReader(memoryStream))
+            {
+                isRecordDeleted = reader.ReadInt16();
+
+                record.Id = reader.ReadInt32();
+
+                byte[] firstNameBytes = reader.ReadBytes(MaxNameLength);
+                string firstName = Encoding.ASCII.GetString(firstNameBytes, 0, MaxNameLength).TrimEnd('\0');
+                record.FirstName = firstName;
+
+                byte[] lastNameBytes = reader.ReadBytes(MaxNameLength);
+                string lastName = Encoding.ASCII.GetString(lastNameBytes, 0, MaxNameLength).TrimEnd('\0');
+                record.LastName = lastName;
+
+                int year = reader.ReadInt32();
+                int month = reader.ReadInt32();
+                int day = reader.ReadInt32();
+                record.DateOfBirth = new DateTime(year, month, day);
+
+                record.PersonalRating = reader.ReadInt16();
+                record.Salary = reader.ReadDecimal();
+                record.Gender = reader.ReadChar();
+            }
+
+            return new Tuple<FileCabinetRecord, short>(record, isRecordDeleted);
         }
 
         /// <inheritdoc/>
@@ -107,84 +153,27 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByBirthDate(string birthDate)
+        public IRecordIterator FindByBirthDate(string birthDate)
         {
-            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
-            List<int> datePositions = this.GetDateTimeFromDictionary(birthDate, this.dateOfBirthDictionary);
+            List<int> listIdRecordsPositions = this.GetDateTimeFromDictionary(birthDate, this.dateOfBirthDictionary);
 
-            for (int i = 0; i < datePositions.Count; i++)
-            {
-                this.fileStream.Seek(datePositions[i] * RecordSize, SeekOrigin.Begin);
-                byte[] bytes = new byte[RecordSize];
-                this.fileStream.Read(bytes, 0, RecordSize);
-
-                var tupleReadFromFile = this.ReadRecordFromBuffer(bytes);
-
-                if (tupleReadFromFile.Item2 == 1)
-                {
-                    continue;
-                }
-
-                FileCabinetRecord record = tupleReadFromFile.Item1;
-
-                records.Add(record);
-            }
-
-            return new ReadOnlyCollection<FileCabinetRecord>(records);
+            return new FilesystemIterator(this.fileStream, listIdRecordsPositions);
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IRecordIterator FindByFirstName(string firstName)
         {
-            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
-            List<int> firstNamePositions = this.GetNameFromDictionary(firstName, this.firstNameDictionary);
+            List<int> listIdRecordsPositions = this.GetNameFromDictionary(firstName, this.firstNameDictionary);
 
-            for (int i = 0; i < firstNamePositions.Count; i++)
-            {
-                this.fileStream.Seek(firstNamePositions[i] * RecordSize, SeekOrigin.Begin);
-                byte[] bytes = new byte[RecordSize];
-                this.fileStream.Read(bytes, 0, RecordSize);
-
-                var tupleReadFromFile = this.ReadRecordFromBuffer(bytes);
-
-                if (tupleReadFromFile.Item2 == 1)
-                {
-                    continue;
-                }
-
-                FileCabinetRecord record = tupleReadFromFile.Item1;
-
-                records.Add(record);
-            }
-
-            return new ReadOnlyCollection<FileCabinetRecord>(records);
+            return new FilesystemIterator(this.fileStream, listIdRecordsPositions);
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IRecordIterator FindByLastName(string lastName)
         {
-            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
-            List<int> firstNamePositions = this.GetNameFromDictionary(lastName, this.lastNameDictionary);
+            List<int> listIdRecordsPositions = this.GetNameFromDictionary(lastName, this.lastNameDictionary);
 
-            for (int i = 0; i < firstNamePositions.Count; i++)
-            {
-                this.fileStream.Seek(firstNamePositions[i] * RecordSize, SeekOrigin.Begin);
-                byte[] bytes = new byte[RecordSize];
-                this.fileStream.Read(bytes, 0, RecordSize);
-
-                var tupleReadFromFile = this.ReadRecordFromBuffer(bytes);
-
-                if (tupleReadFromFile.Item2 == 1)
-                {
-                    continue;
-                }
-
-                FileCabinetRecord record = tupleReadFromFile.Item1;
-
-                records.Add(record);
-            }
-
-            return new ReadOnlyCollection<FileCabinetRecord>(records);
+            return new FilesystemIterator(this.fileStream, listIdRecordsPositions);
         }
 
         /// <inheritdoc/>
@@ -210,7 +199,7 @@ namespace FileCabinetApp.Services
                     byte[] bytes = new byte[RecordSize];
                     this.fileStream.Read(bytes, 0, RecordSize);
 
-                    var tupleReadFromFile = this.ReadRecordFromBuffer(bytes);
+                    var tupleReadFromFile = ReadRecordFromBuffer(bytes);
 
                     if (tupleReadFromFile.Item2 == 1)
                     {
@@ -332,7 +321,7 @@ namespace FileCabinetApp.Services
                     byte[] bytes = new byte[RecordSize];
                     this.fileStream.Read(bytes, 0, RecordSize);
 
-                    var tupleReadFromFile = this.ReadRecordFromBuffer(bytes);
+                    var tupleReadFromFile = ReadRecordFromBuffer(bytes);
 
                     if (tupleReadFromFile.Item2 == 1)
                     {
@@ -419,7 +408,7 @@ namespace FileCabinetApp.Services
                 byte[] bytes = new byte[RecordSize];
                 this.fileStream.Read(bytes, 0, RecordSize);
 
-                var tupleReadFromFile = this.ReadRecordFromBuffer(bytes);
+                var tupleReadFromFile = ReadRecordFromBuffer(bytes);
 
                 if (tupleReadFromFile.Item2 == 1)
                 {
@@ -468,39 +457,6 @@ namespace FileCabinetApp.Services
             }
         }
 
-        private Tuple<FileCabinetRecord, short> ReadRecordFromBuffer(byte[] bytesRecord)
-        {
-            short isRecordDeleted = 0;
-            FileCabinetRecord record = new FileCabinetRecord();
-
-            using (MemoryStream memoryStream = new MemoryStream(bytesRecord))
-            using (BinaryReader reader = new BinaryReader(memoryStream))
-            {
-                isRecordDeleted = reader.ReadInt16();
-
-                record.Id = reader.ReadInt32();
-
-                byte[] firstNameBytes = reader.ReadBytes(MaxNameLength);
-                string firstName = Encoding.ASCII.GetString(firstNameBytes, 0, MaxNameLength).TrimEnd('\0');
-                record.FirstName = firstName;
-
-                byte[] lastNameBytes = reader.ReadBytes(MaxNameLength);
-                string lastName = Encoding.ASCII.GetString(lastNameBytes, 0, MaxNameLength).TrimEnd('\0');
-                record.LastName = lastName;
-
-                int year = reader.ReadInt32();
-                int month = reader.ReadInt32();
-                int day = reader.ReadInt32();
-                record.DateOfBirth = new DateTime(year, month, day);
-
-                record.PersonalRating = reader.ReadInt16();
-                record.Salary = reader.ReadDecimal();
-                record.Gender = reader.ReadChar();
-            }
-
-            return new Tuple<FileCabinetRecord, short>(record, isRecordDeleted);
-        }
-
         private byte[] WriteRecordToBuffer(FileCabinetRecord record)
         {
             byte[] buffer = new byte[RecordSize];
@@ -546,7 +502,8 @@ namespace FileCabinetApp.Services
 
                 for (int i = 0; i < dictionary[parametrName].Count; i++)
                 {
-                    listOfPositions.Add(this.dictRecordsPositionOrder[dictionary[parametrName][i]]);
+                    var position = this.dictRecordsPositionOrder[dictionary[parametrName][i]] * RecordSize;
+                    listOfPositions.Add(position);
                 }
 
                 return listOfPositions;
@@ -565,7 +522,8 @@ namespace FileCabinetApp.Services
 
                 for (int i = 0; i < dictionary[birthDate].Count; i++)
                 {
-                    listOfPositions.Add(this.dictRecordsPositionOrder[dictionary[birthDate][i]]);
+                    var position = this.dictRecordsPositionOrder[dictionary[birthDate][i]] * RecordSize;
+                    listOfPositions.Add(position);
                 }
 
                 return listOfPositions;
