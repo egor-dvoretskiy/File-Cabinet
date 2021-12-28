@@ -650,41 +650,119 @@
             <param name="parameters">Record parameters.</param>
             <returns>Return validation result as boolean value.</returns>
         </member>
-        <member name="T:FileCabinetApp.Iterators.FilesystemIterator">
+        <member name="T:FileCabinetApp.Iterators.RecordFilesystemEnumerable">
             <summary>
             Iterator for <see cref="T:FileCabinetApp.Services.FileCabinetFileSystemService"/> class.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.#ctor(System.IO.FileStream,System.Collections.Generic.List{System.Int32})">
+        <member name="M:FileCabinetApp.Iterators.RecordFilesystemEnumerable.#ctor(System.IO.FileStream,System.Collections.Generic.List{System.Int32})">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.FilesystemIterator"/> class.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.RecordFilesystemEnumerable"/> class.
             </summary>
             <param name="fileStream">Using for reading data from file.</param>
             <param name="listPositionsId">List of record's positions in file.</param>
         </member>
-        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.GetNext">
+        <member name="M:FileCabinetApp.Iterators.RecordFilesystemEnumerable.GetEnumerator">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.HasMore">
+        <member name="M:FileCabinetApp.Iterators.RecordFilesystemEnumerable.System#Collections#IEnumerable#GetEnumerator">
             <inheritdoc/>
         </member>
-        <member name="T:FileCabinetApp.Iterators.MemoryIterator">
+        <member name="T:FileCabinetApp.Iterators.RecordFilesystemEnumerator">
+            <summary>
+            Filesystem enumerator for records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordFilesystemEnumerator.#ctor(System.IO.FileStream,System.Collections.Generic.List{System.Int32})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.RecordFilesystemEnumerator"/> class.
+            </summary>
+            <param name="fileStream">File stream.</param>
+            <param name="listPositionsId">List of positions required recprds in records list.</param>
+        </member>
+        <member name="P:FileCabinetApp.Iterators.RecordFilesystemEnumerator.Current">
+            <summary>
+            Gets current record.
+            </summary>
+            <value>
+            Holds current record.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Iterators.RecordFilesystemEnumerator.System#Collections#IEnumerator#Current">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordFilesystemEnumerator.Dispose">
+            <summary>
+            Disposes class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordFilesystemEnumerator.MoveNext">
+            <summary>
+            Sets the enumerator to the next element of the collection.
+            </summary>
+            <returns>Possibility to move far.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordFilesystemEnumerator.Reset">
+            <summary>
+            Sets the enumerator to its initial position.
+            </summary>
+        </member>
+        <member name="T:FileCabinetApp.Iterators.RecordMemoryEnumerable">
             <summary>
             Iterator for <see cref="T:FileCabinetApp.Services.FileCabinetMemoryService"/> class.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Iterators.MemoryIterator.#ctor(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord},System.Collections.Generic.List{System.Int32})">
+        <member name="M:FileCabinetApp.Iterators.RecordMemoryEnumerable.#ctor(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord},System.Collections.Generic.List{System.Int32})">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.MemoryIterator"/> class.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.RecordMemoryEnumerable"/> class.
             </summary>
             <param name="records">List of records.</param>
             <param name="listPositionsId">Stored parameter's id.</param>
         </member>
-        <member name="M:FileCabinetApp.Iterators.MemoryIterator.GetNext">
+        <member name="M:FileCabinetApp.Iterators.RecordMemoryEnumerable.GetEnumerator">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Iterators.MemoryIterator.HasMore">
+        <member name="M:FileCabinetApp.Iterators.RecordMemoryEnumerable.System#Collections#IEnumerable#GetEnumerator">
             <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.Iterators.RecordMemoryEnumerator">
+            <summary>
+            Memory enumerator for records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordMemoryEnumerator.#ctor(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord},System.Collections.Generic.List{System.Int32})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.RecordMemoryEnumerator"/> class.
+            </summary>
+            <param name="records">List of records.</param>
+            <param name="listPositionsId">List of positions required recprds in records list.</param>
+        </member>
+        <member name="P:FileCabinetApp.Iterators.RecordMemoryEnumerator.Current">
+            <summary>
+            Gets current record.
+            </summary>
+            <value>
+            Holds current record.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Iterators.RecordMemoryEnumerator.System#Collections#IEnumerator#Current">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordMemoryEnumerator.Dispose">
+            <summary>
+            Disposes class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordMemoryEnumerator.MoveNext">
+            <summary>
+            Sets the enumerator to the next element of the collection.
+            </summary>
+            <returns>Possibility to move far.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordMemoryEnumerator.Reset">
+            <summary>
+            Sets the enumerator to its initial position.
+            </summary>
         </member>
         <member name="T:FileCabinetApp.SettingsType">
             <summary>

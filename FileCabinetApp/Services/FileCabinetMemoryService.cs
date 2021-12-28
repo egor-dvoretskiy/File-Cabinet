@@ -157,7 +157,7 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <param name="firstName">Person's first name.</param>
         /// <returns>All records with the same firstname.</returns>
-        public IRecordIterator FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             List<int> listIdRecordsPositions = new List<int>();
 
@@ -173,7 +173,7 @@ namespace FileCabinetApp.Services
                 }
             }
 
-            return new MemoryIterator(this.list, listIdRecordsPositions);
+            return new RecordMemoryEnumerable(this.list, listIdRecordsPositions);
         }
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <param name="lastName">Person's last name.</param>
         /// <returns>All records with the same lastname.</returns>
-        public IRecordIterator FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             List<int> listIdRecordsPositions = new List<int>();
 
@@ -197,7 +197,7 @@ namespace FileCabinetApp.Services
                 }
             }
 
-            return new MemoryIterator(this.list, listIdRecordsPositions);
+            return new RecordMemoryEnumerable(this.list, listIdRecordsPositions);
         }
 
         /// <summary>
@@ -205,7 +205,7 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <param name="birthDate">Person's date of birth.</param>
         /// <returns>All records with the same date of birth.</returns>
-        public IRecordIterator FindByBirthDate(string birthDate)
+        public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate)
         {
             List<int> listIdRecordsPositions = new List<int>();
 
@@ -221,7 +221,7 @@ namespace FileCabinetApp.Services
                 }
             }
 
-            return new MemoryIterator(this.list, listIdRecordsPositions);
+            return new RecordMemoryEnumerable(this.list, listIdRecordsPositions);
         }
 
         /// <summary>

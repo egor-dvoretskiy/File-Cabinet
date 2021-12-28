@@ -84,13 +84,12 @@ namespace FileCabinetApp.CommandHandlers
             this.recordPrinter(foundDataContainer);
         }
 
-        private FileCabinetRecord[] GetRecordsArray(IRecordIterator recordIterator)
+        private FileCabinetRecord[] GetRecordsArray(IEnumerable<FileCabinetRecord> recordIterator)
         {
             List<FileCabinetRecord> records = new List<FileCabinetRecord>();
 
-            while (recordIterator.HasMore())
+            foreach (var record in recordIterator)
             {
-                var record = recordIterator.GetNext();
                 records.Add(record);
             }
 

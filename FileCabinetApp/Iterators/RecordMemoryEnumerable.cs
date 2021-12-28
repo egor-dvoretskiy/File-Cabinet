@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,36 +12,32 @@ namespace FileCabinetApp.Iterators
     /// <summary>
     /// Iterator for <see cref="FileCabinetMemoryService"/> class.
     /// </summary>
-    public class MemoryIterator : IRecordIterator
+    public class RecordMemoryEnumerable : IEnumerable<FileCabinetRecord>
     {
         private List<FileCabinetRecord> records;
-        private int position = 0;
         private List<int> listPositionsId = new List<int>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MemoryIterator"/> class.
+        /// Initializes a new instance of the <see cref="RecordMemoryEnumerable"/> class.
         /// </summary>
         /// <param name="records">List of records.</param>
         /// <param name="listPositionsId">Stored parameter's id.</param>
-        public MemoryIterator(List<FileCabinetRecord> records, List<int> listPositionsId)
+        public RecordMemoryEnumerable(List<FileCabinetRecord> records, List<int> listPositionsId)
         {
             this.records = records;
             this.listPositionsId = listPositionsId;
         }
 
         /// <inheritdoc/>
-        public FileCabinetRecord GetNext()
+        public IEnumerator<FileCabinetRecord> GetEnumerator()
         {
-            int positionInList = this.listPositionsId[this.position++];
-
-            return this.records[positionInList];
+            return new RecordMemoryEnumerator(this.records, this.listPositionsId);
         }
 
         /// <inheritdoc/>
-        public bool HasMore()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            bool hasMore = this.position < this.listPositionsId.Count;
-            return hasMore;
+            throw new NotImplementedException();
         }
     }
 }

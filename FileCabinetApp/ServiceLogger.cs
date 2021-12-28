@@ -80,7 +80,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByBirthDate(string birthDate)
+        public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling FindByBirthDate() with DateOfBirth = {birthDate}.");
@@ -94,7 +94,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling FindByFirstName() with FirstName = {firstName}.");
@@ -108,7 +108,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling FindByLastName() with LastName = {lastName}.");
