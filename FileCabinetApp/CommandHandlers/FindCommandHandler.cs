@@ -59,13 +59,16 @@ namespace FileCabinetApp.CommandHandlers
             switch (paramsFindContainer[0])
             {
                 case "firstname":
-                    foundDataContainer = this.service.FindByFirstName(parameterToFind).ToArray();
+                    var iteratorFirstName = this.service.FindByFirstName(parameterToFind);
+                    foundDataContainer = this.GetRecordsArray(iteratorFirstName);
                     break;
                 case "lastname":
-                    foundDataContainer = this.service.FindByLastName(parameterToFind).ToArray();
+                    var iteratorLastName = this.service.FindByLastName(parameterToFind);
+                    foundDataContainer = this.GetRecordsArray(iteratorLastName);
                     break;
                 case "dateofbirth":
-                    foundDataContainer = this.service.FindByBirthDate(parameterToFind).ToArray();
+                    var iteratorBirthDate = this.service.FindByBirthDate(parameterToFind);
+                    foundDataContainer = this.GetRecordsArray(iteratorBirthDate);
                     break;
                 default:
                     Console.WriteLine("There is no such parameter.");
@@ -79,6 +82,18 @@ namespace FileCabinetApp.CommandHandlers
             }
 
             this.recordPrinter(foundDataContainer);
+        }
+
+        private FileCabinetRecord[] GetRecordsArray(IEnumerable<FileCabinetRecord> recordIterator)
+        {
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+
+            foreach (var record in recordIterator)
+            {
+                records.Add(record);
+            }
+
+            return records.ToArray();
         }
     }
 }

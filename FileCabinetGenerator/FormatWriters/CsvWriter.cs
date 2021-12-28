@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FileCabinetApp;
+using FileCabinetApp.FormatWriters;
 
 namespace FileCabinetGenerator.FormatWriters
 {

@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using FileCabinetApp.Interfaces;
-using FileCabinetApp.Validators;
+using FileCabinetApp.Iterators;
 
 namespace FileCabinetApp.Services
 {
@@ -18,7 +18,10 @@ namespace FileCabinetApp.Services
 
         private List<FileCabinetRecord> list = new ();
 
-        private Dictionary<int, FileCabinetRecord> storedIdRecords = new Dictionary<int, FileCabinetRecord>();
+        /// <summary>
+        /// 1st arg - record's id, 2nd arg - position in list.
+        /// </summary>
+        private Dictionary<int, int> storedIdRecords = new Dictionary<int, int>();
 
         private Dictionary<string, List<int>> firstNameDictionary = new Dictionary<string, List<int>>();
         private Dictionary<string, List<int>> lastNameDictionary = new Dictionary<string, List<int>>();
@@ -53,7 +56,9 @@ namespace FileCabinetApp.Services
 
                 this.list.Add(record);
 
-                this.AddOrChangeInformationInIdDictionary(record.Id, ref this.storedIdRecords, record);
+                int position = this.list.Count - 1;
+
+                this.AddOrChangeInformationInIdDictionary(record.Id, position, ref this.storedIdRecords, record);
 
                 this.AddInformationToDictionary(record.FirstName, ref this.firstNameDictionary, record);
                 this.AddInformationToDictionary(record.LastName, ref this.lastNameDictionary, record);
@@ -98,7 +103,7 @@ namespace FileCabinetApp.Services
 
                 this.list[index] = record;
 
-                this.AddOrChangeInformationInIdDictionary(record.Id, ref this.storedIdRecords, record);
+                this.AddOrChangeInformationInIdDictionary(record.Id, index, ref this.storedIdRecords, record);
 
                 this.EditInformationInDictionary(record.FirstName, ref this.firstNameDictionary, record);
                 this.EditInformationInDictionary(record.LastName, ref this.lastNameDictionary, record);
@@ -152,9 +157,23 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <param name="firstName">Person's first name.</param>
         /// <returns>All records with the same firstname.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            return new ReadOnlyCollection<FileCabinetRecord>(this.GetInformationFromDictionary(firstName, this.firstNameDictionary));
+            List<int> listIdRecordsPositions = new List<int>();
+
+            if (this.firstNameDictionary.ContainsKey(firstName))
+            {
+                var listFirstNameIds = this.firstNameDictionary[firstName];
+                int id = 0;
+
+                for (int i = 0; i < listFirstNameIds.Count; i++)
+                {
+                    id = listFirstNameIds[i];
+                    listIdRecordsPositions.Add(this.storedIdRecords[id]);
+                }
+            }
+
+            return new RecordMemoryEnumerable(this.list, listIdRecordsPositions);
         }
 
         /// <summary>
@@ -162,9 +181,23 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <param name="lastName">Person's last name.</param>
         /// <returns>All records with the same lastname.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            return new ReadOnlyCollection<FileCabinetRecord>(this.GetInformationFromDictionary(lastName, this.lastNameDictionary));
+            List<int> listIdRecordsPositions = new List<int>();
+
+            if (this.lastNameDictionary.ContainsKey(lastName))
+            {
+                var listLastNameIds = this.lastNameDictionary[lastName];
+                int id = 0;
+
+                for (int i = 0; i < listLastNameIds.Count; i++)
+                {
+                    id = listLastNameIds[i];
+                    listIdRecordsPositions.Add(this.storedIdRecords[id]);
+                }
+            }
+
+            return new RecordMemoryEnumerable(this.list, listIdRecordsPositions);
         }
 
         /// <summary>
@@ -172,9 +205,23 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <param name="birthDate">Person's date of birth.</param>
         /// <returns>All records with the same date of birth.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByBirthDate(string birthDate)
+        public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate)
         {
-            return new ReadOnlyCollection<FileCabinetRecord>(this.GetInformationFromDictionary(birthDate, this.dateOfBirthDictionary));
+            List<int> listIdRecordsPositions = new List<int>();
+
+            if (this.dateOfBirthDictionary.ContainsKey(birthDate))
+            {
+                var listBirthDatesIds = this.dateOfBirthDictionary[birthDate];
+                int id = 0;
+
+                for (int i = 0; i < listBirthDatesIds.Count; i++)
+                {
+                    id = listBirthDatesIds[i];
+                    listIdRecordsPositions.Add(this.storedIdRecords[id]);
+                }
+            }
+
+            return new RecordMemoryEnumerable(this.list, listIdRecordsPositions);
         }
 
         /// <summary>
@@ -198,14 +245,14 @@ namespace FileCabinetApp.Services
             {
                 var record = unloadRecords[i];
 
-                this.AddOrChangeInformationInIdDictionary(record.Id, ref this.storedIdRecords, record);
+                this.AddOrChangeInformationInIdDictionary(record.Id, i, ref this.storedIdRecords, record);
 
                 this.EditInformationInDictionary(record.FirstName, ref this.firstNameDictionary, record);
                 this.EditInformationInDictionary(record.LastName, ref this.lastNameDictionary, record);
                 this.EditInformationInDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture), ref this.dateOfBirthDictionary, record);
             }
 
-            this.LoadRecordsToList();
+            this.list = unloadRecords;
         }
 
         /// <summary>
@@ -214,22 +261,29 @@ namespace FileCabinetApp.Services
         /// <param name="id">Id to remove.</param>
         public void RemoveRecordById(int id)
         {
+            if (!this.storedIdRecords.ContainsKey(id))
+            {
+                Console.WriteLine("There is no such record.");
+                return;
+            }
+
             try
             {
-                int positionInList = this.list.FindIndex(x => x.Id == id);
-
-                this.list.RemoveAt(positionInList);
-
-                string firstName = this.storedIdRecords[id].FirstName;
+                string firstName = this.list[this.storedIdRecords[id]].FirstName;
                 this.RemoveRecordFromDictionary(firstName, id, ref this.firstNameDictionary);
 
-                string lastName = this.storedIdRecords[id].LastName;
+                string lastName = this.list[this.storedIdRecords[id]].LastName;
                 this.RemoveRecordFromDictionary(lastName, id, ref this.lastNameDictionary);
 
-                string dateOfBirth = this.storedIdRecords[id].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
+                string dateOfBirth = this.list[this.storedIdRecords[id]].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
                 this.RemoveRecordFromDictionary(dateOfBirth, id, ref this.dateOfBirthDictionary);
 
                 this.storedIdRecords.Remove(id);
+
+                int positionInList = this.list.FindIndex(x => x.Id == id);
+                this.list.RemoveAt(positionInList);
+
+                Console.WriteLine($"Record #{id} is removed.");
             }
             catch (ArgumentException argumentException)
             {
@@ -267,15 +321,15 @@ namespace FileCabinetApp.Services
             }
         }
 
-        private void AddOrChangeInformationInIdDictionary(int parametrName, ref Dictionary<int, FileCabinetRecord> dict, FileCabinetRecord record)
+        private void AddOrChangeInformationInIdDictionary(int id, int position, ref Dictionary<int, int> dict, FileCabinetRecord record)
         {
-            if (!dict.ContainsKey(parametrName))
+            if (!dict.ContainsKey(id))
             {
-                dict.Add(parametrName, record);
+                dict.Add(id, position);
             }
             else
             {
-                dict[parametrName] = record;
+                dict[id] = position;
             }
         }
 
@@ -307,33 +361,6 @@ namespace FileCabinetApp.Services
             if (dict[parameterName].Count == 0)
             {
                 dict.Remove(parameterName);
-            }
-        }
-
-        private List<FileCabinetRecord> GetInformationFromDictionary(string parametrName, Dictionary<string, List<int>> dictionary)
-        {
-            if (dictionary.ContainsKey(parametrName))
-            {
-                List<FileCabinetRecord> listOfPositions = new List<FileCabinetRecord>();
-
-                for (int i = 0; i < dictionary[parametrName].Count; i++)
-                {
-                    listOfPositions.Add(this.storedIdRecords[dictionary[parametrName][i]]);
-                }
-
-                return listOfPositions;
-            }
-
-            return new List<FileCabinetRecord>();
-        }
-
-        private void LoadRecordsToList()
-        {
-            this.list = new List<FileCabinetRecord>();
-
-            foreach (var item in this.storedIdRecords.Values)
-            {
-                this.list.Add(item);
             }
         }
     }

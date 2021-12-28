@@ -27,21 +27,21 @@ namespace FileCabinetApp.Interfaces
         /// </summary>
         /// <param name="birthDate">Person's date of birth.</param>
         /// <returns>All records with the same date of birth.</returns>
-        ReadOnlyCollection<FileCabinetRecord> FindByBirthDate(string birthDate);
+        IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate);
 
         /// <summary>
         /// Searches all matches by firstname parameter.
         /// </summary>
         /// <param name="firstName">Person's first name.</param>
         /// <returns>All records with the same firstname.</returns>
-        ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName);
+        IEnumerable<FileCabinetRecord> FindByFirstName(string firstName);
 
         /// <summary>
         /// Searches all matches by lastName parameter.
         /// </summary>
         /// <param name="lastName">Person's last name.</param>
         /// <returns>All records with the same lastname.</returns>
-        ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName);
+        IEnumerable<FileCabinetRecord> FindByLastName(string lastName);
 
         /// <summary>
         /// Method checks record presence in list by ID.

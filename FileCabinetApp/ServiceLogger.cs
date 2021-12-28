@@ -80,15 +80,13 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByBirthDate(string birthDate)
+        public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling FindByBirthDate() with DateOfBirth = {birthDate}.");
 
             var records = this.service.FindByBirthDate(birthDate);
 
-            sb.Append($"{this.GetLogTime()} - FindByBirthDate() returns {records.Count} record(s).");
-
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
 
@@ -96,15 +94,13 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling FindByFirstName() with FirstName = {firstName}.");
 
             var records = this.service.FindByFirstName(firstName);
 
-            sb.Append($"{this.GetLogTime()} - FindByFirstName() returns {records.Count} record(s).");
-
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
 
@@ -112,14 +108,12 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling FindByLastName() with LastName = {lastName}.");
 
             var records = this.service.FindByLastName(lastName);
-
-            sb.Append($"{this.GetLogTime()} - FindByLastName() returns {records.Count} record(s).");
 
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();

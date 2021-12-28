@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 
-namespace FileCabinetApp
+namespace FileCabinetApp.FormatWriters
 {
     /// <summary>
     /// Class contains additional methods to work with writers.
