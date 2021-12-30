@@ -282,6 +282,12 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void RemoveRecordById(int id)
         {
+            if (!this.dictRecordsPositionOrder.ContainsKey(id))
+            {
+                Console.WriteLine($"There is no record #{id}.");
+                return;
+            }
+
             try
             {
                 short deleteByte = 1;
@@ -304,7 +310,7 @@ namespace FileCabinetApp.Services
                 this.ClearDictionaries();
                 this.AssignRecordValuesToDictionaries();
 
-                Console.WriteLine($"Record #{id} is removed.");
+                Console.WriteLine($"Record #{id} is deleted.");
             }
             catch (ArgumentNullException anex)
             {
@@ -317,6 +323,15 @@ namespace FileCabinetApp.Services
             catch (KeyNotFoundException keyNotFoundException)
             {
                 Console.WriteLine(keyNotFoundException.Message);
+            }
+        }
+
+        /// <inheritdoc/>
+        public void Delete(List<int> ids)
+        {
+            for (int i = 0; i < ids.Count; i++)
+            {
+                this.RemoveRecordById(ids[i]);
             }
         }
 

@@ -603,6 +603,12 @@
             </summary>
             <param name="id">Record's id.</param>
         </member>
+        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.Delete(System.Collections.Generic.List{System.Int32})">
+            <summary>
+            Delete records using input list of ids.
+            </summary>
+            <param name="ids">List of record ids.</param>
+        </member>
         <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.Purge">
             <summary>
             Defragments the data file.
@@ -920,6 +926,9 @@
         <member name="M:FileCabinetApp.ServiceLogger.Purge">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Delete(System.Collections.Generic.List{System.Int32})">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.ServiceLogger.RemoveRecordById(System.Int32)">
             <inheritdoc/>
         </member>
@@ -968,6 +977,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceMeter.RemoveRecordById(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Delete(System.Collections.Generic.List{System.Int32})">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceMeter.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
@@ -1036,6 +1048,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.RemoveRecordById(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.Delete(System.Collections.Generic.List{System.Int32})">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.Purge">
@@ -1130,6 +1145,9 @@
             Removes record by id.
             </summary>
             <param name="id">Id to remove.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Delete(System.Collections.Generic.List{System.Int32})">
+            <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Purge">
             <inheritdoc/>

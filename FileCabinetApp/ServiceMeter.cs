@@ -152,6 +152,16 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
+        public void Delete(List<int> ids)
+        {
+            this.stopwatch.Restart();
+            this.service.Delete(ids);
+            this.stopwatch.Stop();
+
+            this.GetElapsedTime(this.GetCallerName());
+        }
+
+        /// <inheritdoc/>
         public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
         {
             this.stopwatch.Restart();

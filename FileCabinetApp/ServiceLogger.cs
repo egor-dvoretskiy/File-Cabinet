@@ -197,6 +197,22 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
+        public void Delete(List<int> ids)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{this.GetLogTime()} - Calling Delete().");
+
+            this.service.Delete(ids);
+
+            sb.Append($"{this.GetLogTime()} - Delete() removes next record(s) with id:");
+            sb.Append(string.Join(", ", ids));
+            sb.Append($".");
+
+            this.writer.WriteLine(sb.ToString());
+            this.writer.Flush();
+        }
+
+        /// <inheritdoc/>
         public void RemoveRecordById(int id)
         {
             StringBuilder sb = new StringBuilder();

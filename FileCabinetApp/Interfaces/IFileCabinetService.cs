@@ -85,6 +85,12 @@ namespace FileCabinetApp.Interfaces
         void RemoveRecordById(int id);
 
         /// <summary>
+        /// Delete records using input list of ids.
+        /// </summary>
+        /// <param name="ids">List of record ids.</param>
+        void Delete(List<int> ids);
+
+        /// <summary>
         /// Defragments the data file.
         /// </summary>
         void Purge();

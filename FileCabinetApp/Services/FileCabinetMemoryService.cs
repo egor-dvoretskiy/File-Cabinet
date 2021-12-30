@@ -263,7 +263,7 @@ namespace FileCabinetApp.Services
         {
             if (!this.storedIdRecords.ContainsKey(id))
             {
-                Console.WriteLine("There is no such record.");
+                Console.WriteLine($"There is no record #{id}.");
                 return;
             }
 
@@ -278,16 +278,29 @@ namespace FileCabinetApp.Services
                 string dateOfBirth = this.list[this.storedIdRecords[id]].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
                 this.RemoveRecordFromDictionary(dateOfBirth, id, ref this.dateOfBirthDictionary);
 
+                int indexInList = this.storedIdRecords[id];
+
                 this.storedIdRecords.Remove(id);
 
                 int positionInList = this.list.FindIndex(x => x.Id == id);
                 this.list.RemoveAt(positionInList);
 
-                Console.WriteLine($"Record #{id} is removed.");
+                this.UpdateIdDictionaryAccordingToRemoveRecord(indexInList);
+
+                Console.WriteLine($"Record #{id} is deleted.");
             }
             catch (ArgumentException argumentException)
             {
                 Console.WriteLine(argumentException.Message);
+            }
+        }
+
+        /// <inheritdoc/>
+        public void Delete(List<int> ids)
+        {
+            for (int i = 0; i < ids.Count; i++)
+            {
+                this.RemoveRecordById(ids[i]);
             }
         }
 
@@ -337,6 +350,19 @@ namespace FileCabinetApp.Services
             catch (ArgumentException aex)
             {
                 Console.WriteLine(aex.Message);
+            }
+        }
+
+        private void UpdateIdDictionaryAccordingToRemoveRecord(int indexInList)
+        {
+            if (indexInList >= this.list.Count)
+            {
+                return;
+            }
+
+            for (int i = indexInList; i < this.list.Count; i++)
+            {
+                this.storedIdRecords[this.list[i].Id] -= 1;
             }
         }
 
