@@ -161,6 +161,16 @@ namespace FileCabinetApp
             this.GetElapsedTime(this.GetCallerName());
         }
 
+        /// <inheritdoc/>
+        public void InsertRecord(FileCabinetRecord record)
+        {
+            this.stopwatch.Restart();
+            this.service.InsertRecord(record);
+            this.stopwatch.Stop();
+
+            this.GetElapsedTime(this.GetCallerName());
+        }
+
         private void GetElapsedTime(string methodName)
         {
             var elapsed = this.stopwatch.Elapsed.TotalMilliseconds; // ms

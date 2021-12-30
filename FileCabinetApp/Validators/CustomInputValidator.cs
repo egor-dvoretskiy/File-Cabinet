@@ -136,5 +136,20 @@ namespace FileCabinetApp.Validators
 
             return new Tuple<bool, string>(isValid, errorMessage);
         }
+
+        /// <inheritdoc/>
+        public Tuple<bool, string> IdValidator(int input)
+        {
+            bool isValid = true;
+            string errorMessage = string.Empty;
+
+            if (input < ValidatorSettings.MinimalId)
+            {
+                isValid = false;
+                errorMessage = $"Id value is less than {ValidatorSettings.MinimalId}.";
+            }
+
+            return new Tuple<bool, string>(isValid, errorMessage);
+        }
     }
 }

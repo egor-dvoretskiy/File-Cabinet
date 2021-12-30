@@ -9,6 +9,14 @@ namespace FileCabinetApp.Validators
     internal static class ValidatorSettings
     {
         /// <summary>
+        /// Gets minimal possible id value.
+        /// </summary>
+        /// <value>
+        /// Minimal possible length of first name.
+        /// </value>
+        public static int MinimalId { get; private set; } = 1;
+
+        /// <summary>
         /// Gets minimal possible length of first name.
         /// </summary>
         /// <value>

@@ -150,6 +150,25 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
+        public void InsertRecord(FileCabinetRecord record)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"{this.GetLogTime()} - Calling InsertRecord() with ");
+            sb.Append($"FirstName = '{record.FirstName}', ");
+            sb.Append($"LastName = '{record.LastName}', ");
+            sb.Append($"DateOfBirth = '{record.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', ");
+            sb.Append($"PersonalRating = '{record.PersonalRating}', ");
+            sb.Append($"Salary = '{record.Salary}', ");
+            sb.Append($"Gender = '{record.Gender}'.");
+            sb.Append(Environment.NewLine);
+
+            this.service.InsertRecord(record);
+
+            this.writer.WriteLine(sb.ToString());
+            this.writer.Flush();
+        }
+
+        /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             StringBuilder sb = new StringBuilder();

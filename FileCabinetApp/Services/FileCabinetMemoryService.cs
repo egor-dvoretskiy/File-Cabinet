@@ -297,6 +297,49 @@ namespace FileCabinetApp.Services
             Console.WriteLine("Wrong service, please switch memory mode to file system.");
         }
 
+        /// <inheritdoc/>
+        public void InsertRecord(FileCabinetRecord record)
+        {
+            try
+            {
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (!isValid)
+                {
+                    throw new ArgumentException("Record you want to add is not valid. Please try again!");
+                }
+
+                if (this.storedIdRecords.ContainsKey(record.Id))
+                {
+                    throw new ArgumentException($"Memory is already has a record #{record.Id}.");
+                }
+
+                this.list.Add(record);
+
+                int position = this.list.Count - 1;
+
+                this.AddOrChangeInformationInIdDictionary(record.Id, position, ref this.storedIdRecords, record);
+
+                this.AddInformationToDictionary(record.FirstName, ref this.firstNameDictionary, record);
+                this.AddInformationToDictionary(record.LastName, ref this.lastNameDictionary, record);
+                this.AddInformationToDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture), ref this.dateOfBirthDictionary, record);
+
+                Console.WriteLine($"Record was successfully inserted in memory.");
+            }
+            catch (ArgumentNullException anex)
+            {
+                Console.WriteLine(anex.Message);
+            }
+            catch (ArgumentOutOfRangeException aorex)
+            {
+                Console.WriteLine(aorex.Message);
+            }
+            catch (ArgumentException aex)
+            {
+                Console.WriteLine(aex.Message);
+            }
+        }
+
         private int GetUniqueId()
         {
             int id = 1;

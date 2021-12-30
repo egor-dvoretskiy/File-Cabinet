@@ -23,6 +23,12 @@ namespace FileCabinetApp.Interfaces
         void EditRecord(int id, FileCabinetRecord record);
 
         /// <summary>
+        /// Adds record with specific group of parameters.
+        /// </summary>
+        /// <param name="record">File cabinet record.</param>
+        void InsertRecord(FileCabinetRecord record);
+
+        /// <summary>
         /// Searches all matches by birthDate parameter.
         /// </summary>
         /// <param name="birthDate">Person's date of birth.</param>

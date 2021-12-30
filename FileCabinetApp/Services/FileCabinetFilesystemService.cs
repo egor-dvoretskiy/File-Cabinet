@@ -96,6 +96,13 @@ namespace FileCabinetApp.Services
         {
             try
             {
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (!isValid)
+                {
+                    throw new ArgumentException("Record you want to create is not valid. Please try again!");
+                }
+
                 this.fileStream.Seek(0, SeekOrigin.End);
 
                 record.Id = this.GetUniqueId();
@@ -131,6 +138,13 @@ namespace FileCabinetApp.Services
         {
             try
             {
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (!isValid)
+                {
+                    throw new ArgumentException("Record you want to edit is not valid. Please try again!");
+                }
+
                 int recordPosition = this.dictRecordsPositionOrder[id];
 
                 byte[] buffer = this.WriteRecordToBuffer(record);
@@ -352,6 +366,47 @@ namespace FileCabinetApp.Services
                 this.UpdateRecordCount();
                 this.ClearDictionaries();
                 this.AssignRecordValuesToDictionaries();
+            }
+            catch (ArgumentNullException anex)
+            {
+                Console.WriteLine(anex.Message);
+            }
+            catch (ArgumentException aex)
+            {
+                Console.WriteLine(aex.Message);
+            }
+        }
+
+        /// <inheritdoc/>
+        public void InsertRecord(FileCabinetRecord record)
+        {
+            try
+            {
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (!isValid)
+                {
+                    throw new ArgumentException("Record you want to add is not valid. Please try again!");
+                }
+
+                if (this.dictRecordsPositionOrder.ContainsKey(record.Id))
+                {
+                    throw new ArgumentException($"Memory is already has a record #{record.Id}.");
+                }
+
+                this.fileStream.Seek(0, SeekOrigin.End);
+
+                byte[] buffer = this.WriteRecordToBuffer(record);
+
+                this.fileStream.Write(buffer, 0, buffer.Length);
+                this.fileStream.Flush(true);
+
+                this.AddIdToParamsDictionary(record.Id, this.recordsCount, ref this.dictRecordsPositionOrder);
+                this.AddNameToParamsDictionary(record.FirstName, record.Id, ref this.firstNameDictionary);
+                this.AddNameToParamsDictionary(record.LastName, record.Id, ref this.lastNameDictionary);
+                this.AddDateTimeToParamsDictionary(record.DateOfBirth, record.Id, ref this.dateOfBirthDictionary);
+
+                this.UpdateRecordCount();
             }
             catch (ArgumentNullException anex)
             {

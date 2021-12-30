@@ -57,6 +57,20 @@
         <member name="M:FileCabinetApp.CommandHandlers.CreateCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.DeleteCommandHandler">
+            <summary>
+            Handler for delete command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.DeleteCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.DeleteCommandHandler"/> class.
+            </summary>
+            <param name="service">File cabinet service.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.DeleteCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.EditCommandHandler">
             <summary>
             Handler for edit command.
@@ -154,6 +168,20 @@
             <param name="service">File cabinet service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ImportCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.InsertCommandHandler">
+            <summary>
+            Keeps insert command logics.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.InsertCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.InsertCommandHandler"/> class.
+            </summary>
+            <param name="service">Specified service to work with.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.InsertCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.ListCommandHandler">
@@ -513,6 +541,12 @@
             <param name="record">Input parameter object.</param>
             <exception cref="T:System.ArgumentException">id.</exception>
         </member>
+        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.InsertRecord(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Adds record with specific group of parameters.
+            </summary>
+            <param name="record">File cabinet record.</param>
+        </member>
         <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.FindByBirthDate(System.String)">
             <summary>
             Searches all matches by birthDate parameter.
@@ -578,6 +612,13 @@
             <summary>
             Interface that hold validate parameters functional.
             </summary>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.IRecordInputValidator.IdValidator(System.Int32)">
+            <summary>
+            Validates id value.
+            </summary>
+            <param name="input">Id of record.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
         <member name="M:FileCabinetApp.Interfaces.IRecordInputValidator.FirstNameValidator(System.String)">
             <summary>
@@ -870,6 +911,9 @@
         <member name="M:FileCabinetApp.ServiceLogger.GetStat">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.ServiceLogger.InsertRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.ServiceLogger.MakeSnapshot">
             <inheritdoc/>
         </member>
@@ -927,6 +971,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceMeter.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.InsertRecord(FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Services.FileCabinetFileSystemService">
@@ -992,6 +1039,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.InsertRecord(FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Services.FileCabinetMemoryService">
@@ -1084,6 +1134,9 @@
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Purge">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.InsertRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Validators.CompositeValidator">
             <summary>
             Container in 'composite pattern'.
@@ -1144,6 +1197,9 @@
             </summary>
             <param name="input">gender.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomInputValidator.IdValidator(System.Int32)">
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Validators.DateOfBirthValidator">
             <summary>
@@ -1206,6 +1262,9 @@
             </summary>
             <param name="input">gender.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.IdValidator(System.Int32)">
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Validators.FirstNameValidator">
             <summary>
@@ -1351,6 +1410,14 @@
             <summary>
             Class contains validation settings.
             </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidatorSettings.MinimalId">
+            <summary>
+            Gets minimal possible id value.
+            </summary>
+            <value>
+            Minimal possible length of first name.
+            </value>
         </member>
         <member name="P:FileCabinetApp.Validators.ValidatorSettings.MinimalLengthFirstName">
             <summary>
