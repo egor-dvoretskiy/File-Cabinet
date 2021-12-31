@@ -379,6 +379,7 @@ namespace FileCabinetApp
             var statHandler = new StatCommandHandler(Program.fileCabinetService);
             var insertHandler = new InsertCommandHandler(Program.fileCabinetService);
             var deleteHandler = new DeleteCommandHandler(Program.fileCabinetService);
+            var updateHandler = new UpdateCommandHandler(Program.fileCabinetService);
 
             createHandler.SetNext(editHandler);
             editHandler.SetNext(exitHandler);
@@ -392,6 +393,7 @@ namespace FileCabinetApp
             removeHandler.SetNext(statHandler);
             statHandler.SetNext(insertHandler);
             insertHandler.SetNext(deleteHandler);
+            deleteHandler.SetNext(updateHandler);
 
             return createHandler;
         }

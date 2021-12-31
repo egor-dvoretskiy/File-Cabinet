@@ -257,6 +257,20 @@
         <member name="M:FileCabinetApp.CommandHandlers.StatCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.UpdateCommandHandler">
+            <summary>
+            Handler for update command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.UpdateCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.UpdateCommandHandler"/> class.
+            </summary>
+            <param name="service">File cabinet service.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.UpdateCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Class, that contains record parameters.
@@ -547,6 +561,13 @@
             </summary>
             <param name="record">File cabinet record.</param>
         </member>
+        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.GetRecord(System.Int32)">
+            <summary>
+            Acquire record from storage by id.
+            </summary>
+            <param name="id">Record's id.</param>
+            <returns>Returns record.</returns>
+        </member>
         <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.FindByBirthDate(System.String)">
             <summary>
             Searches all matches by birthDate parameter.
@@ -573,6 +594,7 @@
             Method checks record presence in list by ID.
             </summary>
             <param name="id">Record's id.</param>
+            <returns>Boolean present in list.</returns>
         </member>
         <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.GetRecords">
             <summary>
@@ -608,6 +630,12 @@
             Delete records using input list of ids.
             </summary>
             <param name="ids">List of record ids.</param>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.Update(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Update records using input list of records.
+            </summary>
+            <param name="records">Records to update.</param>
         </member>
         <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.Purge">
             <summary>
@@ -935,6 +963,12 @@
         <member name="M:FileCabinetApp.ServiceLogger.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Update(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.GetRecord(System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.ServiceMeter">
             <summary>
             Measures working time of service methods.
@@ -988,6 +1022,12 @@
         <member name="M:FileCabinetApp.ServiceMeter.InsertRecord(FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Update(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.GetRecord(System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Services.FileCabinetFileSystemService">
             <summary>
             File system service.
@@ -1032,6 +1072,9 @@
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.FindByLastName(System.String)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.GetRecord(System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.CheckRecordPresence(System.Int32)">
             <inheritdoc/>
         </member>
@@ -1057,6 +1100,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.InsertRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.Update(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Services.FileCabinetMemoryService">
@@ -1102,10 +1148,7 @@
             </summary>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.CheckRecordPresence(System.Int32)">
-            <summary>
-            Method find record position in list by ID.
-            </summary>
-            <param name="id">Record's id.</param>
+            <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.FindByFirstName(System.String)">
             <summary>
@@ -1153,6 +1196,12 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.InsertRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Update(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.GetRecord(System.Int32)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Validators.CompositeValidator">

@@ -30,13 +30,15 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public void CheckRecordPresence(int id)
+        public bool CheckRecordPresence(int id)
         {
             this.stopwatch.Restart();
-            this.service.CheckRecordPresence(id);
+            var value = this.service.CheckRecordPresence(id);
             this.stopwatch.Stop();
 
             this.GetElapsedTime(this.GetCallerName());
+
+            return value;
         }
 
         /// <inheritdoc/>
@@ -179,6 +181,28 @@ namespace FileCabinetApp
             this.stopwatch.Stop();
 
             this.GetElapsedTime(this.GetCallerName());
+        }
+
+        /// <inheritdoc/>
+        public void Update(List<FileCabinetRecord> records)
+        {
+            this.stopwatch.Restart();
+            this.service.Update(records);
+            this.stopwatch.Stop();
+
+            this.GetElapsedTime(this.GetCallerName());
+        }
+
+        /// <inheritdoc/>
+        public FileCabinetRecord GetRecord(int id)
+        {
+            this.stopwatch.Restart();
+            var record = this.service.GetRecord(id);
+            this.stopwatch.Stop();
+
+            this.GetElapsedTime(this.GetCallerName());
+
+            return record;
         }
 
         private void GetElapsedTime(string methodName)

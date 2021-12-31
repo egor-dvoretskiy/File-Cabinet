@@ -191,12 +191,31 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public void CheckRecordPresence(int id)
+        public FileCabinetRecord GetRecord(int id)
         {
+            this.fileStream.Seek(this.dictRecordsPositionOrder[id] * RecordSize, SeekOrigin.Begin);
+
+            byte[] bytes = new byte[RecordSize];
+            this.fileStream.Read(bytes, 0, RecordSize);
+
+            var tupleReadFromFile = ReadRecordFromBuffer(bytes);
+
+            FileCabinetRecord record = tupleReadFromFile.Item1;
+
+            return record;
+        }
+
+        /// <inheritdoc/>
+        public bool CheckRecordPresence(int id)
+        {
+            bool listIdPresent = true;
+
             if (!this.dictRecordsPositionOrder.ContainsKey(id))
             {
-                throw new ArgumentException($"#{id} record is not found.");
+                listIdPresent = false;
             }
+
+            return listIdPresent;
         }
 
         /// <inheritdoc/>
@@ -431,6 +450,17 @@ namespace FileCabinetApp.Services
             {
                 Console.WriteLine(aex.Message);
             }
+        }
+
+        /// <inheritdoc/>
+        public void Update(List<FileCabinetRecord> records)
+        {
+            for (int i = 0; i < records.Count; i++)
+            {
+                this.EditRecord(records[i].Id, records[i]);
+            }
+
+            Console.WriteLine($"Record's updating completed.");
         }
 
         private int GetUniqueId()

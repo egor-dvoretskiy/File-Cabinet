@@ -51,7 +51,12 @@ namespace FileCabinetApp.CommandHandlers
 
             try
             {
-                this.service.CheckRecordPresence(id);
+                var listPresence = this.service.CheckRecordPresence(id);
+
+                if (!listPresence)
+                {
+                    Console.WriteLine($"There is no such id. Please, try again.");
+                }
 
                 Console.Write("First name: ");
                 var firstName = Program.ReadInput(InputConverter.StringConverter, Program.InputValidator.FirstNameValidator);

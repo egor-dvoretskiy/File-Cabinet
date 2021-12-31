@@ -140,16 +140,17 @@ namespace FileCabinetApp.Services
             Console.WriteLine($"{this.list.Count} record(s).");
         }
 
-        /// <summary>
-        /// Method find record position in list by ID.
-        /// </summary>
-        /// <param name="id">Record's id.</param>
-        public void CheckRecordPresence(int id)
+        /// <inheritdoc/>
+        public bool CheckRecordPresence(int id)
         {
+            bool listIdPresent = true;
+
             if (!this.storedIdRecords.ContainsKey(id))
             {
-                throw new ArgumentException($"#{id} record is not found.");
+                listIdPresent = false;
             }
+
+            return listIdPresent;
         }
 
         /// <summary>
@@ -209,7 +210,10 @@ namespace FileCabinetApp.Services
         {
             List<int> listIdRecordsPositions = new List<int>();
 
-            if (this.dateOfBirthDictionary.ContainsKey(birthDate))
+            var isValidBirth = DateTime.TryParse(birthDate, out DateTime validBirthDate);
+            birthDate = validBirthDate.ToString("yyyy-MMM-dd");
+
+            if (isValidBirth && this.dateOfBirthDictionary.ContainsKey(birthDate))
             {
                 var listBirthDatesIds = this.dateOfBirthDictionary[birthDate];
                 int id = 0;
@@ -351,6 +355,23 @@ namespace FileCabinetApp.Services
             {
                 Console.WriteLine(aex.Message);
             }
+        }
+
+        /// <inheritdoc/>
+        public void Update(List<FileCabinetRecord> records)
+        {
+            for (int i = 0; i < records.Count; i++)
+            {
+                this.EditRecord(records[i].Id, records[i]);
+            }
+
+            Console.WriteLine($"Record's updating completed.");
+        }
+
+        /// <inheritdoc/>
+        public FileCabinetRecord GetRecord(int id)
+        {
+            return this.list[this.storedIdRecords[id]];
         }
 
         private void UpdateIdDictionaryAccordingToRemoveRecord(int indexInList)

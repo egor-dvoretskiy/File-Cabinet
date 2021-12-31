@@ -29,6 +29,13 @@ namespace FileCabinetApp.Interfaces
         void InsertRecord(FileCabinetRecord record);
 
         /// <summary>
+        /// Acquire record from storage by id.
+        /// </summary>
+        /// <param name="id">Record's id.</param>
+        /// <returns>Returns record.</returns>
+        FileCabinetRecord GetRecord(int id);
+
+        /// <summary>
         /// Searches all matches by birthDate parameter.
         /// </summary>
         /// <param name="birthDate">Person's date of birth.</param>
@@ -53,7 +60,8 @@ namespace FileCabinetApp.Interfaces
         /// Method checks record presence in list by ID.
         /// </summary>
         /// <param name="id">Record's id.</param>
-        void CheckRecordPresence(int id);
+        /// <returns>Boolean present in list.</returns>
+        bool CheckRecordPresence(int id);
 
         /// <summary>
         /// Method return all stored records.
@@ -89,6 +97,12 @@ namespace FileCabinetApp.Interfaces
         /// </summary>
         /// <param name="ids">List of record ids.</param>
         void Delete(List<int> ids);
+
+        /// <summary>
+        /// Update records using input list of records.
+        /// </summary>
+        /// <param name="records">Records to update.</param>
+        void Update(List<FileCabinetRecord> records);
 
         /// <summary>
         /// Defragments the data file.

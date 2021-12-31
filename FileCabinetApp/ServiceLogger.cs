@@ -30,12 +30,14 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public void CheckRecordPresence(int id)
+        public bool CheckRecordPresence(int id)
         {
             this.writer.WriteLine($"{this.GetLogTime()} - Calling CheckRecordPresence() with id = '{id}'.");
-            this.service.CheckRecordPresence(id);
+            var value = this.service.CheckRecordPresence(id);
 
             this.writer.Flush();
+
+            return value;
         }
 
         /// <inheritdoc/>
@@ -234,6 +236,34 @@ namespace FileCabinetApp
 
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
+        }
+
+        /// <inheritdoc/>
+        public void Update(List<FileCabinetRecord> records)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{this.GetLogTime()} - Calling Update().");
+
+            this.service.Update(records);
+
+            sb.Append($"{this.GetLogTime()} - Update() edit {records.Count} record(s).");
+
+            this.writer.WriteLine(sb.ToString());
+            this.writer.Flush();
+        }
+
+        /// <inheritdoc/>
+        public FileCabinetRecord GetRecord(int id)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"{this.GetLogTime()} - Calling GetRecord() with id='{id}'.");
+
+            var record = this.service.GetRecord(id);
+
+            this.writer.WriteLine(sb.ToString());
+            this.writer.Flush();
+
+            return record;
         }
 
         private string GetLogTime()
