@@ -37,11 +37,23 @@
             Abstract class for CommandHandler.
             </summary>
         </member>
+        <member name="F:FileCabinetApp.CommandHandlers.CommandHandlerBase.similarCommandsBuilder">
+            <summary>
+            Holds the similar commands string.
+            </summary>
+        </member>
         <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.SetNext(FileCabinetApp.Interfaces.ICommandHandler)">
             <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.AssignToSimilarCommands(System.String,FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Assigns similar commands to builder.
+            </summary>
+            <param name="commandName">Name of method.</param>
+            <param name="appCommandRequest">Current command request.</param>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.CreateCommandHandler">
             <summary>

@@ -36,6 +36,8 @@ namespace FileCabinetApp.CommandHandlers
         /// <inheritdoc/>
         public override void Handle(AppCommandRequest appCommandRequest)
         {
+            this.AssignToSimilarCommands(CommandName, appCommandRequest);
+
             string command = appCommandRequest.Command;
             string parameters = appCommandRequest.Parameters;
 
