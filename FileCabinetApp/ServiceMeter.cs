@@ -30,13 +30,15 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public void CheckRecordPresence(int id)
+        public bool CheckRecordPresence(int id)
         {
             this.stopwatch.Restart();
-            this.service.CheckRecordPresence(id);
+            var value = this.service.CheckRecordPresence(id);
             this.stopwatch.Stop();
 
             this.GetElapsedTime(this.GetCallerName());
+
+            return value;
         }
 
         /// <inheritdoc/>
@@ -49,16 +51,6 @@ namespace FileCabinetApp
             this.GetElapsedTime(this.GetCallerName());
 
             return id;
-        }
-
-        /// <inheritdoc/>
-        public void EditRecord(int id, FileCabinetRecord record)
-        {
-            this.stopwatch.Restart();
-            this.service.EditRecord(id, record);
-            this.stopwatch.Stop();
-
-            this.GetElapsedTime(this.GetCallerName());
         }
 
         /// <inheritdoc/>
@@ -142,10 +134,10 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public void RemoveRecordById(int id)
+        public void Delete(List<int> ids)
         {
             this.stopwatch.Restart();
-            this.service.RemoveRecordById(id);
+            this.service.Delete(ids);
             this.stopwatch.Stop();
 
             this.GetElapsedTime(this.GetCallerName());
@@ -159,6 +151,38 @@ namespace FileCabinetApp
             this.stopwatch.Stop();
 
             this.GetElapsedTime(this.GetCallerName());
+        }
+
+        /// <inheritdoc/>
+        public void InsertRecord(FileCabinetRecord record)
+        {
+            this.stopwatch.Restart();
+            this.service.InsertRecord(record);
+            this.stopwatch.Stop();
+
+            this.GetElapsedTime(this.GetCallerName());
+        }
+
+        /// <inheritdoc/>
+        public void Update(List<FileCabinetRecord> records)
+        {
+            this.stopwatch.Restart();
+            this.service.Update(records);
+            this.stopwatch.Stop();
+
+            this.GetElapsedTime(this.GetCallerName());
+        }
+
+        /// <inheritdoc/>
+        public FileCabinetRecord GetRecord(int id)
+        {
+            this.stopwatch.Restart();
+            var record = this.service.GetRecord(id);
+            this.stopwatch.Stop();
+
+            this.GetElapsedTime(this.GetCallerName());
+
+            return record;
         }
 
         private void GetElapsedTime(string methodName)

@@ -96,6 +96,13 @@ namespace FileCabinetApp.Services
         {
             try
             {
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (!isValid)
+                {
+                    throw new ArgumentException("Record you want to create is not valid. Please try again!");
+                }
+
                 this.fileStream.Seek(0, SeekOrigin.End);
 
                 record.Id = this.GetUniqueId();
@@ -127,32 +134,6 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public void EditRecord(int id, FileCabinetRecord record)
-        {
-            try
-            {
-                int recordPosition = this.dictRecordsPositionOrder[id];
-
-                byte[] buffer = this.WriteRecordToBuffer(record);
-                this.fileStream.Seek(recordPosition * RecordSize, SeekOrigin.Begin);
-
-                this.fileStream.Write(buffer, 0, buffer.Length);
-                this.fileStream.Flush(true);
-
-                this.ClearDictionaries();
-                this.AssignRecordValuesToDictionaries();
-            }
-            catch (ArgumentNullException anex)
-            {
-                Console.WriteLine(anex.Message);
-            }
-            catch (ArgumentException aex)
-            {
-                Console.WriteLine(aex.Message);
-            }
-        }
-
-        /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate)
         {
             List<int> listIdRecordsPositions = this.GetDateTimeFromDictionary(birthDate, this.dateOfBirthDictionary);
@@ -177,12 +158,31 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public void CheckRecordPresence(int id)
+        public FileCabinetRecord GetRecord(int id)
         {
+            this.fileStream.Seek(this.dictRecordsPositionOrder[id] * RecordSize, SeekOrigin.Begin);
+
+            byte[] bytes = new byte[RecordSize];
+            this.fileStream.Read(bytes, 0, RecordSize);
+
+            var tupleReadFromFile = ReadRecordFromBuffer(bytes);
+
+            FileCabinetRecord record = tupleReadFromFile.Item1;
+
+            return record;
+        }
+
+        /// <inheritdoc/>
+        public bool CheckRecordPresence(int id)
+        {
+            bool listIdPresent = true;
+
             if (!this.dictRecordsPositionOrder.ContainsKey(id))
             {
-                throw new ArgumentException($"#{id} record is not found.");
+                listIdPresent = false;
             }
+
+            return listIdPresent;
         }
 
         /// <inheritdoc/>
@@ -266,43 +266,11 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public void RemoveRecordById(int id)
+        public void Delete(List<int> ids)
         {
-            try
+            for (int i = 0; i < ids.Count; i++)
             {
-                short deleteByte = 1;
-
-                byte[] buffer = new byte[sizeof(short)];
-                using (MemoryStream memoryStream = new MemoryStream(buffer))
-                using (BinaryWriter writer = new BinaryWriter(memoryStream))
-                {
-                    writer.Write(deleteByte);
-                }
-
-                int recordPosition = this.dictRecordsPositionOrder[id];
-
-                this.fileStream.Seek(recordPosition * RecordSize, SeekOrigin.Begin);
-
-                this.fileStream.Write(buffer, 0, buffer.Length);
-                this.fileStream.Flush(true);
-
-                this.UpdateRecordCount();
-                this.ClearDictionaries();
-                this.AssignRecordValuesToDictionaries();
-
-                Console.WriteLine($"Record #{id} is removed.");
-            }
-            catch (ArgumentNullException anex)
-            {
-                Console.WriteLine(anex.Message);
-            }
-            catch (ArgumentException aex)
-            {
-                Console.WriteLine(aex.Message);
-            }
-            catch (KeyNotFoundException keyNotFoundException)
-            {
-                Console.WriteLine(keyNotFoundException.Message);
+                this.RemoveRecordById(ids[i]);
             }
         }
 
@@ -360,6 +328,136 @@ namespace FileCabinetApp.Services
             catch (ArgumentException aex)
             {
                 Console.WriteLine(aex.Message);
+            }
+        }
+
+        /// <inheritdoc/>
+        public void InsertRecord(FileCabinetRecord record)
+        {
+            try
+            {
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (!isValid)
+                {
+                    throw new ArgumentException("Record you want to add is not valid. Please try again!");
+                }
+
+                if (this.dictRecordsPositionOrder.ContainsKey(record.Id))
+                {
+                    throw new ArgumentException($"Memory is already has a record #{record.Id}.");
+                }
+
+                this.fileStream.Seek(0, SeekOrigin.End);
+
+                byte[] buffer = this.WriteRecordToBuffer(record);
+
+                this.fileStream.Write(buffer, 0, buffer.Length);
+                this.fileStream.Flush(true);
+
+                this.AddIdToParamsDictionary(record.Id, this.recordsCount, ref this.dictRecordsPositionOrder);
+                this.AddNameToParamsDictionary(record.FirstName, record.Id, ref this.firstNameDictionary);
+                this.AddNameToParamsDictionary(record.LastName, record.Id, ref this.lastNameDictionary);
+                this.AddDateTimeToParamsDictionary(record.DateOfBirth, record.Id, ref this.dateOfBirthDictionary);
+
+                this.UpdateRecordCount();
+            }
+            catch (ArgumentNullException anex)
+            {
+                Console.WriteLine(anex.Message);
+            }
+            catch (ArgumentException aex)
+            {
+                Console.WriteLine(aex.Message);
+            }
+        }
+
+        /// <inheritdoc/>
+        public void Update(List<FileCabinetRecord> records)
+        {
+            for (int i = 0; i < records.Count; i++)
+            {
+                this.EditRecord(records[i].Id, records[i]);
+            }
+
+            Console.WriteLine($"Record's updating completed.");
+        }
+
+        private void EditRecord(int id, FileCabinetRecord record)
+        {
+            try
+            {
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (!isValid)
+                {
+                    throw new ArgumentException("Record you want to edit is not valid. Please try again!");
+                }
+
+                int recordPosition = this.dictRecordsPositionOrder[id];
+
+                byte[] buffer = this.WriteRecordToBuffer(record);
+                this.fileStream.Seek(recordPosition * RecordSize, SeekOrigin.Begin);
+
+                this.fileStream.Write(buffer, 0, buffer.Length);
+                this.fileStream.Flush(true);
+
+                this.ClearDictionaries();
+                this.AssignRecordValuesToDictionaries();
+            }
+            catch (ArgumentNullException anex)
+            {
+                Console.WriteLine(anex.Message);
+            }
+            catch (ArgumentException aex)
+            {
+                Console.WriteLine(aex.Message);
+            }
+        }
+
+        private void RemoveRecordById(int id)
+        {
+            if (!this.dictRecordsPositionOrder.ContainsKey(id))
+            {
+                Console.WriteLine($"There is no record #{id}.");
+                return;
+            }
+
+            try
+            {
+                short deleteByte = 1;
+
+                byte[] buffer = new byte[sizeof(short)];
+                using (MemoryStream memoryStream = new MemoryStream(buffer))
+                using (BinaryWriter writer = new BinaryWriter(memoryStream))
+                {
+                    writer.Write(deleteByte);
+                }
+
+                int recordPosition = this.dictRecordsPositionOrder[id];
+
+                this.fileStream.Seek(recordPosition * RecordSize, SeekOrigin.Begin);
+
+                this.fileStream.Write(buffer, 0, buffer.Length);
+                this.fileStream.Flush(true);
+
+                this.UpdateRecordCount();
+                this.ClearDictionaries();
+                this.AssignRecordValuesToDictionaries();
+
+                Console.WriteLine($"Record #{id} is deleted.");
+            }
+            catch (ArgumentNullException anex)
+            {
+                Console.WriteLine(anex.Message);
+            }
+            catch (ArgumentException aex)
+            {
+                Console.WriteLine(aex.Message);
+            }
+            catch (KeyNotFoundException keyNotFoundException)
+            {
+                Console.WriteLine(keyNotFoundException.Message);
             }
         }
 

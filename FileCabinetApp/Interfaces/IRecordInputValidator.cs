@@ -12,6 +12,13 @@ namespace FileCabinetApp.Interfaces
     public interface IRecordInputValidator
     {
         /// <summary>
+        /// Validates id value.
+        /// </summary>
+        /// <param name="input">Id of record.</param>
+        /// <returns>Tuple values (isValid, errorMessage).</returns>
+        public Tuple<bool, string> IdValidator(int input);
+
+        /// <summary>
         /// Validates firstName value.
         /// </summary>
         /// <param name="input">FirstName.</param>

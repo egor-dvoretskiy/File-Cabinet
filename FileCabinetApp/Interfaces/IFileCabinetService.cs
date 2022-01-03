@@ -15,12 +15,17 @@ namespace FileCabinetApp.Interfaces
         int CreateRecord(FileCabinetRecord record);
 
         /// <summary>
-        /// Edit record in list.
+        /// Adds record with specific group of parameters.
         /// </summary>
-        /// <param name="id">Record's id in list.</param>
-        /// <param name="record">Input parameter object.</param>
-        /// <exception cref="ArgumentException">id.</exception>
-        void EditRecord(int id, FileCabinetRecord record);
+        /// <param name="record">File cabinet record.</param>
+        void InsertRecord(FileCabinetRecord record);
+
+        /// <summary>
+        /// Acquire record from storage by id.
+        /// </summary>
+        /// <param name="id">Record's id.</param>
+        /// <returns>Returns record.</returns>
+        FileCabinetRecord GetRecord(int id);
 
         /// <summary>
         /// Searches all matches by birthDate parameter.
@@ -47,7 +52,8 @@ namespace FileCabinetApp.Interfaces
         /// Method checks record presence in list by ID.
         /// </summary>
         /// <param name="id">Record's id.</param>
-        void CheckRecordPresence(int id);
+        /// <returns>Boolean present in list.</returns>
+        bool CheckRecordPresence(int id);
 
         /// <summary>
         /// Method return all stored records.
@@ -73,10 +79,16 @@ namespace FileCabinetApp.Interfaces
         void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot);
 
         /// <summary>
-        /// Removes record from container.
+        /// Delete records using input list of ids.
         /// </summary>
-        /// <param name="id">Record's id.</param>
-        void RemoveRecordById(int id);
+        /// <param name="ids">List of record ids.</param>
+        void Delete(List<int> ids);
+
+        /// <summary>
+        /// Update records using input list of records.
+        /// </summary>
+        /// <param name="records">Records to update.</param>
+        void Update(List<FileCabinetRecord> records);
 
         /// <summary>
         /// Defragments the data file.

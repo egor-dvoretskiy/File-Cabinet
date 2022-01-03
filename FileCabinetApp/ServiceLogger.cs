@@ -30,12 +30,14 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public void CheckRecordPresence(int id)
+        public bool CheckRecordPresence(int id)
         {
             this.writer.WriteLine($"{this.GetLogTime()} - Calling CheckRecordPresence() with id = '{id}'.");
-            this.service.CheckRecordPresence(id);
+            var value = this.service.CheckRecordPresence(id);
 
             this.writer.Flush();
+
+            return value;
         }
 
         /// <inheritdoc/>
@@ -59,24 +61,6 @@ namespace FileCabinetApp
             this.writer.Flush();
 
             return id;
-        }
-
-        /// <inheritdoc/>
-        public void EditRecord(int id, FileCabinetRecord record)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append($"{this.GetLogTime()} - Calling EditRecord() with ");
-            sb.Append($"FirstName = '{record.FirstName}', ");
-            sb.Append($"LastName = '{record.LastName}', ");
-            sb.Append($"DateOfBirth = '{record.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', ");
-            sb.Append($"PersonalRating = '{record.PersonalRating}', ");
-            sb.Append($"Salary = '{record.Salary}', ");
-            sb.Append($"Gender = '{record.Gender}'.");
-
-            this.service.EditRecord(id, record);
-
-            this.writer.WriteLine(sb.ToString());
-            this.writer.Flush();
         }
 
         /// <inheritdoc/>
@@ -150,6 +134,25 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
+        public void InsertRecord(FileCabinetRecord record)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"{this.GetLogTime()} - Calling InsertRecord() with ");
+            sb.Append($"FirstName = '{record.FirstName}', ");
+            sb.Append($"LastName = '{record.LastName}', ");
+            sb.Append($"DateOfBirth = '{record.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', ");
+            sb.Append($"PersonalRating = '{record.PersonalRating}', ");
+            sb.Append($"Salary = '{record.Salary}', ");
+            sb.Append($"Gender = '{record.Gender}'.");
+            sb.Append(Environment.NewLine);
+
+            this.service.InsertRecord(record);
+
+            this.writer.WriteLine(sb.ToString());
+            this.writer.Flush();
+        }
+
+        /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             StringBuilder sb = new StringBuilder();
@@ -178,12 +181,16 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public void RemoveRecordById(int id)
+        public void Delete(List<int> ids)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append($"{this.GetLogTime()} - Calling RemoveRecordById() with id = '{id}'.");
+            sb.AppendLine($"{this.GetLogTime()} - Calling Delete().");
 
-            this.service.RemoveRecordById(id);
+            this.service.Delete(ids);
+
+            sb.Append($"{this.GetLogTime()} - Delete() removes next record(s) with id:");
+            sb.Append(string.Join(", ", ids));
+            sb.Append($".");
 
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
@@ -199,6 +206,34 @@ namespace FileCabinetApp
 
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
+        }
+
+        /// <inheritdoc/>
+        public void Update(List<FileCabinetRecord> records)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{this.GetLogTime()} - Calling Update().");
+
+            this.service.Update(records);
+
+            sb.Append($"{this.GetLogTime()} - Update() edit {records.Count} record(s).");
+
+            this.writer.WriteLine(sb.ToString());
+            this.writer.Flush();
+        }
+
+        /// <inheritdoc/>
+        public FileCabinetRecord GetRecord(int id)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"{this.GetLogTime()} - Calling GetRecord() with id='{id}'.");
+
+            var record = this.service.GetRecord(id);
+
+            this.writer.WriteLine(sb.ToString());
+            this.writer.Flush();
+
+            return record;
         }
 
         private string GetLogTime()

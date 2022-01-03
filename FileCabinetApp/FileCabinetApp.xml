@@ -37,11 +37,23 @@
             Abstract class for CommandHandler.
             </summary>
         </member>
+        <member name="F:FileCabinetApp.CommandHandlers.CommandHandlerBase.similarCommandsBuilder">
+            <summary>
+            Holds the similar commands string.
+            </summary>
+        </member>
         <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.SetNext(FileCabinetApp.Interfaces.ICommandHandler)">
             <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.AssignToSimilarCommands(System.String,FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Assigns similar commands to builder.
+            </summary>
+            <param name="commandName">Name of method.</param>
+            <param name="appCommandRequest">Current command request.</param>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.CreateCommandHandler">
             <summary>
@@ -57,18 +69,18 @@
         <member name="M:FileCabinetApp.CommandHandlers.CreateCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
         </member>
-        <member name="T:FileCabinetApp.CommandHandlers.EditCommandHandler">
+        <member name="T:FileCabinetApp.CommandHandlers.DeleteCommandHandler">
             <summary>
-            Handler for edit command.
+            Handler for delete command.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.EditCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
+        <member name="M:FileCabinetApp.CommandHandlers.DeleteCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.EditCommandHandler"/> class.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.DeleteCommandHandler"/> class.
             </summary>
             <param name="service">File cabinet service.</param>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.EditCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+        <member name="M:FileCabinetApp.CommandHandlers.DeleteCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.ExitCommandHandler">
@@ -156,6 +168,20 @@
         <member name="M:FileCabinetApp.CommandHandlers.ImportCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.InsertCommandHandler">
+            <summary>
+            Keeps insert command logics.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.InsertCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.InsertCommandHandler"/> class.
+            </summary>
+            <param name="service">Specified service to work with.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.InsertCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.ListCommandHandler">
             <summary>
             Handler for list command.
@@ -183,20 +209,6 @@
             <param name="service">File cabinet service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.PurgeCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <inheritdoc/>
-        </member>
-        <member name="T:FileCabinetApp.CommandHandlers.RemoveCommandHandler">
-            <summary>
-            Handler for remove command.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.RemoveCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.RemoveCommandHandler"/> class.
-            </summary>
-            <param name="service">File cabinet service.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.RemoveCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase">
@@ -227,6 +239,20 @@
             <param name="service">File cabinet service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.StatCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.UpdateCommandHandler">
+            <summary>
+            Handler for update command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.UpdateCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.UpdateCommandHandler"/> class.
+            </summary>
+            <param name="service">File cabinet service.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.UpdateCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
@@ -505,13 +531,18 @@
             <param name="record">Input parameter object.</param>
             <returns>Record's id in list.</returns>
         </member>
-        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecord)">
+        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.InsertRecord(FileCabinetApp.FileCabinetRecord)">
             <summary>
-            Edit record in list.
+            Adds record with specific group of parameters.
             </summary>
-            <param name="id">Record's id in list.</param>
-            <param name="record">Input parameter object.</param>
-            <exception cref="T:System.ArgumentException">id.</exception>
+            <param name="record">File cabinet record.</param>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.GetRecord(System.Int32)">
+            <summary>
+            Acquire record from storage by id.
+            </summary>
+            <param name="id">Record's id.</param>
+            <returns>Returns record.</returns>
         </member>
         <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.FindByBirthDate(System.String)">
             <summary>
@@ -539,6 +570,7 @@
             Method checks record presence in list by ID.
             </summary>
             <param name="id">Record's id.</param>
+            <returns>Boolean present in list.</returns>
         </member>
         <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.GetRecords">
             <summary>
@@ -563,11 +595,17 @@
             </summary>
             <param name="fileCabinetServiceSnapshot">Snapshot.</param>
         </member>
-        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.RemoveRecordById(System.Int32)">
+        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.Delete(System.Collections.Generic.List{System.Int32})">
             <summary>
-            Removes record from container.
+            Delete records using input list of ids.
             </summary>
-            <param name="id">Record's id.</param>
+            <param name="ids">List of record ids.</param>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.Update(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Update records using input list of records.
+            </summary>
+            <param name="records">Records to update.</param>
         </member>
         <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.Purge">
             <summary>
@@ -578,6 +616,13 @@
             <summary>
             Interface that hold validate parameters functional.
             </summary>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.IRecordInputValidator.IdValidator(System.Int32)">
+            <summary>
+            Validates id value.
+            </summary>
+            <param name="input">Id of record.</param>
+            <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
         <member name="M:FileCabinetApp.Interfaces.IRecordInputValidator.FirstNameValidator(System.String)">
             <summary>
@@ -852,9 +897,6 @@
         <member name="M:FileCabinetApp.ServiceLogger.CreateRecord(FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.ServiceLogger.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecord)">
-            <inheritdoc/>
-        </member>
         <member name="M:FileCabinetApp.ServiceLogger.FindByBirthDate(System.String)">
             <inheritdoc/>
         </member>
@@ -870,16 +912,25 @@
         <member name="M:FileCabinetApp.ServiceLogger.GetStat">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.ServiceLogger.InsertRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.ServiceLogger.MakeSnapshot">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceLogger.Purge">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.ServiceLogger.RemoveRecordById(System.Int32)">
+        <member name="M:FileCabinetApp.ServiceLogger.Delete(System.Collections.Generic.List{System.Int32})">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceLogger.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Update(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.GetRecord(System.Int32)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.ServiceMeter">
@@ -897,9 +948,6 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceMeter.CreateRecord(FileCabinetApp.FileCabinetRecord)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.ServiceMeter.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceMeter.FindByBirthDate(System.String)">
@@ -923,10 +971,19 @@
         <member name="M:FileCabinetApp.ServiceMeter.Purge">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.ServiceMeter.RemoveRecordById(System.Int32)">
+        <member name="M:FileCabinetApp.ServiceMeter.Delete(System.Collections.Generic.List{System.Int32})">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceMeter.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.InsertRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Update(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.GetRecord(System.Int32)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Services.FileCabinetFileSystemService">
@@ -961,9 +1018,6 @@
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.CreateRecord(FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecord)">
-            <inheritdoc/>
-        </member>
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.FindByBirthDate(System.String)">
             <inheritdoc/>
         </member>
@@ -971,6 +1025,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.GetRecord(System.Int32)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.CheckRecordPresence(System.Int32)">
@@ -988,10 +1045,16 @@
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.RemoveRecordById(System.Int32)">
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.Delete(System.Collections.Generic.List{System.Int32})">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.InsertRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.Update(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Services.FileCabinetMemoryService">
@@ -1017,14 +1080,6 @@
             <param name="record">Input parameter object.</param>
             <returns>Record's id in list.</returns>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecord)">
-            <summary>
-            Edit record in list.
-            </summary>
-            <param name="id">Record's id in list.</param>
-            <param name="record">Input parameter object.</param>
-            <exception cref="T:System.ArgumentException">id.</exception>
-        </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.GetRecords">
             <summary>
             Method return all stored records.
@@ -1037,10 +1092,7 @@
             </summary>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.CheckRecordPresence(System.Int32)">
-            <summary>
-            Method find record position in list by ID.
-            </summary>
-            <param name="id">Record's id.</param>
+            <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.FindByFirstName(System.String)">
             <summary>
@@ -1075,13 +1127,19 @@
             </summary>
             <param name="fileCabinetServiceSnapshot">Holds snapshot of data.</param>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.RemoveRecordById(System.Int32)">
-            <summary>
-            Removes record by id.
-            </summary>
-            <param name="id">Id to remove.</param>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Delete(System.Collections.Generic.List{System.Int32})">
+            <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.InsertRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Update(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.GetRecord(System.Int32)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Validators.CompositeValidator">
@@ -1145,6 +1203,9 @@
             <param name="input">gender.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
         </member>
+        <member name="M:FileCabinetApp.Validators.CustomInputValidator.IdValidator(System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Validators.DateOfBirthValidator">
             <summary>
             Validates date of birth.
@@ -1206,6 +1267,9 @@
             </summary>
             <param name="input">gender.</param>
             <returns>Tuple values (isValid, errorMessage).</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.IdValidator(System.Int32)">
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Validators.FirstNameValidator">
             <summary>
@@ -1351,6 +1415,14 @@
             <summary>
             Class contains validation settings.
             </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidatorSettings.MinimalId">
+            <summary>
+            Gets minimal possible id value.
+            </summary>
+            <value>
+            Minimal possible length of first name.
+            </value>
         </member>
         <member name="P:FileCabinetApp.Validators.ValidatorSettings.MinimalLengthFirstName">
             <summary>

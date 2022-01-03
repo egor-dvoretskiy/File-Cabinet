@@ -83,47 +83,6 @@ namespace FileCabinetApp.Services
         }
 
         /// <summary>
-        /// Edit record in list.
-        /// </summary>
-        /// <param name="id">Record's id in list.</param>
-        /// <param name="record">Input parameter object.</param>
-        /// <exception cref="ArgumentException">id.</exception>
-        public void EditRecord(int id, FileCabinetRecord record)
-        {
-            try
-            {
-                bool isValid = this.recordValidator.ValidateParameters(record);
-
-                if (!isValid)
-                {
-                    return;
-                }
-
-                int index = this.list.FindIndex(x => x.Id == id);
-
-                this.list[index] = record;
-
-                this.AddOrChangeInformationInIdDictionary(record.Id, index, ref this.storedIdRecords, record);
-
-                this.EditInformationInDictionary(record.FirstName, ref this.firstNameDictionary, record);
-                this.EditInformationInDictionary(record.LastName, ref this.lastNameDictionary, record);
-                this.EditInformationInDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture), ref this.dateOfBirthDictionary, record);
-            }
-            catch (ArgumentNullException anex)
-            {
-                Console.WriteLine(anex.Message);
-            }
-            catch (ArgumentOutOfRangeException aorex)
-            {
-                Console.WriteLine(aorex.Message);
-            }
-            catch (ArgumentException aex)
-            {
-                Console.WriteLine(aex.Message);
-            }
-        }
-
-        /// <summary>
         /// Method return all stored records.
         /// </summary>
         /// <returns>Stored records.</returns>
@@ -140,16 +99,17 @@ namespace FileCabinetApp.Services
             Console.WriteLine($"{this.list.Count} record(s).");
         }
 
-        /// <summary>
-        /// Method find record position in list by ID.
-        /// </summary>
-        /// <param name="id">Record's id.</param>
-        public void CheckRecordPresence(int id)
+        /// <inheritdoc/>
+        public bool CheckRecordPresence(int id)
         {
+            bool listIdPresent = true;
+
             if (!this.storedIdRecords.ContainsKey(id))
             {
-                throw new ArgumentException($"#{id} record is not found.");
+                listIdPresent = false;
             }
+
+            return listIdPresent;
         }
 
         /// <summary>
@@ -209,7 +169,10 @@ namespace FileCabinetApp.Services
         {
             List<int> listIdRecordsPositions = new List<int>();
 
-            if (this.dateOfBirthDictionary.ContainsKey(birthDate))
+            var isValidBirth = DateTime.TryParse(birthDate, out DateTime validBirthDate);
+            birthDate = validBirthDate.ToString("yyyy-MMM-dd");
+
+            if (isValidBirth && this.dateOfBirthDictionary.ContainsKey(birthDate))
             {
                 var listBirthDatesIds = this.dateOfBirthDictionary[birthDate];
                 int id = 0;
@@ -255,15 +218,86 @@ namespace FileCabinetApp.Services
             this.list = unloadRecords;
         }
 
-        /// <summary>
-        /// Removes record by id.
-        /// </summary>
-        /// <param name="id">Id to remove.</param>
-        public void RemoveRecordById(int id)
+        /// <inheritdoc/>
+        public void Delete(List<int> ids)
+        {
+            for (int i = 0; i < ids.Count; i++)
+            {
+                this.RemoveRecordById(ids[i]);
+            }
+        }
+
+        /// <inheritdoc/>
+        public void Purge()
+        {
+            Console.WriteLine("Wrong service, please switch memory mode to file system.");
+        }
+
+        /// <inheritdoc/>
+        public void InsertRecord(FileCabinetRecord record)
+        {
+            try
+            {
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (!isValid)
+                {
+                    throw new ArgumentException("Record you want to add is not valid. Please try again!");
+                }
+
+                if (this.storedIdRecords.ContainsKey(record.Id))
+                {
+                    throw new ArgumentException($"Memory is already has a record #{record.Id}.");
+                }
+
+                this.list.Add(record);
+
+                int position = this.list.Count - 1;
+
+                this.AddOrChangeInformationInIdDictionary(record.Id, position, ref this.storedIdRecords, record);
+
+                this.AddInformationToDictionary(record.FirstName, ref this.firstNameDictionary, record);
+                this.AddInformationToDictionary(record.LastName, ref this.lastNameDictionary, record);
+                this.AddInformationToDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture), ref this.dateOfBirthDictionary, record);
+
+                Console.WriteLine($"Record was successfully inserted in memory.");
+            }
+            catch (ArgumentNullException anex)
+            {
+                Console.WriteLine(anex.Message);
+            }
+            catch (ArgumentOutOfRangeException aorex)
+            {
+                Console.WriteLine(aorex.Message);
+            }
+            catch (ArgumentException aex)
+            {
+                Console.WriteLine(aex.Message);
+            }
+        }
+
+        /// <inheritdoc/>
+        public void Update(List<FileCabinetRecord> records)
+        {
+            for (int i = 0; i < records.Count; i++)
+            {
+                this.EditRecord(records[i].Id, records[i]);
+            }
+
+            Console.WriteLine($"Record's updating completed.");
+        }
+
+        /// <inheritdoc/>
+        public FileCabinetRecord GetRecord(int id)
+        {
+            return this.list[this.storedIdRecords[id]];
+        }
+
+        private void RemoveRecordById(int id)
         {
             if (!this.storedIdRecords.ContainsKey(id))
             {
-                Console.WriteLine("There is no such record.");
+                Console.WriteLine($"There is no record #{id}.");
                 return;
             }
 
@@ -278,12 +312,16 @@ namespace FileCabinetApp.Services
                 string dateOfBirth = this.list[this.storedIdRecords[id]].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
                 this.RemoveRecordFromDictionary(dateOfBirth, id, ref this.dateOfBirthDictionary);
 
+                int indexInList = this.storedIdRecords[id];
+
                 this.storedIdRecords.Remove(id);
 
                 int positionInList = this.list.FindIndex(x => x.Id == id);
                 this.list.RemoveAt(positionInList);
 
-                Console.WriteLine($"Record #{id} is removed.");
+                this.UpdateIdDictionaryAccordingToRemoveRecord(indexInList);
+
+                Console.WriteLine($"Record #{id} is deleted.");
             }
             catch (ArgumentException argumentException)
             {
@@ -291,10 +329,52 @@ namespace FileCabinetApp.Services
             }
         }
 
-        /// <inheritdoc/>
-        public void Purge()
+        private void EditRecord(int id, FileCabinetRecord record)
         {
-            Console.WriteLine("Wrong service, please switch memory mode to file system.");
+            try
+            {
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (!isValid)
+                {
+                    return;
+                }
+
+                int index = this.list.FindIndex(x => x.Id == id);
+
+                this.list[index] = record;
+
+                this.AddOrChangeInformationInIdDictionary(record.Id, index, ref this.storedIdRecords, record);
+
+                this.EditInformationInDictionary(record.FirstName, ref this.firstNameDictionary, record);
+                this.EditInformationInDictionary(record.LastName, ref this.lastNameDictionary, record);
+                this.EditInformationInDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture), ref this.dateOfBirthDictionary, record);
+            }
+            catch (ArgumentNullException anex)
+            {
+                Console.WriteLine(anex.Message);
+            }
+            catch (ArgumentOutOfRangeException aorex)
+            {
+                Console.WriteLine(aorex.Message);
+            }
+            catch (ArgumentException aex)
+            {
+                Console.WriteLine(aex.Message);
+            }
+        }
+
+        private void UpdateIdDictionaryAccordingToRemoveRecord(int indexInList)
+        {
+            if (indexInList >= this.list.Count)
+            {
+                return;
+            }
+
+            for (int i = indexInList; i < this.list.Count; i++)
+            {
+                this.storedIdRecords[this.list[i].Id] -= 1;
+            }
         }
 
         private int GetUniqueId()
