@@ -83,47 +83,6 @@ namespace FileCabinetApp.Services
         }
 
         /// <summary>
-        /// Edit record in list.
-        /// </summary>
-        /// <param name="id">Record's id in list.</param>
-        /// <param name="record">Input parameter object.</param>
-        /// <exception cref="ArgumentException">id.</exception>
-        public void EditRecord(int id, FileCabinetRecord record)
-        {
-            try
-            {
-                bool isValid = this.recordValidator.ValidateParameters(record);
-
-                if (!isValid)
-                {
-                    return;
-                }
-
-                int index = this.list.FindIndex(x => x.Id == id);
-
-                this.list[index] = record;
-
-                this.AddOrChangeInformationInIdDictionary(record.Id, index, ref this.storedIdRecords, record);
-
-                this.EditInformationInDictionary(record.FirstName, ref this.firstNameDictionary, record);
-                this.EditInformationInDictionary(record.LastName, ref this.lastNameDictionary, record);
-                this.EditInformationInDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture), ref this.dateOfBirthDictionary, record);
-            }
-            catch (ArgumentNullException anex)
-            {
-                Console.WriteLine(anex.Message);
-            }
-            catch (ArgumentOutOfRangeException aorex)
-            {
-                Console.WriteLine(aorex.Message);
-            }
-            catch (ArgumentException aex)
-            {
-                Console.WriteLine(aex.Message);
-            }
-        }
-
-        /// <summary>
         /// Method return all stored records.
         /// </summary>
         /// <returns>Stored records.</returns>
@@ -259,46 +218,6 @@ namespace FileCabinetApp.Services
             this.list = unloadRecords;
         }
 
-        /// <summary>
-        /// Removes record by id.
-        /// </summary>
-        /// <param name="id">Id to remove.</param>
-        public void RemoveRecordById(int id)
-        {
-            if (!this.storedIdRecords.ContainsKey(id))
-            {
-                Console.WriteLine($"There is no record #{id}.");
-                return;
-            }
-
-            try
-            {
-                string firstName = this.list[this.storedIdRecords[id]].FirstName;
-                this.RemoveRecordFromDictionary(firstName, id, ref this.firstNameDictionary);
-
-                string lastName = this.list[this.storedIdRecords[id]].LastName;
-                this.RemoveRecordFromDictionary(lastName, id, ref this.lastNameDictionary);
-
-                string dateOfBirth = this.list[this.storedIdRecords[id]].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
-                this.RemoveRecordFromDictionary(dateOfBirth, id, ref this.dateOfBirthDictionary);
-
-                int indexInList = this.storedIdRecords[id];
-
-                this.storedIdRecords.Remove(id);
-
-                int positionInList = this.list.FindIndex(x => x.Id == id);
-                this.list.RemoveAt(positionInList);
-
-                this.UpdateIdDictionaryAccordingToRemoveRecord(indexInList);
-
-                Console.WriteLine($"Record #{id} is deleted.");
-            }
-            catch (ArgumentException argumentException)
-            {
-                Console.WriteLine(argumentException.Message);
-            }
-        }
-
         /// <inheritdoc/>
         public void Delete(List<int> ids)
         {
@@ -372,6 +291,77 @@ namespace FileCabinetApp.Services
         public FileCabinetRecord GetRecord(int id)
         {
             return this.list[this.storedIdRecords[id]];
+        }
+
+        private void RemoveRecordById(int id)
+        {
+            if (!this.storedIdRecords.ContainsKey(id))
+            {
+                Console.WriteLine($"There is no record #{id}.");
+                return;
+            }
+
+            try
+            {
+                string firstName = this.list[this.storedIdRecords[id]].FirstName;
+                this.RemoveRecordFromDictionary(firstName, id, ref this.firstNameDictionary);
+
+                string lastName = this.list[this.storedIdRecords[id]].LastName;
+                this.RemoveRecordFromDictionary(lastName, id, ref this.lastNameDictionary);
+
+                string dateOfBirth = this.list[this.storedIdRecords[id]].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
+                this.RemoveRecordFromDictionary(dateOfBirth, id, ref this.dateOfBirthDictionary);
+
+                int indexInList = this.storedIdRecords[id];
+
+                this.storedIdRecords.Remove(id);
+
+                int positionInList = this.list.FindIndex(x => x.Id == id);
+                this.list.RemoveAt(positionInList);
+
+                this.UpdateIdDictionaryAccordingToRemoveRecord(indexInList);
+
+                Console.WriteLine($"Record #{id} is deleted.");
+            }
+            catch (ArgumentException argumentException)
+            {
+                Console.WriteLine(argumentException.Message);
+            }
+        }
+
+        private void EditRecord(int id, FileCabinetRecord record)
+        {
+            try
+            {
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (!isValid)
+                {
+                    return;
+                }
+
+                int index = this.list.FindIndex(x => x.Id == id);
+
+                this.list[index] = record;
+
+                this.AddOrChangeInformationInIdDictionary(record.Id, index, ref this.storedIdRecords, record);
+
+                this.EditInformationInDictionary(record.FirstName, ref this.firstNameDictionary, record);
+                this.EditInformationInDictionary(record.LastName, ref this.lastNameDictionary, record);
+                this.EditInformationInDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture), ref this.dateOfBirthDictionary, record);
+            }
+            catch (ArgumentNullException anex)
+            {
+                Console.WriteLine(anex.Message);
+            }
+            catch (ArgumentOutOfRangeException aorex)
+            {
+                Console.WriteLine(aorex.Message);
+            }
+            catch (ArgumentException aex)
+            {
+                Console.WriteLine(aex.Message);
+            }
         }
 
         private void UpdateIdDictionaryAccordingToRemoveRecord(int indexInList)

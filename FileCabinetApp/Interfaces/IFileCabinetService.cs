@@ -15,14 +15,6 @@ namespace FileCabinetApp.Interfaces
         int CreateRecord(FileCabinetRecord record);
 
         /// <summary>
-        /// Edit record in list.
-        /// </summary>
-        /// <param name="id">Record's id in list.</param>
-        /// <param name="record">Input parameter object.</param>
-        /// <exception cref="ArgumentException">id.</exception>
-        void EditRecord(int id, FileCabinetRecord record);
-
-        /// <summary>
         /// Adds record with specific group of parameters.
         /// </summary>
         /// <param name="record">File cabinet record.</param>
@@ -85,12 +77,6 @@ namespace FileCabinetApp.Interfaces
         /// </summary>
         /// <param name="fileCabinetServiceSnapshot">Snapshot.</param>
         void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot);
-
-        /// <summary>
-        /// Removes record from container.
-        /// </summary>
-        /// <param name="id">Record's id.</param>
-        void RemoveRecordById(int id);
 
         /// <summary>
         /// Delete records using input list of ids.

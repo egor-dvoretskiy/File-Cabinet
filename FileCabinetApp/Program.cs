@@ -368,29 +368,25 @@ namespace FileCabinetApp
         {
             var helpHandler = new HelpCommandHandler();
             var createHandler = new CreateCommandHandler(Program.fileCabinetService);
-            var editHandler = new EditCommandHandler(Program.fileCabinetService);
             var exitHandler = new ExitCommandHandler(Program.SetAppRunningStatus);
             var exportHandler = new ExportCommandHandler(Program.fileCabinetService);
             var importHandler = new ImportCommandHandler(Program.fileCabinetService);
             var findHandler = new FindCommandHandler(Program.fileCabinetService, Program.DefaultRecordPrint);
             var listHandler = new ListCommandHandler(Program.fileCabinetService, Program.DefaultRecordPrint);
             var purgeHandler = new PurgeCommandHandler(Program.fileCabinetService);
-            var removeHandler = new RemoveCommandHandler(Program.fileCabinetService);
             var statHandler = new StatCommandHandler(Program.fileCabinetService);
             var insertHandler = new InsertCommandHandler(Program.fileCabinetService);
             var deleteHandler = new DeleteCommandHandler(Program.fileCabinetService);
             var updateHandler = new UpdateCommandHandler(Program.fileCabinetService);
 
-            createHandler.SetNext(editHandler);
-            editHandler.SetNext(exitHandler);
+            createHandler.SetNext(exitHandler);
             exitHandler.SetNext(exportHandler);
             exportHandler.SetNext(findHandler);
             findHandler.SetNext(helpHandler);
             helpHandler.SetNext(importHandler);
             importHandler.SetNext(listHandler);
             listHandler.SetNext(purgeHandler);
-            purgeHandler.SetNext(removeHandler);
-            removeHandler.SetNext(statHandler);
+            purgeHandler.SetNext(statHandler);
             statHandler.SetNext(insertHandler);
             insertHandler.SetNext(deleteHandler);
             deleteHandler.SetNext(updateHandler);

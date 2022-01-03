@@ -54,16 +54,6 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public void EditRecord(int id, FileCabinetRecord record)
-        {
-            this.stopwatch.Restart();
-            this.service.EditRecord(id, record);
-            this.stopwatch.Stop();
-
-            this.GetElapsedTime(this.GetCallerName());
-        }
-
-        /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate)
         {
             this.stopwatch.Restart();
@@ -138,16 +128,6 @@ namespace FileCabinetApp
         {
             this.stopwatch.Restart();
             this.service.Purge();
-            this.stopwatch.Stop();
-
-            this.GetElapsedTime(this.GetCallerName());
-        }
-
-        /// <inheritdoc/>
-        public void RemoveRecordById(int id)
-        {
-            this.stopwatch.Restart();
-            this.service.RemoveRecordById(id);
             this.stopwatch.Stop();
 
             this.GetElapsedTime(this.GetCallerName());

@@ -64,24 +64,6 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public void EditRecord(int id, FileCabinetRecord record)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append($"{this.GetLogTime()} - Calling EditRecord() with ");
-            sb.Append($"FirstName = '{record.FirstName}', ");
-            sb.Append($"LastName = '{record.LastName}', ");
-            sb.Append($"DateOfBirth = '{record.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', ");
-            sb.Append($"PersonalRating = '{record.PersonalRating}', ");
-            sb.Append($"Salary = '{record.Salary}', ");
-            sb.Append($"Gender = '{record.Gender}'.");
-
-            this.service.EditRecord(id, record);
-
-            this.writer.WriteLine(sb.ToString());
-            this.writer.Flush();
-        }
-
-        /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate)
         {
             StringBuilder sb = new StringBuilder();
@@ -209,18 +191,6 @@ namespace FileCabinetApp
             sb.Append($"{this.GetLogTime()} - Delete() removes next record(s) with id:");
             sb.Append(string.Join(", ", ids));
             sb.Append($".");
-
-            this.writer.WriteLine(sb.ToString());
-            this.writer.Flush();
-        }
-
-        /// <inheritdoc/>
-        public void RemoveRecordById(int id)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append($"{this.GetLogTime()} - Calling RemoveRecordById() with id = '{id}'.");
-
-            this.service.RemoveRecordById(id);
 
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
