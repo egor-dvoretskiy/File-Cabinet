@@ -378,6 +378,7 @@ namespace FileCabinetApp
             var insertHandler = new InsertCommandHandler(Program.fileCabinetService);
             var deleteHandler = new DeleteCommandHandler(Program.fileCabinetService);
             var updateHandler = new UpdateCommandHandler(Program.fileCabinetService);
+            var selectHandler = new SelectCommandHandler(Program.fileCabinetService);
 
             createHandler.SetNext(exitHandler);
             exitHandler.SetNext(exportHandler);
@@ -390,6 +391,7 @@ namespace FileCabinetApp
             statHandler.SetNext(insertHandler);
             insertHandler.SetNext(deleteHandler);
             deleteHandler.SetNext(updateHandler);
+            updateHandler.SetNext(selectHandler);
 
             return createHandler;
         }
