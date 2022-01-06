@@ -793,6 +793,34 @@
             Sets the enumerator to its initial position.
             </summary>
         </member>
+        <member name="T:FileCabinetApp.MemoizerForMemoryService">
+            <summary>
+            Class that holds memoized method for find purpuses in memory service.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.MemoizerForMemoryService.cache">
+            <summary>
+            Holds function results.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.MemoizerForMemoryService.Memoized``2(System.Object,``0,System.Func{``0,``1},System.String)">
+            <summary>
+            Memoize function results.
+            </summary>
+            <typeparam name="T1">Parameter to search.</typeparam>
+            <typeparam name="TResult">Function result.</typeparam>
+            <param name="context">Caller's context.</param>
+            <param name="arg">Key value in dictionary.</param>
+            <param name="f">Function which result should be stored in dictionary.</param>
+            <param name="cacheKey">Key value for kepping in dictionary by caller name.</param>
+            <returns>Expected output.</returns>
+            <exception cref="T:System.ArgumentNullException">Throws when contex or caller's name is null.</exception>
+        </member>
+        <member name="M:FileCabinetApp.MemoizerForMemoryService.RefreshMemoizer">
+            <summary>
+            Clears cache.
+            </summary>
+        </member>
         <member name="T:FileCabinetApp.SettingsType">
             <summary>
             Validator settings types.
