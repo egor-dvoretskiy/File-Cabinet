@@ -117,7 +117,8 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <param name="firstName">Person's first name.</param>
         /// <returns>All records with the same firstname.</returns>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
+
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName) => this.Memoized(firstName, x =>
         {
             List<int> listIdRecordsPositions = new List<int>();
 
@@ -134,14 +135,14 @@ namespace FileCabinetApp.Services
             }
 
             return new RecordMemoryEnumerable(this.list, listIdRecordsPositions);
-        }
+        });
 
         /// <summary>
         /// Searches all matches by lastName parameter.
         /// </summary>
         /// <param name="lastName">Person's last name.</param>
         /// <returns>All records with the same lastname.</returns>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName) => this.Memoized(lastName, x =>
         {
             List<int> listIdRecordsPositions = new List<int>();
 
@@ -158,14 +159,14 @@ namespace FileCabinetApp.Services
             }
 
             return new RecordMemoryEnumerable(this.list, listIdRecordsPositions);
-        }
+        });
 
         /// <summary>
         /// Searches all matches by birthDate parameter.
         /// </summary>
         /// <param name="birthDate">Person's date of birth.</param>
         /// <returns>All records with the same date of birth.</returns>
-        public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate)
+        public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate) => this.Memoized(birthDate, x =>
         {
             List<int> listIdRecordsPositions = new List<int>();
 
@@ -185,7 +186,7 @@ namespace FileCabinetApp.Services
             }
 
             return new RecordMemoryEnumerable(this.list, listIdRecordsPositions);
-        }
+        });
 
         /// <summary>
         /// Makes snapshot of FileCabinetService.
@@ -221,6 +222,8 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void Delete(List<int> ids)
         {
+            MemoizerForMemoryService.RefreshMemoizer();
+
             for (int i = 0; i < ids.Count; i++)
             {
                 this.RemoveRecordById(ids[i]);
@@ -236,6 +239,8 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void InsertRecord(FileCabinetRecord record)
         {
+            MemoizerForMemoryService.RefreshMemoizer();
+
             try
             {
                 bool isValid = this.recordValidator.ValidateParameters(record);
@@ -279,6 +284,8 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void Update(List<FileCabinetRecord> records)
         {
+            MemoizerForMemoryService.RefreshMemoizer();
+
             for (int i = 0; i < records.Count; i++)
             {
                 this.EditRecord(records[i].Id, records[i]);

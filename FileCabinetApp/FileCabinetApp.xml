@@ -111,21 +111,6 @@
         <member name="M:FileCabinetApp.CommandHandlers.ExportCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
         </member>
-        <member name="T:FileCabinetApp.CommandHandlers.FindCommandHandler">
-            <summary>
-            Handler for find command.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.FindCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService,System.Action{System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord}})">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.FindCommandHandler"/> class.
-            </summary>
-            <param name="service">File cabinet service.</param>
-            <param name="recordPrinter">Print records.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.FindCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <inheritdoc/>
-        </member>
         <member name="T:FileCabinetApp.CommandHandlers.HelpCommandHandler">
             <summary>
             Handler for help command.
@@ -182,21 +167,6 @@
         <member name="M:FileCabinetApp.CommandHandlers.InsertCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
         </member>
-        <member name="T:FileCabinetApp.CommandHandlers.ListCommandHandler">
-            <summary>
-            Handler for list command.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService,System.Action{System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord}})">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ListCommandHandler"/> class.
-            </summary>
-            <param name="service">File cabinet service.</param>
-            <param name="recordPrinter">Records printer.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <inheritdoc/>
-        </member>
         <member name="T:FileCabinetApp.CommandHandlers.PurgeCommandHandler">
             <summary>
             Handler for purge command.
@@ -209,6 +179,20 @@
             <param name="service">File cabinet service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.PurgeCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.SelectCommandHandler">
+            <summary>
+            Handler for select command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.SelectCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.SelectCommandHandler"/> class.
+            </summary>
+            <param name="service">File cabinet service.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.SelectCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase">
@@ -807,6 +791,34 @@
         <member name="M:FileCabinetApp.Iterators.RecordMemoryEnumerator.Reset">
             <summary>
             Sets the enumerator to its initial position.
+            </summary>
+        </member>
+        <member name="T:FileCabinetApp.MemoizerForMemoryService">
+            <summary>
+            Class that holds memoized method for find purpuses in memory service.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.MemoizerForMemoryService.cache">
+            <summary>
+            Holds function results.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.MemoizerForMemoryService.Memoized``2(System.Object,``0,System.Func{``0,``1},System.String)">
+            <summary>
+            Memoize function results.
+            </summary>
+            <typeparam name="T1">Parameter to search.</typeparam>
+            <typeparam name="TResult">Function result.</typeparam>
+            <param name="context">Caller's context.</param>
+            <param name="arg">Key value in dictionary.</param>
+            <param name="f">Function which result should be stored in dictionary.</param>
+            <param name="cacheKey">Key value for kepping in dictionary by caller name.</param>
+            <returns>Expected output.</returns>
+            <exception cref="T:System.ArgumentNullException">Throws when contex or caller's name is null.</exception>
+        </member>
+        <member name="M:FileCabinetApp.MemoizerForMemoryService.RefreshMemoizer">
+            <summary>
+            Clears cache.
             </summary>
         </member>
         <member name="T:FileCabinetApp.SettingsType">
