@@ -122,15 +122,49 @@ namespace FileCabinetApp.CommandHandlers
         private string GetPrintString(int[] cellLengthArray, string[] parametersList, List<FileCabinetRecord> records)
         {
             StringBuilder sb = new StringBuilder();
+            string line = this.GetPrintLine(cellLengthArray, parametersList);
+
+            string header = this.GetPrintHeader(line, cellLengthArray, parametersList);
+            sb.Append(header);
+
+            for (int i = 0; i < records.Count; i++)
+            {
+                string bodyElement = this.GetPrintBodyElement(cellLengthArray, parametersList, records[i]);
+                sb.AppendLine(bodyElement);
+            }
+
+            sb.AppendLine(line);
+
+            return sb.ToString();
+        }
+
+        private string GetPrintBodyElement(int[] cellLengthArray, string[] parametersList, FileCabinetRecord record)
+        {
+            var cellFill = this.GetBodyCellStringArrayToJoin(record, cellLengthArray, parametersList);
+
+            var middleBodyCell = string.Join(CellWall, cellFill);
+            middleBodyCell = string.Concat(CellWall, middleBodyCell, CellWall);
+
+            return middleBodyCell;
+        }
+
+        private string GetPrintLine(int[] cellLengthArray, string[] parametersList)
+        {
             string[] lines = this.GetLinesArray(cellLengthArray, parametersList.Length);
 
             var line = string.Join(CellCross, lines);
             line = string.Concat(CellCross, line, CellCross);
 
-            // header
+            return line;
+        }
+
+        private string GetPrintHeader(string line, int[] cellLengthArray, string[] parametersList)
+        {
+            StringBuilder sb = new StringBuilder();
+
             sb.AppendLine(line);
 
-            string[] headerFill = this.GetHeaderCellString(cellLengthArray, parametersList);
+            string[] headerFill = this.GetHeaderCellStringArrayToJoin(cellLengthArray, parametersList);
 
             var middle = string.Join(CellWall, headerFill);
             middle = string.Concat(CellWall, middle, CellWall);
@@ -138,27 +172,10 @@ namespace FileCabinetApp.CommandHandlers
             sb.AppendLine(middle);
             sb.AppendLine(line);
 
-            // ---
-
-            // body
-
-            for (int i = 0; i < records.Count; i++)
-            {
-                var cellFill = this.GetBodyCellString(records[i], cellLengthArray, parametersList);
-
-                var middleBodyCell = string.Join(CellWall, cellFill);
-                middleBodyCell = string.Concat(CellWall, middleBodyCell, CellWall);
-
-                sb.AppendLine(middleBodyCell);
-            }
-
-            sb.AppendLine(line);
-            // ---
-
             return sb.ToString();
         }
 
-        private string[] GetHeaderCellString(int[] cellLengthArray, string[] parametersList)
+        private string[] GetHeaderCellStringArrayToJoin(int[] cellLengthArray, string[] parametersList)
         {
             string[] result = new string[parametersList.Length];
 
@@ -173,7 +190,7 @@ namespace FileCabinetApp.CommandHandlers
             return result;
         }
 
-        private string[] GetBodyCellString(FileCabinetRecord record, int[] cellLengthArray, string[] parametersList)
+        private string[] GetBodyCellStringArrayToJoin(FileCabinetRecord record, int[] cellLengthArray, string[] parametersList)
         {
             string[] result = new string[parametersList.Length];
 
@@ -241,42 +258,22 @@ namespace FileCabinetApp.CommandHandlers
                     if (parameterName.Equals(nameof(FileCabinetRecord.Id), StringComparison.OrdinalIgnoreCase))
                     {
                         string id = records[j].Id.ToString();
-                        int possibleLength = id.Length + 2;
-
-                        if (possibleLength > minimalCellLengthArray[i])
-                        {
-                            minimalCellLengthArray[i] = possibleLength;
-                        }
+                        minimalCellLengthArray[i] = this.GetCellLength(id, minimalCellLengthArray[i]);
                     }
                     else if (parameterName.Equals(nameof(FileCabinetRecord.FirstName), StringComparison.OrdinalIgnoreCase))
                     {
                         string firstName = records[j].FirstName;
-                        int possibleLength = firstName.Length + 2;
-
-                        if (possibleLength > minimalCellLengthArray[i])
-                        {
-                            minimalCellLengthArray[i] = possibleLength;
-                        }
+                        minimalCellLengthArray[i] = this.GetCellLength(firstName, minimalCellLengthArray[i]);
                     }
                     else if (parameterName.Equals(nameof(FileCabinetRecord.LastName), StringComparison.OrdinalIgnoreCase))
                     {
                         string lastName = records[j].LastName;
-                        int possibleLength = lastName.Length + 2;
-
-                        if (possibleLength > minimalCellLengthArray[i])
-                        {
-                            minimalCellLengthArray[i] = possibleLength;
-                        }
+                        minimalCellLengthArray[i] = this.GetCellLength(lastName, minimalCellLengthArray[i]);
                     }
                     else if (parameterName.Equals(nameof(FileCabinetRecord.DateOfBirth), StringComparison.OrdinalIgnoreCase))
                     {
                         string birth = records[j].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
-                        int possibleLength = birth.Length + 2;
-
-                        if (possibleLength > minimalCellLengthArray[i])
-                        {
-                            minimalCellLengthArray[i] = possibleLength;
-                        }
+                        minimalCellLengthArray[i] = this.GetCellLength(birth, minimalCellLengthArray[i]);
                     }
                     else
                     {
@@ -286,6 +283,18 @@ namespace FileCabinetApp.CommandHandlers
             }
 
             return minimalCellLengthArray;
+        }
+
+        private int GetCellLength(string parameter, int minimalLength)
+        {
+            int possibleLength = parameter.Length + 2;
+
+            if (possibleLength > minimalLength)
+            {
+                minimalLength = possibleLength;
+            }
+
+            return minimalLength;
         }
 
         private int[] AssignMinimalCellLengthArrayWithInitValues(string[] listOfParametersToPrint)
