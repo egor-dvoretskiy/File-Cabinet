@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace FileCabinetApp
@@ -45,7 +46,7 @@ namespace FileCabinetApp
             }
             else
             {
-                isConvertingSuccessful = DateTime.TryParse(input, out birthDate);
+                isConvertingSuccessful = DateTime.TryParse(input, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out birthDate);
 
                 if (!isConvertingSuccessful)
                 {

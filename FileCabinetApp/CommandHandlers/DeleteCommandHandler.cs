@@ -24,13 +24,17 @@ namespace FileCabinetApp.CommandHandlers
         private const char ValuesBrackets = '\'';
         private const char ParametersDivider = '=';
 
+        private readonly IRecordInputValidator inputValidator;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteCommandHandler"/> class.
         /// </summary>
         /// <param name="service">File cabinet service.</param>
-        public DeleteCommandHandler(IFileCabinetService service)
+        /// <param name="inputValidator">Validator for input args.</param>
+        public DeleteCommandHandler(IFileCabinetService service, IRecordInputValidator inputValidator)
             : base(service)
         {
+            this.inputValidator = inputValidator;
         }
 
         /// <inheritdoc/>
@@ -97,7 +101,7 @@ namespace FileCabinetApp.CommandHandlers
 
             if (parameter.Equals(nameof(FileCabinetRecord.Id), StringComparison.OrdinalIgnoreCase))
             {
-                int id = this.GetParsedAndValidatedParameter(value, InputConverter.IdConverter, Program.InputValidator.IdValidator);
+                int id = this.GetParsedAndValidatedParameter(value, InputConverter.IdConverter, this.inputValidator.IdValidator);
                 listOfIds.Add(id);
             }
             else if (parameter.Equals(nameof(FileCabinetRecord.FirstName), StringComparison.OrdinalIgnoreCase))

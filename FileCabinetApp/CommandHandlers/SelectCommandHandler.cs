@@ -31,13 +31,17 @@ namespace FileCabinetApp.CommandHandlers
         private const char CellCross = '+';
         private const char CellWall = '|';
 
+        private readonly IRecordInputValidator inputValidator;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SelectCommandHandler"/> class.
         /// </summary>
         /// <param name="service">File cabinet service.</param>
-        public SelectCommandHandler(IFileCabinetService service)
+        /// <param name="inputValidator">Validator for input args.</param>
+        public SelectCommandHandler(IFileCabinetService service, IRecordInputValidator inputValidator)
             : base(service)
         {
+            this.inputValidator = inputValidator;
         }
 
         /// <inheritdoc/>
@@ -369,7 +373,7 @@ namespace FileCabinetApp.CommandHandlers
 
                     if (parameter.Equals(nameof(FileCabinetRecord.Id), StringComparison.OrdinalIgnoreCase))
                     {
-                        int id = this.GetParsedAndValidatedParameter<int>(value, InputConverter.IdConverter, Program.InputValidator.IdValidator);
+                        int id = this.GetParsedAndValidatedParameter<int>(value, InputConverter.IdConverter, this.inputValidator.IdValidator);
 
                         if (records[i].Id == id)
                         {
@@ -382,7 +386,7 @@ namespace FileCabinetApp.CommandHandlers
                     }
                     else if (parameter.Equals(nameof(FileCabinetRecord.FirstName), StringComparison.OrdinalIgnoreCase))
                     {
-                        string firstName = this.GetParsedAndValidatedParameter<string>(value, InputConverter.StringConverter, Program.InputValidator.FirstNameValidator);
+                        string firstName = this.GetParsedAndValidatedParameter<string>(value, InputConverter.StringConverter, this.inputValidator.FirstNameValidator);
 
                         if (firstName.Equals(records[i].FirstName))
                         {
@@ -395,7 +399,7 @@ namespace FileCabinetApp.CommandHandlers
                     }
                     else if (parameter.Equals(nameof(FileCabinetRecord.LastName), StringComparison.OrdinalIgnoreCase))
                     {
-                        string lastName = this.GetParsedAndValidatedParameter<string>(value, InputConverter.StringConverter, Program.InputValidator.LastNameValidator);
+                        string lastName = this.GetParsedAndValidatedParameter<string>(value, InputConverter.StringConverter, this.inputValidator.LastNameValidator);
 
                         if (lastName.Equals(records[i].LastName))
                         {
@@ -408,7 +412,7 @@ namespace FileCabinetApp.CommandHandlers
                     }
                     else if (parameter.Equals(nameof(FileCabinetRecord.DateOfBirth), StringComparison.OrdinalIgnoreCase))
                     {
-                        DateTime birthName = this.GetParsedAndValidatedParameter<DateTime>(value, InputConverter.BirthDateConverter, Program.InputValidator.DateOfBirthValidator);
+                        DateTime birthName = this.GetParsedAndValidatedParameter<DateTime>(value, InputConverter.BirthDateConverter, this.inputValidator.DateOfBirthValidator);
 
                         if (DateTime.Compare(birthName, records[i].DateOfBirth) == 0)
                         {

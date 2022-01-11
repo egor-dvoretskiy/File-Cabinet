@@ -65,25 +65,36 @@
             Handler for create command.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CreateCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
+        <member name="M:FileCabinetApp.CommandHandlers.CreateCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService,FileCabinetApp.Interfaces.IRecordInputValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.CreateCommandHandler"/> class.
             </summary>
             <param name="service">File cabinet service.</param>
+            <param name="inputValidator">Input validator.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.CreateCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CreateCommandHandler.ReadInput``1(System.Func{System.String,System.Tuple{System.Boolean,System.String,``0}},System.Func{``0,System.Tuple{System.Boolean,System.String}})">
+            <summary>
+            Reads input string.
+            </summary>
+            <typeparam name="T">Depends on input.</typeparam>
+            <param name="converter">Converter depends on input.</param>
+            <param name="validator">Input validator.</param>
+            <returns>Type depends on input.</returns>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.DeleteCommandHandler">
             <summary>
             Handler for delete command.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.DeleteCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
+        <member name="M:FileCabinetApp.CommandHandlers.DeleteCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService,FileCabinetApp.Interfaces.IRecordInputValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.DeleteCommandHandler"/> class.
             </summary>
             <param name="service">File cabinet service.</param>
+            <param name="inputValidator">Validator for input args.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.DeleteCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
@@ -163,11 +174,12 @@
             Keeps insert command logics.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.InsertCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
+        <member name="M:FileCabinetApp.CommandHandlers.InsertCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService,FileCabinetApp.Interfaces.IRecordInputValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.InsertCommandHandler"/> class.
             </summary>
             <param name="service">Specified service to work with.</param>
+            <param name="inputValidator">Validator for input args.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.InsertCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
@@ -191,11 +203,12 @@
             Handler for select command.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.SelectCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
+        <member name="M:FileCabinetApp.CommandHandlers.SelectCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService,FileCabinetApp.Interfaces.IRecordInputValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.SelectCommandHandler"/> class.
             </summary>
             <param name="service">File cabinet service.</param>
+            <param name="inputValidator">Validator for input args.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.SelectCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
@@ -235,11 +248,12 @@
             Handler for update command.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.UpdateCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService)">
+        <member name="M:FileCabinetApp.CommandHandlers.UpdateCommandHandler.#ctor(FileCabinetApp.Interfaces.IFileCabinetService,FileCabinetApp.Interfaces.IRecordInputValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.UpdateCommandHandler"/> class.
             </summary>
             <param name="service">File cabinet service.</param>
+            <param name="inputValidator">Validator for input args.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.UpdateCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <inheritdoc/>
@@ -425,19 +439,19 @@
             </summary>
             <param name="records">Records to write.</param>
         </member>
-        <member name="T:FileCabinetApp.FormatWriters.WriterAssistant">
+        <member name="T:FileCabinetApp.FormatWriters.ReflectedRecordParams">
             <summary>
             Class contains additional methods to work with writers.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FormatWriters.WriterAssistant.GetPropertiesValuesString(FileCabinetApp.FileCabinetRecord)">
+        <member name="M:FileCabinetApp.FormatWriters.ReflectedRecordParams.GetPropertiesValuesString(FileCabinetApp.FileCabinetRecord)">
             <summary>
             Gets properties values in class using reflection.
             </summary>
             <param name="record">Neccessary type to get values in.</param>
             <returns>Concatenated properties values.</returns>
         </member>
-        <member name="M:FileCabinetApp.FormatWriters.WriterAssistant.GetPropertiesNameString(System.Type)">
+        <member name="M:FileCabinetApp.FormatWriters.ReflectedRecordParams.GetPropertiesNameString(System.Type)">
             <summary>
             Gets properties names in class using reflection.
             </summary>
@@ -871,25 +885,11 @@
             Available format to export/import.
             </summary>
         </member>
-        <member name="F:FileCabinetApp.Program.InputValidator">
-            <summary>
-            Validator.
-            </summary>
-        </member>
         <member name="M:FileCabinetApp.Program.Main(System.String[])">
             <summary>
             Init Method.
             </summary>
             <param name="args">Default parameters.</param>
-        </member>
-        <member name="M:FileCabinetApp.Program.ReadInput``1(System.Func{System.String,System.Tuple{System.Boolean,System.String,``0}},System.Func{``0,System.Tuple{System.Boolean,System.String}})">
-            <summary>
-            Reads input string.
-            </summary>
-            <typeparam name="T">Depends on input.</typeparam>
-            <param name="converter">Converter depends on input.</param>
-            <param name="validator">Input validator.</param>
-            <returns>Type depends on input.</returns>
         </member>
         <member name="M:FileCabinetApp.Program.DefaultRecordPrint(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord})">
             <summary>

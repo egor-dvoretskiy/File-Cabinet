@@ -23,6 +23,7 @@ namespace FileCabinetApp.Services
         /// </summary>
         private Dictionary<int, int> storedIdRecords = new Dictionary<int, int>();
 
+        // 1st arg - record's parameter, 2nd - list of records id that matches parameter.
         private Dictionary<string, List<int>> firstNameDictionary = new Dictionary<string, List<int>>();
         private Dictionary<string, List<int>> lastNameDictionary = new Dictionary<string, List<int>>();
         private Dictionary<string, List<int>> dateOfBirthDictionary = new Dictionary<string, List<int>>();
@@ -117,7 +118,6 @@ namespace FileCabinetApp.Services
         /// </summary>
         /// <param name="firstName">Person's first name.</param>
         /// <returns>All records with the same firstname.</returns>
-
         public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName) => this.Memoized(firstName, x =>
         {
             List<int> listIdRecordsPositions = new List<int>();
