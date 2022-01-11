@@ -48,6 +48,11 @@
         <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.SetNext(FileCabinetApp.Interfaces.ICommandHandler)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.ResetSimilarCommandsHandler">
+            <summary>
+            Resets the similar commands handler.
+            </summary>
+        </member>
         <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.AssignToSimilarCommands(System.String,FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
             Assigns similar commands to builder.

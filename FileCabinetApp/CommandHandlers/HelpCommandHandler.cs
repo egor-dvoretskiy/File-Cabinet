@@ -37,14 +37,13 @@ namespace FileCabinetApp.CommandHandlers
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "display record statistics", "The 'stat' command displays record statistics." },
             new string[] { "create", "create user data", "The 'create' command creates user data." },
-            new string[] { "list", "display stored records", "The 'list' command displays stored records." },
-            new string[] { "find", "find stored user data by specific field", "The 'find' command searches for stored user data by specific field." },
             new string[] { "export", "export data list to specific format", "The 'export' command converts data list to specific format." },
             new string[] { "import", "import data list from file", "The 'import' command converts file data to filesystem." },
             new string[] { "purge", "defragments the data file", "The 'purge' command defragments the data file." },
             new string[] { "insert", "add record to storage with specified fields", "The 'insert' command adds record to storage with specified fields." },
             new string[] { "update", "update the record with specified fields", "The 'update' command updates the record with specified fields." },
             new string[] { "delete", "delete records by specified fields", "The 'delete' command deletes records by specified fields." },
+            new string[] { "select", "select records by specified conditions", "The 'select' command pick records by specified conditions." },
         };
 
         /// <inheritdoc/>

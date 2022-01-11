@@ -27,6 +27,7 @@ namespace FileCabinetApp.CommandHandlers
         /// <inheritdoc/>
         public override void Handle(AppCommandRequest appCommandRequest)
         {
+            this.ResetSimilarCommandsHandler(); // first command in chain.
             this.AssignToSimilarCommands(CommandName, appCommandRequest);
 
             string command = appCommandRequest.Command;

@@ -38,9 +38,7 @@ namespace FileCabinetApp.CommandHandlers
                 Console.WriteLine("There is no such command. See 'help'.");
 
                 this.PrintSimilarCommands();
-
-                similarCommandsBuilder = new StringBuilder(InitSimilarCommandsMessage);
-                amountOfSimilarCommands = 0;
+                this.ResetSimilarCommandsHandler();
             }
         }
 
@@ -48,6 +46,15 @@ namespace FileCabinetApp.CommandHandlers
         public void SetNext(ICommandHandler commandHandler)
         {
             this.nextHandler = commandHandler;
+        }
+
+        /// <summary>
+        /// Resets the similar commands handler.
+        /// </summary>
+        protected void ResetSimilarCommandsHandler()
+        {
+            similarCommandsBuilder = new StringBuilder(InitSimilarCommandsMessage);
+            amountOfSimilarCommands = 0;
         }
 
         /// <summary>
@@ -73,7 +80,6 @@ namespace FileCabinetApp.CommandHandlers
                 if (letterPresenceInCommandWord.ContainsKey(currentLetter))
                 {
                     bool isEnoughOccurencies = currentLetterOccurencies >= letterPresenceInCommandWord[currentLetter];
-                    bool startsWithLetter = commandName.StartsWith(requestCommand.FirstOrDefault());
 
                     if (isEnoughOccurencies)
                     {
@@ -92,7 +98,8 @@ namespace FileCabinetApp.CommandHandlers
                 for (int i = 0; i < requestCommand.Length; i++)
                 {
                     int currentLength = requestCommand.Length - i;
-                    if (commandName.StartsWith(requestCommand[..currentLength]))
+                    bool startsWithLetter = commandName.StartsWith(requestCommand[..currentLength]);
+                    if (startsWithLetter)
                     {
                         similarCommandsBuilder.AppendLine(string.Concat("\t", commandName));
                         amountOfSimilarCommands++;
