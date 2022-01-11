@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FileCabinetApp.FormatWriters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -88,7 +89,16 @@ namespace FileCabinetApp.CommandHandlers
                 }
             }
 
+            this.PrintAvailableParameters();
             Console.WriteLine();
+        }
+
+        private void PrintAvailableParameters()
+        {
+            var parameters = ReflectedRecordParams.GetPropertiesNameString(typeof(FileCabinetRecord));
+
+            Console.WriteLine();
+            Console.WriteLine($"Available parameters: {parameters}");
         }
     }
 }

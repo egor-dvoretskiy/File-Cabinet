@@ -29,7 +29,7 @@ namespace FileCabinetApp
         /// <param name="record">Record to write.</param>
         public void Write(FileCabinetRecord record)
         {
-            this.writer.WriteLine(WriterAssistant.GetPropertiesValuesString(record));
+            this.writer.WriteLine(ReflectedRecordParams.GetPropertiesValuesString(record));
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace FileCabinetApp
         /// <param name="type">Type of data.</param>
         public void WriteHeader(Type type)
         {
-            this.writer.WriteLine(WriterAssistant.GetPropertiesNameString(type));
+            this.writer.WriteLine(ReflectedRecordParams.GetPropertiesNameString(type));
         }
     }
 }

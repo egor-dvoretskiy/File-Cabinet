@@ -12,7 +12,7 @@ namespace FileCabinetApp.FormatWriters
     /// <summary>
     /// Class contains additional methods to work with writers.
     /// </summary>
-    public static class WriterAssistant
+    public static class ReflectedRecordParams
     {
         /// <summary>
         /// Gets properties values in class using reflection.
