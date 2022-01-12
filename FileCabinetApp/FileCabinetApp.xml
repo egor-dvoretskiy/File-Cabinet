@@ -532,7 +532,6 @@
             Creates record and adds to main list.
             </summary>
             <param name="record">Input parameter object.</param>
-            <returns>Record's id in list.</returns>
         </member>
         <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.InsertRecord(FileCabinetApp.FileCabinetRecord)">
             <summary>
@@ -1003,6 +1002,74 @@
         <member name="M:FileCabinetApp.ServiceMeter.GetRecord(System.Int32)">
             <inheritdoc/>
         </member>
+        <member name="T:FileCabinetApp.Services.FileCabinetDictionary">
+            <summary>
+            Class that holds dictionaries methods.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Services.FileCabinetDictionary.storedIdRecords">
+            <summary>
+            1st arg - record's id, 2nd arg - position in list.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Services.FileCabinetDictionary.firstNameDictionary">
+            <summary>
+            Dictionary that holds firstName parameter refers to list of IDs.
+            1st arg - firstName, 2nd - list of records id that matches parameter.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Services.FileCabinetDictionary.lastNameDictionary">
+            <summary>
+            Dictionary that holds lastName parameter refers to list of IDs.
+            1st arg - lastName, 2nd - list of records id that matches parameter.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Services.FileCabinetDictionary.dateOfBirthDictionary">
+            <summary>
+            Dictionary that holds birthDate parameter refers to list of IDs.
+            1st arg - birthDate, 2nd - list of records id that matches parameter.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Services.FileCabinetDictionary.personalRatingDictionary">
+            <summary>
+            Dictionary that holds personalRating parameter refers to list of IDs.
+            1st arg - personalRating, 2nd - list of records id that matches parameter.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Services.FileCabinetDictionary.salaryDictionary">
+            <summary>
+            Dictionary that holds salary parameter refers to list of IDs.
+            1st arg - salary, 2nd - list of records id that matches parameter.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Services.FileCabinetDictionary.genderDictionary">
+            <summary>
+            Dictionary that holds gender parameter refers to list of IDs.
+            1st arg - gender, 2nd - list of records id that matches parameter.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDictionary.AddRecordToDictionaries(FileCabinetApp.FileCabinetRecord,System.Int32)">
+            <summary>
+            Adds record to dictionaries, that simplify record position determining.
+            </summary>
+            <param name="record">File cabinet record to add.</param>
+            <param name="position">Current position of record in container.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDictionary.EditRecordInDictionaries(FileCabinetApp.FileCabinetRecord,System.Int32)">
+            <summary>
+            Edit record in dictionaries, that simplify record position determining.
+            </summary>
+            <param name="record">File cabinet record to edit.</param>
+            <param name="position">Current position of record in container.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDictionary.RemoveRecordFromDictionaries(System.Int32,System.Int32,FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Removes record from dictionaries, that simplify record position determining.
+            </summary>
+            <param name="id">Record's id to remove.</param>
+            <param name="listIndex">Current position of record in container.</param>
+            <param name="recordToDelete">Set of parameters to remove.</param>
+        </member>
         <member name="T:FileCabinetApp.Services.FileCabinetFileSystemService">
             <summary>
             File system service.
@@ -1079,11 +1146,6 @@
             Records Processor Class.
             </summary>
         </member>
-        <member name="F:FileCabinetApp.Services.FileCabinetMemoryService.storedIdRecords">
-            <summary>
-            1st arg - record's id, 2nd arg - position in list.
-            </summary>
-        </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.#ctor(FileCabinetApp.Interfaces.IRecordValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetMemoryService"/> class.
@@ -1095,7 +1157,6 @@
             Creates record and adds to main list.
             </summary>
             <param name="record">Input parameter object.</param>
-            <returns>Record's id in list.</returns>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.GetRecords">
             <summary>

@@ -42,15 +42,13 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public int CreateRecord(FileCabinetRecord record)
+        public void CreateRecord(FileCabinetRecord record)
         {
             this.stopwatch.Restart();
-            int id = this.service.CreateRecord(record);
+            this.service.CreateRecord(record);
             this.stopwatch.Stop();
 
             this.GetElapsedTime(this.GetCallerName());
-
-            return id;
         }
 
         /// <inheritdoc/>

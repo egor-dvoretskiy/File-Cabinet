@@ -12,7 +12,7 @@ namespace FileCabinetApp.Services
     /// <summary>
     /// File system service.
     /// </summary>
-    public class FileCabinetFileSystemService : IFileCabinetService
+    public class FileCabinetFileSystemService : FileCabinetDictionary, IFileCabinetService
     {
         /// <summary>
         /// According to maximum length of name: 60 * sizeof(char).
@@ -26,14 +26,6 @@ namespace FileCabinetApp.Services
 
         private FileStream fileStream;
         private IRecordValidator recordValidator;
-
-        // first argument - record's id, second element - record's position in file.
-        private Dictionary<int, int> dictRecordsPositionOrder = new Dictionary<int, int>();
-
-        // first argument - record's param to search, second element - list of id's.
-        private Dictionary<string, List<int>> firstNameDictionary = new Dictionary<string, List<int>>();
-        private Dictionary<string, List<int>> lastNameDictionary = new Dictionary<string, List<int>>();
-        private Dictionary<DateTime, List<int>> dateOfBirthDictionary = new Dictionary<DateTime, List<int>>();
 
         private int recordsCount = 0;
         private int recordMarkedAsDeletedCount = 0;
@@ -92,7 +84,7 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public int CreateRecord(FileCabinetRecord record)
+        public void CreateRecord(FileCabinetRecord record)
         {
             try
             {
@@ -100,7 +92,8 @@ namespace FileCabinetApp.Services
 
                 if (!isValid)
                 {
-                    throw new ArgumentException("Record you want to create is not valid. Please try again!");
+                    Console.WriteLine($"Record validation failed.");
+                    return;
                 }
 
                 this.fileStream.Seek(0, SeekOrigin.End);
@@ -112,14 +105,9 @@ namespace FileCabinetApp.Services
                 this.fileStream.Write(buffer, 0, buffer.Length);
                 this.fileStream.Flush(true);
 
-                this.AddIdToParamsDictionary(record.Id, this.recordsCount, ref this.dictRecordsPositionOrder);
-                this.AddNameToParamsDictionary(record.FirstName, record.Id, ref this.firstNameDictionary);
-                this.AddNameToParamsDictionary(record.LastName, record.Id, ref this.lastNameDictionary);
-                this.AddDateTimeToParamsDictionary(record.DateOfBirth, record.Id, ref this.dateOfBirthDictionary);
+                this.AddRecordToDictionaries(record, this.recordsCount);
 
                 this.UpdateRecordCount();
-
-                return record.Id;
             }
             catch (ArgumentNullException anex)
             {
@@ -129,14 +117,12 @@ namespace FileCabinetApp.Services
             {
                 Console.WriteLine(aex.Message);
             }
-
-            return -1;
         }
 
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate)
         {
-            List<int> listIdRecordsPositions = this.GetDateTimeFromDictionary(birthDate, this.dateOfBirthDictionary);
+            List<int> listIdRecordsPositions = this.GetListOfDateTimeFromDictionary(birthDate, this.dateOfBirthDictionary);
 
             return new RecordFilesystemEnumerable(this.fileStream, listIdRecordsPositions);
         }
@@ -144,7 +130,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            List<int> listIdRecordsPositions = this.GetNameFromDictionary(firstName, this.firstNameDictionary);
+            List<int> listIdRecordsPositions = this.GetListOfNameFromDictionary(firstName, this.firstNameDictionary);
 
             return new RecordFilesystemEnumerable(this.fileStream, listIdRecordsPositions);
         }
@@ -152,7 +138,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            List<int> listIdRecordsPositions = this.GetNameFromDictionary(lastName, this.lastNameDictionary);
+            List<int> listIdRecordsPositions = this.GetListOfNameFromDictionary(lastName, this.lastNameDictionary);
 
             return new RecordFilesystemEnumerable(this.fileStream, listIdRecordsPositions);
         }
@@ -160,7 +146,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public FileCabinetRecord GetRecord(int id)
         {
-            this.fileStream.Seek(this.dictRecordsPositionOrder[id] * RecordSize, SeekOrigin.Begin);
+            this.fileStream.Seek(this.storedIdRecords[id] * RecordSize, SeekOrigin.Begin);
 
             byte[] bytes = new byte[RecordSize];
             this.fileStream.Read(bytes, 0, RecordSize);
@@ -177,7 +163,7 @@ namespace FileCabinetApp.Services
         {
             bool listIdPresent = true;
 
-            if (!this.dictRecordsPositionOrder.ContainsKey(id))
+            if (!this.storedIdRecords.ContainsKey(id))
             {
                 listIdPresent = false;
             }
@@ -242,18 +228,15 @@ namespace FileCabinetApp.Services
 
                 byte[] buffer = this.WriteRecordToBuffer(record);
 
-                if (this.dictRecordsPositionOrder.ContainsKey(record.Id))
+                if (this.storedIdRecords.ContainsKey(record.Id))
                 {
-                    int positionOfExistingId = this.dictRecordsPositionOrder[record.Id] * RecordSize;
+                    int positionOfExistingId = this.storedIdRecords[record.Id] * RecordSize;
 
                     this.fileStream.Seek(positionOfExistingId, SeekOrigin.Begin);
                 }
                 else
                 {
-                    this.dictRecordsPositionOrder.Add(record.Id, this.recordsCount);
-                    this.AddNameToParamsDictionary(record.FirstName, record.Id, ref this.firstNameDictionary);
-                    this.AddNameToParamsDictionary(record.LastName, record.Id, ref this.lastNameDictionary);
-                    this.AddDateTimeToParamsDictionary(record.DateOfBirth, record.Id, ref this.dateOfBirthDictionary);
+                    this.AddRecordToDictionaries(record, this.recordsCount);
 
                     this.fileStream.Seek(0, SeekOrigin.End);
                 }
@@ -343,7 +326,7 @@ namespace FileCabinetApp.Services
                     throw new ArgumentException("Record you want to add is not valid. Please try again!");
                 }
 
-                if (this.dictRecordsPositionOrder.ContainsKey(record.Id))
+                if (this.storedIdRecords.ContainsKey(record.Id))
                 {
                     throw new ArgumentException($"Memory is already has a record #{record.Id}.");
                 }
@@ -355,20 +338,16 @@ namespace FileCabinetApp.Services
                 this.fileStream.Write(buffer, 0, buffer.Length);
                 this.fileStream.Flush(true);
 
-                this.AddIdToParamsDictionary(record.Id, this.recordsCount, ref this.dictRecordsPositionOrder);
-                this.AddNameToParamsDictionary(record.FirstName, record.Id, ref this.firstNameDictionary);
-                this.AddNameToParamsDictionary(record.LastName, record.Id, ref this.lastNameDictionary);
-                this.AddDateTimeToParamsDictionary(record.DateOfBirth, record.Id, ref this.dateOfBirthDictionary);
-
+                this.AddRecordToDictionaries(record, this.recordsCount);
                 this.UpdateRecordCount();
             }
-            catch (ArgumentNullException anex)
+            catch (ArgumentNullException argumentNullException)
             {
-                Console.WriteLine(anex.Message);
+                Console.WriteLine(argumentNullException.Message);
             }
-            catch (ArgumentException aex)
+            catch (ArgumentException argumentException)
             {
-                Console.WriteLine(aex.Message);
+                Console.WriteLine(argumentException.Message);
             }
         }
 
@@ -394,7 +373,7 @@ namespace FileCabinetApp.Services
                     throw new ArgumentException("Record you want to edit is not valid. Please try again!");
                 }
 
-                int recordPosition = this.dictRecordsPositionOrder[id];
+                int recordPosition = this.storedIdRecords[id];
 
                 byte[] buffer = this.WriteRecordToBuffer(record);
                 this.fileStream.Seek(recordPosition * RecordSize, SeekOrigin.Begin);
@@ -417,7 +396,7 @@ namespace FileCabinetApp.Services
 
         private void RemoveRecordById(int id)
         {
-            if (!this.dictRecordsPositionOrder.ContainsKey(id))
+            if (!this.storedIdRecords.ContainsKey(id))
             {
                 Console.WriteLine($"There is no record #{id}.");
                 return;
@@ -434,7 +413,7 @@ namespace FileCabinetApp.Services
                     writer.Write(deleteByte);
                 }
 
-                int recordPosition = this.dictRecordsPositionOrder[id];
+                int recordPosition = this.storedIdRecords[id];
 
                 this.fileStream.Seek(recordPosition * RecordSize, SeekOrigin.Begin);
 
@@ -447,13 +426,13 @@ namespace FileCabinetApp.Services
 
                 Console.WriteLine($"Record #{id} is deleted.");
             }
-            catch (ArgumentNullException anex)
+            catch (ArgumentNullException argumentNullException)
             {
-                Console.WriteLine(anex.Message);
+                Console.WriteLine(argumentNullException.Message);
             }
-            catch (ArgumentException aex)
+            catch (ArgumentException argumentException)
             {
-                Console.WriteLine(aex.Message);
+                Console.WriteLine(argumentException.Message);
             }
             catch (KeyNotFoundException keyNotFoundException)
             {
@@ -465,7 +444,7 @@ namespace FileCabinetApp.Services
         {
             int id = 1;
 
-            while (this.dictRecordsPositionOrder.ContainsKey(id))
+            while (this.storedIdRecords.ContainsKey(id))
             {
                 id++;
             }
@@ -490,10 +469,13 @@ namespace FileCabinetApp.Services
 
         private void ClearDictionaries()
         {
-            this.dictRecordsPositionOrder.Clear();
+            this.storedIdRecords.Clear();
             this.firstNameDictionary.Clear();
             this.lastNameDictionary.Clear();
             this.dateOfBirthDictionary.Clear();
+            this.personalRatingDictionary.Clear();
+            this.salaryDictionary.Clear();
+            this.genderDictionary.Clear();
         }
 
         private void AssignRecordValuesToDictionaries()
@@ -516,42 +498,7 @@ namespace FileCabinetApp.Services
 
                 FileCabinetRecord record = tupleReadFromFile.Item1;
 
-                this.AddIdToParamsDictionary(record.Id, i, ref this.dictRecordsPositionOrder);
-                this.AddNameToParamsDictionary(record.FirstName, record.Id, ref this.firstNameDictionary);
-                this.AddNameToParamsDictionary(record.LastName, record.Id, ref this.lastNameDictionary);
-                this.AddDateTimeToParamsDictionary(record.DateOfBirth, record.Id, ref this.dateOfBirthDictionary);
-            }
-        }
-
-        private void AddIdToParamsDictionary(int id, int position, ref Dictionary<int, int> valuePairs)
-        {
-            if (!valuePairs.ContainsKey(id))
-            {
-                valuePairs.Add(id, position);
-            }
-        }
-
-        private void AddNameToParamsDictionary(string param, int id, ref Dictionary<string, List<int>> valuePairs)
-        {
-            if (!valuePairs.ContainsKey(param))
-            {
-                valuePairs.Add(param, new List<int>() { id });
-            }
-            else if (valuePairs.ContainsKey(param) && !valuePairs[param].Contains(id))
-            {
-                valuePairs[param].Add(id);
-            }
-        }
-
-        private void AddDateTimeToParamsDictionary(DateTime param, int id, ref Dictionary<DateTime, List<int>> valuePairs)
-        {
-            if (!valuePairs.ContainsKey(param))
-            {
-                valuePairs.Add(param, new List<int>() { id });
-            }
-            else if (valuePairs.ContainsKey(param) && !valuePairs[param].Contains(id))
-            {
-                valuePairs[param].Add(id);
+                this.AddRecordToDictionaries(record, i);
             }
         }
 
@@ -591,7 +538,7 @@ namespace FileCabinetApp.Services
             return buffer;
         }
 
-        private List<int> GetNameFromDictionary(string parametrName, Dictionary<string, List<int>> dictionary)
+        private List<int> GetListOfNameFromDictionary(string parametrName, Dictionary<string, List<int>> dictionary)
         {
             if (dictionary.ContainsKey(parametrName))
             {
@@ -600,7 +547,7 @@ namespace FileCabinetApp.Services
 
                 for (int i = 0; i < dictionary[parametrName].Count; i++)
                 {
-                    var position = this.dictRecordsPositionOrder[dictionary[parametrName][i]] * RecordSize;
+                    var position = this.storedIdRecords[dictionary[parametrName][i]] * RecordSize;
                     listOfPositions.Add(position);
                 }
 
@@ -610,7 +557,7 @@ namespace FileCabinetApp.Services
             return new List<int>();
         }
 
-        private List<int> GetDateTimeFromDictionary(string parametrName, Dictionary<DateTime, List<int>> dictionary)
+        private List<int> GetListOfDateTimeFromDictionary(string parametrName, Dictionary<DateTime, List<int>> dictionary)
         {
             bool isDateValid = DateTime.TryParse(parametrName, out DateTime birthDate);
             if (isDateValid && dictionary.ContainsKey(birthDate))
@@ -620,7 +567,7 @@ namespace FileCabinetApp.Services
 
                 for (int i = 0; i < dictionary[birthDate].Count; i++)
                 {
-                    var position = this.dictRecordsPositionOrder[dictionary[birthDate][i]] * RecordSize;
+                    var position = this.storedIdRecords[dictionary[birthDate][i]] * RecordSize;
                     listOfPositions.Add(position);
                 }
 

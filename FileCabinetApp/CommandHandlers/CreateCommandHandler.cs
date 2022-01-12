@@ -76,9 +76,7 @@ namespace FileCabinetApp.CommandHandlers
                 Gender = gender,
             };
 
-            int id = this.service.CreateRecord(record);
-
-            Console.WriteLine($"Record #{id} is created.");
+            this.service.CreateRecord(record);
         }
 
         /// <summary>

@@ -41,7 +41,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public int CreateRecord(FileCabinetRecord record)
+        public void CreateRecord(FileCabinetRecord record)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append($"{this.GetLogTime()} - Calling CreateRecord() with ");
@@ -53,14 +53,10 @@ namespace FileCabinetApp
             sb.Append($"Gender = '{record.Gender}'.");
             sb.Append(Environment.NewLine);
 
-            int id = this.service.CreateRecord(record);
-
-            sb.Append($"{this.GetLogTime()} - CreateRecord() returns '{id}'.");
+            this.service.CreateRecord(record);
 
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
-
-            return id;
         }
 
         /// <inheritdoc/>

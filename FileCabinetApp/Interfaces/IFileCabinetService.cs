@@ -11,8 +11,7 @@ namespace FileCabinetApp.Interfaces
         /// Creates record and adds to main list.
         /// </summary>
         /// <param name="record">Input parameter object.</param>
-        /// <returns>Record's id in list.</returns>
-        int CreateRecord(FileCabinetRecord record);
+        void CreateRecord(FileCabinetRecord record);
 
         /// <summary>
         /// Adds record with specific group of parameters.
