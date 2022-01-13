@@ -102,6 +102,48 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{this.GetLogTime()} - Calling FindByLastName() with personalRating = {personalRating}.");
+
+            var records = this.service.FindByPersonalRating(personalRating);
+
+            this.writer.WriteLine(sb.ToString());
+            this.writer.Flush();
+
+            return records;
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> FindBySalary(string salary)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{this.GetLogTime()} - Calling FindByLastName() with salary = {salary}.");
+
+            var records = this.service.FindBySalary(salary);
+
+            this.writer.WriteLine(sb.ToString());
+            this.writer.Flush();
+
+            return records;
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> FindByGender(string gender)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{this.GetLogTime()} - Calling FindByLastName() with gender = {gender}.");
+
+            var records = this.service.FindByGender(gender);
+
+            this.writer.WriteLine(sb.ToString());
+            this.writer.Flush();
+
+            return records;
+        }
+
+        /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
             StringBuilder sb = new StringBuilder();

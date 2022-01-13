@@ -85,17 +85,7 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public bool CheckRecordPresence(int id)
-        {
-            bool listIdPresent = true;
-
-            if (!this.storedIdRecords.ContainsKey(id))
-            {
-                listIdPresent = false;
-            }
-
-            return listIdPresent;
-        }
+        public bool CheckRecordPresence(int id) => this.storedIdRecords.ContainsKey(id);
 
         /// <summary>
         /// Searches all matches by firstname parameter.
@@ -159,6 +149,84 @@ namespace FileCabinetApp.Services
             if (isValidBirth && this.dateOfBirthDictionary.ContainsKey(validBirthDate))
             {
                 var listBirthDatesIds = this.dateOfBirthDictionary[validBirthDate];
+                int id = 0;
+
+                for (int i = 0; i < listBirthDatesIds.Count; i++)
+                {
+                    id = listBirthDatesIds[i];
+                    listIdRecordsPositions.Add(this.storedIdRecords[id]);
+                }
+            }
+
+            return new RecordMemoryEnumerable(this.list, listIdRecordsPositions);
+        });
+
+        /// <summary>
+        /// Searches all matches by personalRating parameter.
+        /// </summary>
+        /// <param name="personalRating">Person's personal rating.</param>
+        /// <returns>All records with the same personal rating.</returns>
+        public IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating) => this.Memoized(personalRating, x =>
+        {
+            List<int> listIdRecordsPositions = new List<int>();
+
+            var isValidPersonalRating = short.TryParse(personalRating, out short validPersonalRating);
+
+            if (isValidPersonalRating && this.personalRatingDictionary.ContainsKey(validPersonalRating))
+            {
+                var listOfPersonalRating = this.personalRatingDictionary[validPersonalRating];
+                int id = 0;
+
+                for (int i = 0; i < listOfPersonalRating.Count; i++)
+                {
+                    id = listOfPersonalRating[i];
+                    listIdRecordsPositions.Add(this.storedIdRecords[id]);
+                }
+            }
+
+            return new RecordMemoryEnumerable(this.list, listIdRecordsPositions);
+        });
+
+        /// <summary>
+        /// Searches all matches by salary parameter.
+        /// </summary>
+        /// <param name="salary">Person's salary.</param>
+        /// <returns>All records with the same salary.</returns>
+        public IEnumerable<FileCabinetRecord> FindBySalary(string salary) => this.Memoized(salary, x =>
+        {
+            List<int> listIdRecordsPositions = new List<int>();
+
+            var isValidSalary = decimal.TryParse(salary, out decimal validSalary);
+
+            if (isValidSalary && this.salaryDictionary.ContainsKey(validSalary))
+            {
+                var listSalaryIds = this.salaryDictionary[validSalary];
+                int id = 0;
+
+                for (int i = 0; i < listSalaryIds.Count; i++)
+                {
+                    id = listSalaryIds[i];
+                    listIdRecordsPositions.Add(this.storedIdRecords[id]);
+                }
+            }
+
+            return new RecordMemoryEnumerable(this.list, listIdRecordsPositions);
+        });
+
+        /// <summary>
+        /// Searches all matches by gender parameter.
+        /// </summary>
+        /// <param name="gender">Person's gender.</param>
+        /// <returns>All records with the same gender.</returns>
+        public IEnumerable<FileCabinetRecord> FindByGender(string gender) => this.Memoized(gender, x =>
+        {
+            List<int> listIdRecordsPositions = new List<int>();
+
+            var isValidGender = char.TryParse(gender, out char validGender);
+
+            if (isValidGender && this.genderDictionary.ContainsKey(validGender))
+            {
+                var listBirthDatesIds = this.genderDictionary[validGender];
                 int id = 0;
 
                 for (int i = 0; i < listBirthDatesIds.Count; i++)

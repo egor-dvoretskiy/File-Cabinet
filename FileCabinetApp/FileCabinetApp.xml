@@ -567,6 +567,27 @@
             <param name="lastName">Person's last name.</param>
             <returns>All records with the same lastname.</returns>
         </member>
+        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.FindByPersonalRating(System.String)">
+            <summary>
+            Searches all matches by personalRating parameter.
+            </summary>
+            <param name="personalRating">Person's personal rating.</param>
+            <returns>All records with the same personal rating.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.FindBySalary(System.String)">
+            <summary>
+            Searches all matches by salary parameter.
+            </summary>
+            <param name="salary">Person's salary.</param>
+            <returns>All records with the same salary.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.FindByGender(System.String)">
+            <summary>
+            Searches all matches by gender parameter.
+            </summary>
+            <param name="gender">Person's gender.</param>
+            <returns>All records with the same gender.</returns>
+        </member>
         <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.CheckRecordPresence(System.Int32)">
             <summary>
             Method checks record presence in list by ID.
@@ -922,6 +943,15 @@
         <member name="M:FileCabinetApp.ServiceLogger.FindByLastName(System.String)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByPersonalRating(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindBySalary(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByGender(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.ServiceLogger.GetRecords">
             <inheritdoc/>
         </member>
@@ -975,6 +1005,15 @@
         <member name="M:FileCabinetApp.ServiceMeter.FindByLastName(System.String)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByPersonalRating(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindBySalary(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByGender(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.ServiceMeter.GetRecords">
             <inheritdoc/>
         </member>
@@ -1009,7 +1048,7 @@
         </member>
         <member name="F:FileCabinetApp.Services.FileCabinetDictionary.storedIdRecords">
             <summary>
-            1st arg - record's id, 2nd arg - position in list.
+            1st arg - record's id, 2nd arg - position in list/file.
             </summary>
         </member>
         <member name="F:FileCabinetApp.Services.FileCabinetDictionary.firstNameDictionary">
@@ -1111,6 +1150,15 @@
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.FindByLastName(System.String)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.FindByPersonalRating(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.FindBySalary(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.FindByGender(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.GetRecord(System.Int32)">
             <inheritdoc/>
         </member>
@@ -1192,6 +1240,27 @@
             </summary>
             <param name="birthDate">Person's date of birth.</param>
             <returns>All records with the same date of birth.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.FindByPersonalRating(System.String)">
+            <summary>
+            Searches all matches by personalRating parameter.
+            </summary>
+            <param name="personalRating">Person's personal rating.</param>
+            <returns>All records with the same personal rating.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.FindBySalary(System.String)">
+            <summary>
+            Searches all matches by salary parameter.
+            </summary>
+            <param name="salary">Person's salary.</param>
+            <returns>All records with the same salary.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.FindByGender(System.String)">
+            <summary>
+            Searches all matches by gender parameter.
+            </summary>
+            <param name="gender">Person's gender.</param>
+            <returns>All records with the same gender.</returns>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.MakeSnapshot">
             <summary>

@@ -222,6 +222,21 @@ namespace FileCabinetApp.CommandHandlers
                     string birth = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
                     result[i] = this.GetStringParameterInBodyCell(cellLengthArray[i], birth, false);
                 }
+                else if (currentParameter.Equals(nameof(FileCabinetRecord.PersonalRating), StringComparison.OrdinalIgnoreCase))
+                {
+                    string personalRating = record.PersonalRating.ToString();
+                    result[i] = this.GetStringParameterInBodyCell(cellLengthArray[i], personalRating, false);
+                }
+                else if (currentParameter.Equals(nameof(FileCabinetRecord.Salary), StringComparison.OrdinalIgnoreCase))
+                {
+                    string salary = record.Salary.ToString();
+                    result[i] = this.GetStringParameterInBodyCell(cellLengthArray[i], salary, false);
+                }
+                else if (currentParameter.Equals(nameof(FileCabinetRecord.Gender), StringComparison.OrdinalIgnoreCase))
+                {
+                    string gender = record.Gender.ToString();
+                    result[i] = this.GetStringParameterInBodyCell(cellLengthArray[i], gender, false);
+                }
                 else
                 {
                     throw new ArgumentException($"There is no such parameter as '{currentParameter}'. Please, try again.");
@@ -278,6 +293,21 @@ namespace FileCabinetApp.CommandHandlers
                     {
                         string birth = records[j].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
                         minimalCellLengthArray[i] = this.GetCellLength(birth, minimalCellLengthArray[i]);
+                    }
+                    else if (parameterName.Equals(nameof(FileCabinetRecord.PersonalRating), StringComparison.OrdinalIgnoreCase))
+                    {
+                        string personalRating = records[j].PersonalRating.ToString();
+                        minimalCellLengthArray[i] = this.GetCellLength(personalRating, minimalCellLengthArray[i]);
+                    }
+                    else if (parameterName.Equals(nameof(FileCabinetRecord.Salary), StringComparison.OrdinalIgnoreCase))
+                    {
+                        string salary = records[j].Salary.ToString();
+                        minimalCellLengthArray[i] = this.GetCellLength(salary, minimalCellLengthArray[i]);
+                    }
+                    else if (parameterName.Equals(nameof(FileCabinetRecord.Gender), StringComparison.OrdinalIgnoreCase))
+                    {
+                        string gender = records[j].Gender.ToString();
+                        minimalCellLengthArray[i] = this.GetCellLength(gender, minimalCellLengthArray[i]);
                     }
                     else
                     {
@@ -423,6 +453,45 @@ namespace FileCabinetApp.CommandHandlers
                             condition &= false;
                         }
                     }
+                    else if (parameter.Equals(nameof(FileCabinetRecord.PersonalRating), StringComparison.OrdinalIgnoreCase))
+                    {
+                        short personalRating = this.GetParsedAndValidatedParameter<short>(value, InputConverter.PersonalRatingConverter, this.inputValidator.PersonalRatingValidator);
+
+                        if (personalRating == records[i].PersonalRating)
+                        {
+                            condition &= true;
+                        }
+                        else
+                        {
+                            condition &= false;
+                        }
+                    }
+                    else if (parameter.Equals(nameof(FileCabinetRecord.Salary), StringComparison.OrdinalIgnoreCase))
+                    {
+                        decimal salary = this.GetParsedAndValidatedParameter<decimal>(value, InputConverter.SalaryConverter, this.inputValidator.SalaryValidator);
+
+                        if (salary == records[i].Salary)
+                        {
+                            condition &= true;
+                        }
+                        else
+                        {
+                            condition &= false;
+                        }
+                    }
+                    else if (parameter.Equals(nameof(FileCabinetRecord.Gender), StringComparison.OrdinalIgnoreCase))
+                    {
+                        char gender = this.GetParsedAndValidatedParameter<char>(value, InputConverter.GenderConverter, this.inputValidator.GenderValidator);
+
+                        if (gender.Equals(records[i].Gender))
+                        {
+                            condition &= true;
+                        }
+                        else
+                        {
+                            condition &= false;
+                        }
+                    }
                 }
 
                 if (condition)
@@ -465,6 +534,21 @@ namespace FileCabinetApp.CommandHandlers
                 else if (parameterName.Equals(nameof(FileCabinetRecord.DateOfBirth), StringComparison.OrdinalIgnoreCase))
                 {
                     var enumerableRecords = this.service.FindByBirthDate(parameterValue);
+                    records.AddRange(enumerableRecords.ToList());
+                }
+                else if (parameterName.Equals(nameof(FileCabinetRecord.PersonalRating), StringComparison.OrdinalIgnoreCase))
+                {
+                    var enumerableRecords = this.service.FindByPersonalRating(parameterValue);
+                    records.AddRange(enumerableRecords.ToList());
+                }
+                else if (parameterName.Equals(nameof(FileCabinetRecord.Salary), StringComparison.OrdinalIgnoreCase))
+                {
+                    var enumerableRecords = this.service.FindBySalary(parameterValue);
+                    records.AddRange(enumerableRecords.ToList());
+                }
+                else if (parameterName.Equals(nameof(FileCabinetRecord.Gender), StringComparison.OrdinalIgnoreCase))
+                {
+                    var enumerableRecords = this.service.FindByGender(parameterValue);
                     records.AddRange(enumerableRecords.ToList());
                 }
                 else

@@ -103,7 +103,7 @@ namespace FileCabinetApp
             }
             else
             {
-                isConvertingSuccessful = decimal.TryParse(input, out salary);
+                isConvertingSuccessful = decimal.TryParse(input.Replace('.', ','), out salary);
                 if (!isConvertingSuccessful)
                 {
                     errorMessage = "Cannot parse salary(decimal)";

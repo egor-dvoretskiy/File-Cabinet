@@ -14,7 +14,7 @@ namespace FileCabinetApp.Services
     public abstract class FileCabinetDictionary
     {
         /// <summary>
-        /// 1st arg - record's id, 2nd arg - position in list.
+        /// 1st arg - record's id, 2nd arg - position in list/file.
         /// </summary>
         protected Dictionary<int, int> storedIdRecords = new Dictionary<int, int>();
 

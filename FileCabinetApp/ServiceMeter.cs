@@ -88,6 +88,42 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating)
+        {
+            this.stopwatch.Restart();
+            var collection = this.service.FindByPersonalRating(personalRating);
+            this.stopwatch.Stop();
+
+            this.GetElapsedTime(this.GetCallerName());
+
+            return collection;
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> FindBySalary(string salary)
+        {
+            this.stopwatch.Restart();
+            var collection = this.service.FindBySalary(salary);
+            this.stopwatch.Stop();
+
+            this.GetElapsedTime(this.GetCallerName());
+
+            return collection;
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> FindByGender(string gender)
+        {
+            this.stopwatch.Restart();
+            var collection = this.service.FindByGender(gender);
+            this.stopwatch.Stop();
+
+            this.GetElapsedTime(this.GetCallerName());
+
+            return collection;
+        }
+
+        /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
             this.stopwatch.Restart();

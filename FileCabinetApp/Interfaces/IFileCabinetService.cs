@@ -48,6 +48,27 @@ namespace FileCabinetApp.Interfaces
         IEnumerable<FileCabinetRecord> FindByLastName(string lastName);
 
         /// <summary>
+        /// Searches all matches by personalRating parameter.
+        /// </summary>
+        /// <param name="personalRating">Person's personal rating.</param>
+        /// <returns>All records with the same personal rating.</returns>
+        IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating);
+
+        /// <summary>
+        /// Searches all matches by salary parameter.
+        /// </summary>
+        /// <param name="salary">Person's salary.</param>
+        /// <returns>All records with the same salary.</returns>
+        IEnumerable<FileCabinetRecord> FindBySalary(string salary);
+
+        /// <summary>
+        /// Searches all matches by gender parameter.
+        /// </summary>
+        /// <param name="gender">Person's gender.</param>
+        /// <returns>All records with the same gender.</returns>
+        IEnumerable<FileCabinetRecord> FindByGender(string gender);
+
+        /// <summary>
         /// Method checks record presence in list by ID.
         /// </summary>
         /// <param name="id">Record's id.</param>

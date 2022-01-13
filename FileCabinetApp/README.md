@@ -9,3 +9,11 @@
 |    FileCabinetCustomService    |    CustomValidator    |    Aggregation    |
 |    DefaultValidator    |    IRecordValidator    |    Composition    |
 |    CustomValidator    |    IRecordValidator    |    Composition    |
+
+
+
+# TODO
+
+-> improve select command.
+-> continue debugging commands under create.
+...

@@ -119,6 +119,21 @@ namespace FileCabinetApp.CommandHandlers
                 var enumerableRecords = this.service.FindByBirthDate(value);
                 listOfIds = this.FillListFromEnumerable(enumerableRecords);
             }
+            else if (parameter.Equals(nameof(FileCabinetRecord.PersonalRating), StringComparison.OrdinalIgnoreCase))
+            {
+                var enumerableRecords = this.service.FindByPersonalRating(value);
+                listOfIds = this.FillListFromEnumerable(enumerableRecords);
+            }
+            else if (parameter.Equals(nameof(FileCabinetRecord.Salary), StringComparison.OrdinalIgnoreCase))
+            {
+                var enumerableRecords = this.service.FindBySalary(value);
+                listOfIds = this.FillListFromEnumerable(enumerableRecords);
+            }
+            else if (parameter.Equals(nameof(FileCabinetRecord.Gender), StringComparison.OrdinalIgnoreCase))
+            {
+                var enumerableRecords = this.service.FindByGender(value);
+                listOfIds = this.FillListFromEnumerable(enumerableRecords);
+            }
             else
             {
                 throw new ArgumentException($"There is no such parameter as '{parameter}'. Please, try again.");

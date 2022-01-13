@@ -144,6 +144,30 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating)
+        {
+            List<int> listIdRecordsPositions = this.GetListOfPersonalRatingFromDictionary(personalRating, this.personalRatingDictionary);
+
+            return new RecordFilesystemEnumerable(this.fileStream, listIdRecordsPositions);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> FindBySalary(string salary)
+        {
+            List<int> listIdRecordsPositions = this.GetListOfSalaryFromDictionary(salary, this.salaryDictionary);
+
+            return new RecordFilesystemEnumerable(this.fileStream, listIdRecordsPositions);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> FindByGender(string gender)
+        {
+            List<int> listIdRecordsPositions = this.GetListOfGenderFromDictionary(gender, this.genderDictionary);
+
+            return new RecordFilesystemEnumerable(this.fileStream, listIdRecordsPositions);
+        }
+
+        /// <inheritdoc/>
         public FileCabinetRecord GetRecord(int id)
         {
             this.fileStream.Seek(this.storedIdRecords[id] * RecordSize, SeekOrigin.Begin);
@@ -159,17 +183,7 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public bool CheckRecordPresence(int id)
-        {
-            bool listIdPresent = true;
-
-            if (!this.storedIdRecords.ContainsKey(id))
-            {
-                listIdPresent = false;
-            }
-
-            return listIdPresent;
-        }
+        public bool CheckRecordPresence(int id) => this.storedIdRecords.ContainsKey(id);
 
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
@@ -568,6 +582,66 @@ namespace FileCabinetApp.Services
                 for (int i = 0; i < dictionary[birthDate].Count; i++)
                 {
                     var position = this.storedIdRecords[dictionary[birthDate][i]] * RecordSize;
+                    listOfPositions.Add(position);
+                }
+
+                return listOfPositions;
+            }
+
+            return new List<int>();
+        }
+
+        private List<int> GetListOfPersonalRatingFromDictionary(string parametrName, Dictionary<short, List<int>> dictionary)
+        {
+            bool isPersonalRatingValid = short.TryParse(parametrName, out short personalRating);
+            if (isPersonalRatingValid && dictionary.ContainsKey(personalRating))
+            {
+                // List of id's, but need positions.
+                List<int> listOfPositions = new List<int>();
+
+                for (int i = 0; i < dictionary[personalRating].Count; i++)
+                {
+                    var position = this.storedIdRecords[dictionary[personalRating][i]] * RecordSize;
+                    listOfPositions.Add(position);
+                }
+
+                return listOfPositions;
+            }
+
+            return new List<int>();
+        }
+
+        private List<int> GetListOfSalaryFromDictionary(string parametrName, Dictionary<decimal, List<int>> dictionary)
+        {
+            bool isSalaryValid = decimal.TryParse(parametrName, out decimal salary);
+            if (isSalaryValid && dictionary.ContainsKey(salary))
+            {
+                // List of id's, but need positions.
+                List<int> listOfPositions = new List<int>();
+
+                for (int i = 0; i < dictionary[salary].Count; i++)
+                {
+                    var position = this.storedIdRecords[dictionary[salary][i]] * RecordSize;
+                    listOfPositions.Add(position);
+                }
+
+                return listOfPositions;
+            }
+
+            return new List<int>();
+        }
+
+        private List<int> GetListOfGenderFromDictionary(string parametrName, Dictionary<char, List<int>> dictionary)
+        {
+            bool isGenderValid = char.TryParse(parametrName, out char gender);
+            if (isGenderValid && dictionary.ContainsKey(gender))
+            {
+                // List of id's, but need positions.
+                List<int> listOfPositions = new List<int>();
+
+                for (int i = 0; i < dictionary[gender].Count; i++)
+                {
+                    var position = this.storedIdRecords[dictionary[gender][i]] * RecordSize;
                     listOfPositions.Add(position);
                 }
 
