@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.ServiceTools
 {
     /// <summary>
     /// Contains various converters.

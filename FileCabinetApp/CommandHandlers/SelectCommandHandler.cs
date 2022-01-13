@@ -4,7 +4,9 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using FileCabinetApp.Interfaces;
+using FileCabinetApp.ServiceTools;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -86,6 +88,8 @@ namespace FileCabinetApp.CommandHandlers
 
                     string condition = splitedParams.Last();
                     string separator = condition.Contains(KeyOrWord, StringComparison.OrdinalIgnoreCase) ? KeyOrWord : KeyAndWord;
+
+                    var str = MemoizerForMemoryService.FormStringForMemoizing(condition);
 
                     var parametersNameAndValues = this.GetParametersByNameAndValue(condition, separator);
                     var recordsFromService = this.GetListOfRecordsByParameters(parametersNameAndValues);

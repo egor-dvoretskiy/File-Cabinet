@@ -9,7 +9,7 @@ using FileCabinetApp.Interfaces;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-namespace FileCabinetApp
+namespace FileCabinetApp.ServiceTools
 {
     /// <summary>
     /// Add call stack logs to file.

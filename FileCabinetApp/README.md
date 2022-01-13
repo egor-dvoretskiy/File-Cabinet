@@ -15,5 +15,6 @@
 # TODO
 
 -> improve select command.
+-> make form string for memoizing method.
 -> continue debugging commands under create.
 ...
