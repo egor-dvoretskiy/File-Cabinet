@@ -114,7 +114,8 @@ namespace FileCabinetApp
 
             try
             {
-                ParseInputArgs(args);
+                args = ParseArgumentArray(args);
+                SetInputModes(args);
             }
             catch (ArgumentNullException argumentNullException)
             {
@@ -153,36 +154,8 @@ namespace FileCabinetApp
             while (isRunning);
         }
 
-        /// <summary>
-        /// Print records in console.
-        /// </summary>
-        /// <param name="records">Data to print.</param>
-        public static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)
+        private static void SetInputModes(string[] args)
         {
-            foreach (FileCabinetRecord record in records)
-            {
-                Console.WriteLine(Program.GetRecordInStringRepresentation(record));
-            }
-        }
-
-        private static string GetRecordInStringRepresentation(FileCabinetRecord record)
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append($"#{record.Id}, ");
-            stringBuilder.Append($"{record.FirstName}, ");
-            stringBuilder.Append($"{record.LastName}, ");
-            stringBuilder.Append($"{record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, ");
-            stringBuilder.Append($"{record.PersonalRating}, ");
-            stringBuilder.Append($"{record.Salary}, ");
-            stringBuilder.Append($"{record.Gender}.");
-
-            return stringBuilder.ToString();
-        }
-
-        private static void ParseInputArgs(string[] args)
-        {
-            args = ParseArgumentArray(args);
-
             args.SetValidators();
             args.SetService();
             args.SetServiceMeterMode();

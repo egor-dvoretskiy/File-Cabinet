@@ -324,7 +324,7 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Salary">
             <summary>
-            Gets or sets person's amount of debt.
+            Gets or sets person's salary.
             </summary>
             <value>
             Person's amount of debt.
@@ -820,12 +820,6 @@
             </summary>
             <param name="args">Default parameters.</param>
         </member>
-        <member name="M:FileCabinetApp.Program.DefaultRecordPrint(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord})">
-            <summary>
-            Print records in console.
-            </summary>
-            <param name="records">Data to print.</param>
-        </member>
         <member name="T:FileCabinetApp.Services.FileCabinetDictionary">
             <summary>
             Class that holds dictionaries methods.
@@ -894,6 +888,11 @@
             <param name="listIndex">Current position of record in container.</param>
             <param name="recordToDelete">Set of parameters to remove.</param>
         </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDictionary.ClearDictionaries">
+            <summary>
+            Clears all dictionaries.
+            </summary>
+        </member>
         <member name="T:FileCabinetApp.Services.FileCabinetFileSystemService">
             <summary>
             File system service.
@@ -915,13 +914,6 @@
             </summary>
             <param name="fileStream">File stream.</param>
             <param name="recordValidator">Validator for record.</param>
-        </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.ReadRecordFromBuffer(System.Byte[])">
-            <summary>
-            Reads fixed size buffer.
-            </summary>
-            <param name="bytesRecord">Acquired from file buffer.</param>
-            <returns>Returns read record and isDeleted flag.</returns>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.CreateRecord(FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
@@ -1205,6 +1197,28 @@
             </summary>
             <param name="phrase">Init phrase.</param>
             <returns>Returns string for memoization.</returns>
+        </member>
+        <member name="T:FileCabinetApp.ServiceTools.ServiceBufferCommunicator">
+            <summary>
+            Provides the communication with buffer (read, write).
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.ServiceBufferCommunicator.ReadRecordFromBuffer(System.Byte[],System.Byte)">
+            <summary>
+            Reads fixed size buffer.
+            </summary>
+            <param name="bytesRecord">Acquired from file buffer.</param>
+            <param name="maxNameLength">Maximum length of name in binary file.</param>
+            <returns>Returns read record and isDeleted flag.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.ServiceBufferCommunicator.WriteRecordToBuffer(FileCabinetApp.FileCabinetRecord,System.Int32,System.Int32)">
+            <summary>
+            Writes record in temporary buffer.
+            </summary>
+            <param name="record">Record to write in buffer.</param>
+            <param name="recordSize">Max record size in binary representation.</param>
+            <param name="maxNameLength">Maximum length of name in binary file.</param>
+            <returns>Returns buffer.</returns>
         </member>
         <member name="T:FileCabinetApp.ServiceTools.ServiceLogger">
             <summary>

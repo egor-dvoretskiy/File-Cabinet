@@ -3,7 +3,9 @@ using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using FileCabinetApp.Services;
+using FileCabinetApp.ServiceTools;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
@@ -73,7 +75,7 @@ namespace FileCabinetApp.Iterators
                 byte[] bytes = new byte[FileCabinetFileSystemService.RecordSize];
                 this.fileStream.Read(bytes, 0, FileCabinetFileSystemService.RecordSize);
 
-                var tupleReadFromFile = FileCabinetFileSystemService.ReadRecordFromBuffer(bytes);
+                var tupleReadFromFile = ServiceBufferCommunicator.ReadRecordFromBuffer(bytes, FileCabinetFileSystemService.MaxNameLength);
 
                 this.record = tupleReadFromFile.Item1;
 

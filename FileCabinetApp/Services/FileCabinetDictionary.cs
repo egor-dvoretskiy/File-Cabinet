@@ -106,6 +106,20 @@ namespace FileCabinetApp.Services
             this.storedIdRecords.Remove(id);
         }
 
+        /// <summary>
+        /// Clears all dictionaries.
+        /// </summary>
+        protected void ClearDictionaries()
+        {
+            this.storedIdRecords.Clear();
+            this.firstNameDictionary.Clear();
+            this.lastNameDictionary.Clear();
+            this.dateOfBirthDictionary.Clear();
+            this.personalRatingDictionary.Clear();
+            this.salaryDictionary.Clear();
+            this.genderDictionary.Clear();
+        }
+
         private void AddOrChangeInformationInIdDictionary(int id, int position, ref Dictionary<int, int> dict)
         {
             if (!dict.ContainsKey(id))

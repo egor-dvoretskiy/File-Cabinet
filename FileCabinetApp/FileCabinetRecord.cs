@@ -53,7 +53,7 @@ namespace FileCabinetApp
         public short PersonalRating { get; set; }
 
         /// <summary>
-        /// Gets or sets person's amount of debt.
+        /// Gets or sets person's salary.
         /// </summary>
         /// <value>
         /// Person's amount of debt.
