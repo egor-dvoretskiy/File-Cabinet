@@ -89,11 +89,13 @@ namespace FileCabinetApp.CommandHandlers
                     string condition = splitedParams.Last();
                     string separator = condition.Contains(KeyOrWord, StringComparison.OrdinalIgnoreCase) ? KeyOrWord : KeyAndWord;
 
-                    var str = MemoizerForMemoryService.FormStringForMemoizing(condition);
+                    string memoizerKey = MemoizerForMemoryService.FormIdentificatorForMemoizing(condition);
 
-                    var parametersNameAndValues = this.GetParametersByNameAndValue(condition, separator);
+                    var filteredRecords = this.service.Select(condition, memoizerKey, this.inputValidator);
+
+                    /*var parametersNameAndValues = this.GetParametersByNameAndValue(condition, separator);
                     var recordsFromService = this.GetListOfRecordsByParameters(parametersNameAndValues);
-                    var filteredRecords = this.GetFilteredRecords(recordsFromService, separator, parametersNameAndValues);
+                    var filteredRecords = this.GetFilteredRecords(recordsFromService, separator, parametersNameAndValues);*/
 
                     parametersToPrint = splitedParams.First();
                     records = filteredRecords;

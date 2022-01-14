@@ -70,6 +70,15 @@ namespace FileCabinetApp.Interfaces
         IEnumerable<FileCabinetRecord> FindByGender(string gender);
 
         /// <summary>
+        /// Chooses records by conditions.
+        /// </summary>
+        /// <param name="phrase">Condition that goes after 'where'.</param>
+        /// <param name="memoizingKey">Key for memoizing.</param>
+        /// <param name="inputValidator">Validator for input.</param>
+        /// <returns>List of neccessary records.</returns>
+        List<FileCabinetRecord> Select(string phrase, string memoizingKey, IRecordInputValidator inputValidator);
+
+        /// <summary>
         /// Method checks record presence in list by ID.
         /// </summary>
         /// <param name="id">Record's id.</param>

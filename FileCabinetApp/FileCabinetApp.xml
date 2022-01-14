@@ -263,11 +263,19 @@
             Consdition processor.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.ConditionWords.ConditionWhere.#ctor(System.String)">
+        <member name="M:FileCabinetApp.ConditionWords.ConditionWhere.#ctor(FileCabinetApp.Interfaces.IFileCabinetService,FileCabinetApp.Interfaces.IRecordInputValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.ConditionWords.ConditionWhere"/> class.
             </summary>
-            <param name="phrase">Initial phrase.</param>
+            <param name="fileCabinetService">Record service.</param>
+            <param name="inputValidator">Input Validator.</param>
+        </member>
+        <member name="M:FileCabinetApp.ConditionWords.ConditionWhere.GetFilteredRecords(System.String)">
+            <summary>
+            Gets records by using condition.
+            </summary>
+            <param name="phrase">input condition.</param>
+            <returns>List of records.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
@@ -507,6 +515,15 @@
             </summary>
             <param name="gender">Person's gender.</param>
             <returns>All records with the same gender.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.Select(System.String,System.String,FileCabinetApp.Interfaces.IRecordInputValidator)">
+            <summary>
+            Chooses records by conditions.
+            </summary>
+            <param name="phrase">Condition that goes after 'where'.</param>
+            <param name="memoizingKey">Key for memoizing.</param>
+            <param name="inputValidator">Validator for input.</param>
+            <returns>List of neccessary records.</returns>
         </member>
         <member name="M:FileCabinetApp.Interfaces.IFileCabinetService.CheckRecordPresence(System.Int32)">
             <summary>
@@ -957,6 +974,9 @@
         <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.Update(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFileSystemService.Select(System.String,System.String,FileCabinetApp.Interfaces.IRecordInputValidator)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Services.FileCabinetMemoryService">
             <summary>
             Records Processor Class.
@@ -1055,6 +1075,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.GetRecord(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Select(System.String,System.String,FileCabinetApp.Interfaces.IRecordInputValidator)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.ServiceTools.FileCabinetServiceSnapshot">
@@ -1176,7 +1199,7 @@
             Clears cache.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.ServiceTools.MemoizerForMemoryService.FormStringForMemoizing(System.String)">
+        <member name="M:FileCabinetApp.ServiceTools.MemoizerForMemoryService.FormIdentificatorForMemoizing(System.String)">
             <summary>
             Forming string for memoizing.
             </summary>
@@ -1245,6 +1268,9 @@
         <member name="M:FileCabinetApp.ServiceTools.ServiceLogger.GetRecord(System.Int32)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.ServiceTools.ServiceLogger.Select(System.String,System.String,FileCabinetApp.Interfaces.IRecordInputValidator)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.ServiceTools.ServiceMeter">
             <summary>
             Measures working time of service methods.
@@ -1305,6 +1331,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceTools.ServiceMeter.GetRecord(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.ServiceMeter.Select(System.String,System.String,FileCabinetApp.Interfaces.IRecordInputValidator)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Validators.CompositeValidator">

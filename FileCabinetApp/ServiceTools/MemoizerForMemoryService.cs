@@ -65,34 +65,49 @@ namespace FileCabinetApp.ServiceTools
         /// </summary>
         /// <param name="phrase">Init phrase.</param>
         /// <returns>Returns string for memoization.</returns>
-        internal static string FormStringForMemoizing(string phrase)
+        internal static string FormIdentificatorForMemoizing(string phrase)
         {
-            StringBuilder stringForMemoizer = new StringBuilder();
-
             string[] phrases = phrase.Split(" or ", StringSplitOptions.TrimEntries);
+            StringBuilder[] stringForMemoizer = new StringBuilder[phrases.Length];
 
-            stringForMemoizer.InsertOr(phrases);
-            stringForMemoizer.InsertFirstNames(phrases);
+            stringForMemoizer.InitBuilderArray();
+            stringForMemoizer.InsertParameter("FIRSTNAME", phrases);
+            stringForMemoizer.InsertParameter("LASTNAME", phrases);
+            stringForMemoizer.InsertParameter("DATEOFBIRTH", phrases);
+            stringForMemoizer.InsertParameter("PERSONALRATING", phrases);
+            stringForMemoizer.InsertParameter("SALARY", phrases);
+            stringForMemoizer.InsertParameter("GENDER", phrases);
+            stringForMemoizer.IsValid(phrases);
 
-            return stringForMemoizer.ToString();
+            string identificator = FillIdentificator(stringForMemoizer);
+
+            return identificator;
         }
 
-        private static void InsertOr(this StringBuilder stringBuilder, params string[] phrases)
+        private static void IsValid(this StringBuilder[] stringBuilders, string[] phrases)
         {
-            int amountOfOrInStringBuilder = phrases.Length > 1 ? phrases.Length - 1 : 1;
-            for (int i = 0; i < amountOfOrInStringBuilder; i++)
+            for (int i = 0; i < stringBuilders.Length; i++)
             {
-                stringBuilder.Append("OR");
+                if (string.IsNullOrEmpty(stringBuilders[i].ToString()))
+                {
+                    throw new ArgumentException($"Wrong parameter name in '{phrases[i]}'");
+                }
             }
         }
 
-        private static void InsertFirstNames(this StringBuilder stringBuilder, params string[] phrases)
+        private static void InitBuilderArray(this StringBuilder[] stringBuilders)
         {
-            int lastIndexToInsert = 0;
+            for (int i = 0; i < stringBuilders.Length; i++)
+            {
+                stringBuilders[i] = new StringBuilder();
+            }
+        }
 
+        private static void InsertParameter(this StringBuilder[] stringBuilder, string name, params string[] phrases)
+        {
             for (int i = 0; i < phrases.Length; i++)
             {
-                StringBuilder substringBuilder = new StringBuilder(".FIRSTNAME:");
+                StringBuilder substringBuilder = new StringBuilder();
                 string phrase = phrases[i];
                 string[] subphrases = phrase.Split(' ');
 
@@ -100,25 +115,61 @@ namespace FileCabinetApp.ServiceTools
                 {
                     string subphrase = subphrases[j];
 
-                    if (!subphrase.Contains(nameof(FileCabinetRecord.FirstName), StringComparison.OrdinalIgnoreCase))
+                    if (!subphrase.Contains(name, StringComparison.OrdinalIgnoreCase))
                     {
                         continue;
                     }
 
                     int startIndex = subphrase.IndexOf('=') + 1;
-                    int endIndex = subphrase.IndexOf(' ') == -1 ? subphrase.Length - 1 : subphrase.IndexOf(' ');
+                    int endIndex = subphrase.IndexOf(' ') == -1 ? subphrase.Length : subphrase.IndexOf(' ');
 
-                    string firstNameValue = subphrase[startIndex..endIndex].Trim('\'').ToUpper();
+                    string parameter = subphrase[startIndex..endIndex].Trim('\'').ToUpper();
 
-                    substringBuilder.Append(firstNameValue);
+                    substringBuilder.Append(name.ToUpper());
+                    substringBuilder.Append(parameter);
 
                     break;
                 }
 
-                int indexToInsertInStringBuilder = stringBuilder.ToString().IndexOf("or", lastIndexToInsert, StringComparison.OrdinalIgnoreCase);
-                stringBuilder.Insert(indexToInsertInStringBuilder == -1 ? lastIndexToInsert : indexToInsertInStringBuilder, substringBuilder.ToString());
-                lastIndexToInsert = substringBuilder.Length + "or".Length - 1;
+                stringBuilder[i].Append(substringBuilder.ToString());
             }
+        }
+
+        private static string FillIdentificator(StringBuilder[] stringBuilders)
+        {
+            var len = stringBuilders.Length;
+
+            for (var i = 1; i < len; i++)
+            {
+                for (var j = 0; j < len - i; j++)
+                {
+                    if (string.Compare(stringBuilders[j].ToString(), stringBuilders[j + 1].ToString()) == 1)
+                    {
+                        Swap(ref stringBuilders[j], ref stringBuilders[j + 1]);
+                    }
+                }
+            }
+
+            return string.Join("OR", stringBuilders.GetStringArrayFromStingBuilder());
+        }
+
+        private static string[] GetStringArrayFromStingBuilder(this StringBuilder[] stringBuilders)
+        {
+            string[] stringArray = new string[stringBuilders.Length];
+
+            for (int i = 0; i < stringBuilders.Length; i++)
+            {
+                stringArray[i] = stringBuilders[i].ToString();
+            }
+
+            return stringArray;
+        }
+
+        private static void Swap(ref StringBuilder s1, ref StringBuilder s2)
+        {
+            var temp = s1;
+            s1 = s2;
+            s2 = temp;
         }
     }
 }

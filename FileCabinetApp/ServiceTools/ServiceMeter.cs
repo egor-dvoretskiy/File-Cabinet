@@ -219,6 +219,18 @@ namespace FileCabinetApp.ServiceTools
             return record;
         }
 
+        /// <inheritdoc/>
+        public List<FileCabinetRecord> Select(string phrase, string memoizingKey, IRecordInputValidator inputValidator)
+        {
+            this.stopwatch.Restart();
+            var records = this.service.Select(phrase, memoizingKey, inputValidator);
+            this.stopwatch.Stop();
+
+            this.GetElapsedTime(this.GetCallerName());
+
+            return records;
+        }
+
         private void GetElapsedTime(string methodName)
         {
             var elapsed = this.stopwatch.Elapsed.TotalMilliseconds; // ms

@@ -274,6 +274,22 @@ namespace FileCabinetApp.ServiceTools
             return record;
         }
 
+        /// <inheritdoc/>
+        public List<FileCabinetRecord> Select(string phrase, string memoizingKey, IRecordInputValidator inputValidator)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"{this.GetLogTime()} - Calling Select().");
+
+            var records = this.service.Select(phrase, memoizingKey, inputValidator);
+
+            sb.Append($"{this.GetLogTime()} - Select() returns {records.Count} record(s).");
+
+            this.writer.WriteLine(sb.ToString());
+            this.writer.Flush();
+
+            return records;
+        }
+
         private string GetLogTime()
         {
             return DateTime.Now.ToString("dd/MM/yyyy HH:mm");

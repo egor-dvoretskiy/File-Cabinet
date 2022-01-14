@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 
+using FileCabinetApp.ConditionWords;
 using FileCabinetApp.Interfaces;
 using FileCabinetApp.Iterators;
 using FileCabinetApp.ServiceTools;
@@ -345,6 +346,15 @@ namespace FileCabinetApp.Services
             // with preliminary check (checkpresenceid)
             return this.list[this.storedIdRecords[id]];
         }
+
+        /// <inheritdoc/>
+        public List<FileCabinetRecord> Select(string phrase, string memoizingKey, IRecordInputValidator inputValidator) => this.Memoized(memoizingKey, x =>
+        {
+            ConditionWhere where = new ConditionWhere(this, inputValidator);
+            var records = where.GetFilteredRecords(phrase);
+
+            return records;
+        });
 
         private void RemoveRecordById(int id)
         {

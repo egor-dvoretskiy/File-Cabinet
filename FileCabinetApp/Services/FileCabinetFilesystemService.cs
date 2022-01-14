@@ -378,6 +378,13 @@ namespace FileCabinetApp.Services
             Console.WriteLine($"Record's updating completed.");
         }
 
+        /// <inheritdoc/>
+        public List<FileCabinetRecord> Select(string phrase, string memoizingKey, IRecordInputValidator inputValidator)
+        {
+            Console.WriteLine("Not implemented yet.");
+            return new List<FileCabinetRecord>();
+        }
+
         private void EditRecord(int id, FileCabinetRecord record)
         {
             try
