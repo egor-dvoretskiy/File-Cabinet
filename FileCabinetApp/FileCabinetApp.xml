@@ -1336,6 +1336,18 @@
         <member name="M:FileCabinetApp.ServiceTools.ServiceMeter.Select(System.String,System.String,FileCabinetApp.Interfaces.IRecordInputValidator)">
             <inheritdoc/>
         </member>
+        <member name="T:FileCabinetApp.ServiceTools.TablePrinter">
+            <summary>
+            Prints records with table-view in console.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.TablePrinter.PrintTableRecords(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord},System.String)">
+            <summary>
+            Prints records with table-view in console.
+            </summary>
+            <param name="records">Records to print.</param>
+            <param name="parameters">Params to show in console.</param>
+        </member>
         <member name="T:FileCabinetApp.Validators.CompositeValidator">
             <summary>
             Container in 'composite pattern'.
