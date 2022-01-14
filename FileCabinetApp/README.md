@@ -14,7 +14,5 @@
 
 # TODO
 
--> improve select command.
--> add class for print list of records.
 -> continue debugging commands under create.
 ...

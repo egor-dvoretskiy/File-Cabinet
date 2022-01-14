@@ -32,9 +32,12 @@ namespace FileCabinetApp.ServiceTools
         /// <inheritdoc/>
         public bool CheckRecordPresence(int id)
         {
-            this.writer.WriteLine($"{this.GetLogTime()} - Calling CheckRecordPresence() with id = '{id}'.");
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{this.GetLogTime()} - Calling CheckRecordPresence() with id = '{id}'.");
             var value = this.service.CheckRecordPresence(id);
+            sb.AppendLine($"{this.GetLogTime()} - CheckRecordPresence() returns value: {value}.");
 
+            this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
 
             return value;
@@ -64,8 +67,8 @@ namespace FileCabinetApp.ServiceTools
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling FindByBirthDate() with DateOfBirth = {birthDate}.");
-
             var records = this.service.FindByBirthDate(birthDate);
+            sb.AppendLine($"{this.GetLogTime()} - FindByBirthDate() returns {records.Count()} record(s).");
 
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
@@ -78,8 +81,8 @@ namespace FileCabinetApp.ServiceTools
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling FindByFirstName() with FirstName = {firstName}.");
-
             var records = this.service.FindByFirstName(firstName);
+            sb.AppendLine($"{this.GetLogTime()} - FindByFirstName() returns {records.Count()} record(s).");
 
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
@@ -92,8 +95,8 @@ namespace FileCabinetApp.ServiceTools
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling FindByLastName() with LastName = {lastName}.");
-
             var records = this.service.FindByLastName(lastName);
+            sb.AppendLine($"{this.GetLogTime()} - FindByLastName() returns {records.Count()} record(s).");
 
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
@@ -105,9 +108,9 @@ namespace FileCabinetApp.ServiceTools
         public IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"{this.GetLogTime()} - Calling FindByLastName() with personalRating = {personalRating}.");
-
+            sb.AppendLine($"{this.GetLogTime()} - Calling FindByPersonalRating() with personalRating = {personalRating}.");
             var records = this.service.FindByPersonalRating(personalRating);
+            sb.AppendLine($"{this.GetLogTime()} - FindByPersonalRating() returns {records.Count()} record(s).");
 
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
@@ -119,9 +122,9 @@ namespace FileCabinetApp.ServiceTools
         public IEnumerable<FileCabinetRecord> FindBySalary(string salary)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"{this.GetLogTime()} - Calling FindByLastName() with salary = {salary}.");
-
+            sb.AppendLine($"{this.GetLogTime()} - Calling FindBySalary() with salary = {salary}.");
             var records = this.service.FindBySalary(salary);
+            sb.AppendLine($"{this.GetLogTime()} - FindBySalary() returns {records.Count()} record(s).");
 
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
@@ -133,9 +136,9 @@ namespace FileCabinetApp.ServiceTools
         public IEnumerable<FileCabinetRecord> FindByGender(string gender)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"{this.GetLogTime()} - Calling FindByLastName() with gender = {gender}.");
-
+            sb.AppendLine($"{this.GetLogTime()} - Calling FindByGender() with gender = {gender}.");
             var records = this.service.FindByGender(gender);
+            sb.AppendLine($"{this.GetLogTime()} - FindByGender() returns {records.Count()} record(s).");
 
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
@@ -148,9 +151,7 @@ namespace FileCabinetApp.ServiceTools
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling GetRecords().");
-
             var records = this.service.GetRecords();
-
             sb.Append($"{this.GetLogTime()} - GetRecords() returns {records.Count} record(s).");
 
             this.writer.WriteLine(sb.ToString());
@@ -164,7 +165,6 @@ namespace FileCabinetApp.ServiceTools
         {
             StringBuilder sb = new StringBuilder();
             sb.Append($"{this.GetLogTime()} - Calling GetStat().");
-
             this.service.GetStat();
 
             this.writer.WriteLine(sb.ToString());
@@ -195,9 +195,7 @@ namespace FileCabinetApp.ServiceTools
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling MakeSnapshot().");
-
             var snapshot = this.service.MakeSnapshot();
-
             sb.Append($"{this.GetLogTime()} - MakeSnapshot() returns snapshot.");
 
             this.writer.WriteLine(sb.ToString());
@@ -211,7 +209,6 @@ namespace FileCabinetApp.ServiceTools
         {
             StringBuilder sb = new StringBuilder();
             sb.Append($"{this.GetLogTime()} - Calling Purge().");
-
             this.service.Purge();
 
             this.writer.WriteLine(sb.ToString());
@@ -223,9 +220,7 @@ namespace FileCabinetApp.ServiceTools
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling Delete().");
-
             this.service.Delete(ids);
-
             sb.Append($"{this.GetLogTime()} - Delete() removes next record(s) with id:");
             sb.Append(string.Join(", ", ids));
             sb.Append($".");
@@ -239,7 +234,6 @@ namespace FileCabinetApp.ServiceTools
         {
             StringBuilder sb = new StringBuilder();
             sb.Append($"{this.GetLogTime()} - Calling Restore() with snapshot.");
-
             this.service.Restore(fileCabinetServiceSnapshot);
 
             this.writer.WriteLine(sb.ToString());
@@ -251,10 +245,8 @@ namespace FileCabinetApp.ServiceTools
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling Update().");
-
             this.service.Update(records);
-
-            sb.Append($"{this.GetLogTime()} - Update() edit {records.Count} record(s).");
+            sb.Append($"{this.GetLogTime()} - Update() edits {records.Count} record(s).");
 
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
@@ -265,7 +257,6 @@ namespace FileCabinetApp.ServiceTools
         {
             StringBuilder sb = new StringBuilder();
             sb.Append($"{this.GetLogTime()} - Calling GetRecord() with id='{id}'.");
-
             var record = this.service.GetRecord(id);
 
             this.writer.WriteLine(sb.ToString());
@@ -279,9 +270,7 @@ namespace FileCabinetApp.ServiceTools
         {
             StringBuilder sb = new StringBuilder();
             sb.Append($"{this.GetLogTime()} - Calling Select().");
-
             var records = this.service.Select(phrase, memoizingKey, inputValidator);
-
             sb.Append($"{this.GetLogTime()} - Select() returns {records.Count} record(s).");
 
             this.writer.WriteLine(sb.ToString());
