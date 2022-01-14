@@ -1,4 +1,5 @@
-﻿using FileCabinetApp.Interfaces;
+﻿using FileCabinetApp.ConditionWords;
+using FileCabinetApp.Interfaces;
 using FileCabinetApp.ServiceTools;
 
 namespace FileCabinetApp.CommandHandlers
@@ -11,8 +12,6 @@ namespace FileCabinetApp.CommandHandlers
         private const string CommandName = "update";
         private const string CommandDivider = " where ";
         private const string KeySetWord = "set ";
-        private const string KeyAndWord = " and ";
-        private const string KeyOrWord = " or ";
         private const string KeySetterSeparator = ",";
 
         private const char ParameterSeparator = '=';
@@ -62,16 +61,14 @@ namespace FileCabinetApp.CommandHandlers
                 this.ValidateInputString(parameters);
                 var setAndSearchStringsHolder = this.ParseInputString(parameters);
 
-                var searchParams = this.GetTupleOfParameters(setAndSearchStringsHolder.Item2, KeyAndWord, "search");
-                List<FileCabinetRecord> records = this.GetListOfRecords(searchParams);
-
-                var filtredRecords = this.PickByAndCondition(records, searchParams);
+                ConditionWhere where = new ConditionWhere(this.service, this.inputValidator);
+                List<FileCabinetRecord> filtredRecords = where.GetFilteredRecords(setAndSearchStringsHolder.Item2);
 
                 var setParams = this.GetTupleOfParameters(setAndSearchStringsHolder.Item1, KeySetterSeparator, "set");
 
                 List<FileCabinetRecord> updatedRecords = this.UpdateRecords(filtredRecords, setParams);
 
-                this.service.Update(records);
+                this.service.Update(updatedRecords);
             }
             catch (ArgumentException aex)
             {
@@ -134,121 +131,6 @@ namespace FileCabinetApp.CommandHandlers
             }
 
             return records;
-        }
-
-        private List<FileCabinetRecord> PickByAndCondition(List<FileCabinetRecord> records, List<Tuple<string, string>> paramsToSearch)
-        {
-            List<FileCabinetRecord> listOfFilteredRecords = new List<FileCabinetRecord>();
-
-            for (int i = 0; i < records.Count; i++)
-            {
-                bool condition = true;
-
-                for (int j = 0; j < paramsToSearch.Count; j++)
-                {
-                    var parameter = paramsToSearch[j].Item1;
-                    var value = paramsToSearch[j].Item2;
-
-                    if (parameter.Equals(nameof(FileCabinetRecord.Id), StringComparison.OrdinalIgnoreCase))
-                    {
-                        int id = this.GetParsedAndValidatedParameter<int>(value, InputConverter.IdConverter, this.inputValidator.IdValidator);
-
-                        if (records[i].Id == id)
-                        {
-                            condition &= true;
-                        }
-                        else
-                        {
-                            condition &= false;
-                        }
-                    }
-                    else if (parameter.Equals(nameof(FileCabinetRecord.FirstName), StringComparison.OrdinalIgnoreCase))
-                    {
-                        string firstName = this.GetParsedAndValidatedParameter<string>(value, InputConverter.StringConverter, this.inputValidator.FirstNameValidator);
-
-                        if (firstName.Equals(records[i].FirstName))
-                        {
-                            condition &= true;
-                        }
-                        else
-                        {
-                            condition &= false;
-                        }
-                    }
-                    else if (parameter.Equals(nameof(FileCabinetRecord.LastName), StringComparison.OrdinalIgnoreCase))
-                    {
-                        string lastName = this.GetParsedAndValidatedParameter<string>(value, InputConverter.StringConverter, this.inputValidator.LastNameValidator);
-
-                        if (lastName.Equals(records[i].LastName))
-                        {
-                            condition &= true;
-                        }
-                        else
-                        {
-                            condition &= false;
-                        }
-                    }
-                    else if (parameter.Equals(nameof(FileCabinetRecord.DateOfBirth), StringComparison.OrdinalIgnoreCase))
-                    {
-                        DateTime birthName = this.GetParsedAndValidatedParameter<DateTime>(value, InputConverter.BirthDateConverter, this.inputValidator.DateOfBirthValidator);
-
-                        if (DateTime.Compare(birthName, records[i].DateOfBirth) == 0)
-                        {
-                            condition &= true;
-                        }
-                        else
-                        {
-                            condition &= false;
-                        }
-                    }
-                    else if (parameter.Equals(nameof(FileCabinetRecord.PersonalRating), StringComparison.OrdinalIgnoreCase))
-                    {
-                        short personalRating = this.GetParsedAndValidatedParameter<short>(value, InputConverter.PersonalRatingConverter, this.inputValidator.PersonalRatingValidator);
-
-                        if (personalRating == records[i].PersonalRating)
-                        {
-                            condition &= true;
-                        }
-                        else
-                        {
-                            condition &= false;
-                        }
-                    }
-                    else if (parameter.Equals(nameof(FileCabinetRecord.Salary), StringComparison.OrdinalIgnoreCase))
-                    {
-                        decimal salary = this.GetParsedAndValidatedParameter<decimal>(value, InputConverter.SalaryConverter, this.inputValidator.SalaryValidator);
-
-                        if (salary == records[i].Salary)
-                        {
-                            condition &= true;
-                        }
-                        else
-                        {
-                            condition &= false;
-                        }
-                    }
-                    else if (parameter.Equals(nameof(FileCabinetRecord.Gender), StringComparison.OrdinalIgnoreCase))
-                    {
-                        char gender = this.GetParsedAndValidatedParameter<char>(value, InputConverter.GenderConverter, this.inputValidator.GenderValidator);
-
-                        if (gender.Equals(records[i].Gender))
-                        {
-                            condition &= true;
-                        }
-                        else
-                        {
-                            condition &= false;
-                        }
-                    }
-                }
-
-                if (condition)
-                {
-                    listOfFilteredRecords.Add(records[i]);
-                }
-            }
-
-            return listOfFilteredRecords;
         }
 
         private T GetParsedAndValidatedParameter<T>(string input, Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
@@ -335,63 +217,6 @@ namespace FileCabinetApp.CommandHandlers
             }
 
             return setOfParameters;
-        }
-
-        private List<FileCabinetRecord> GetListOfRecords(List<Tuple<string, string>> setOfParameters)
-        {
-            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
-
-            for (int i = 0; i < setOfParameters.Count; i++)
-            {
-                string parameterName = setOfParameters[i].Item1;
-                string parameterValue = setOfParameters[i].Item2;
-
-                if (parameterName.Equals(nameof(FileCabinetRecord.Id), StringComparison.OrdinalIgnoreCase))
-                {
-                    int id = int.Parse(parameterValue);
-
-                    if (this.service.CheckRecordPresence(id))
-                    {
-                        records.Add(this.service.GetRecord(id));
-                    }
-                }
-                else if (parameterName.Equals(nameof(FileCabinetRecord.FirstName), StringComparison.OrdinalIgnoreCase))
-                {
-                    var enumerableRecords = this.service.FindByFirstName(parameterValue);
-                    records.AddRange(enumerableRecords.ToList());
-                }
-                else if (parameterName.Equals(nameof(FileCabinetRecord.LastName), StringComparison.OrdinalIgnoreCase))
-                {
-                    var enumerableRecords = this.service.FindByLastName(parameterValue);
-                    records.AddRange(enumerableRecords.ToList());
-                }
-                else if (parameterName.Equals(nameof(FileCabinetRecord.DateOfBirth), StringComparison.OrdinalIgnoreCase))
-                {
-                    var enumerableRecords = this.service.FindByBirthDate(parameterValue);
-                    records.AddRange(enumerableRecords.ToList());
-                }
-                else if (parameterName.Equals(nameof(FileCabinetRecord.PersonalRating), StringComparison.OrdinalIgnoreCase))
-                {
-                    var enumerableRecords = this.service.FindByPersonalRating(parameterValue);
-                    records.AddRange(enumerableRecords.ToList());
-                }
-                else if (parameterName.Equals(nameof(FileCabinetRecord.Salary), StringComparison.OrdinalIgnoreCase))
-                {
-                    var enumerableRecords = this.service.FindBySalary(parameterValue);
-                    records.AddRange(enumerableRecords.ToList());
-                }
-                else if (parameterName.Equals(nameof(FileCabinetRecord.Gender), StringComparison.OrdinalIgnoreCase))
-                {
-                    var enumerableRecords = this.service.FindByGender(parameterValue);
-                    records.AddRange(enumerableRecords.ToList());
-                }
-                else
-                {
-                    throw new ArgumentException($"There is no such parameter as '{parameterName}'. Please, try again.");
-                }
-            }
-
-            return records;
         }
     }
 }

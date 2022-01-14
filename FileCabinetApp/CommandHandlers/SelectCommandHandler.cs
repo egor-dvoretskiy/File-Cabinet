@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using FileCabinetApp.FormatWriters;
 using FileCabinetApp.Interfaces;
 using FileCabinetApp.ServiceTools;
 
@@ -17,6 +18,8 @@ namespace FileCabinetApp.CommandHandlers
     {
         private const string CommandName = "select";
         private const string ConditionWord = " where ";
+
+        private readonly string allParametersToPrint = ReflectedRecordParams.GetPropertiesNameString(typeof(FileCabinetRecord));
 
         private readonly IRecordInputValidator inputValidator;
 
@@ -75,12 +78,12 @@ namespace FileCabinetApp.CommandHandlers
                     string memoizerKey = MemoizerForMemoryService.FormIdentificatorForMemoizing(condition);
                     var filteredRecords = this.service.Select(condition, memoizerKey, this.inputValidator);
 
-                    parametersToPrint = splitedParams.First();
+                    parametersToPrint = splitedParams.First().Equals("*", StringComparison.OrdinalIgnoreCase) ? this.allParametersToPrint : splitedParams.First();
                     records = filteredRecords;
                 }
                 else
                 {
-                    parametersToPrint = parameters;
+                    parametersToPrint = parameters.Equals("*", StringComparison.OrdinalIgnoreCase) ? this.allParametersToPrint : parameters;
                     records = this.service.GetRecords().ToList();
                 }
 

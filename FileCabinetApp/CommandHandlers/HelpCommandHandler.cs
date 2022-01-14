@@ -39,10 +39,10 @@ namespace FileCabinetApp.CommandHandlers
             "add record to storage with specified fields.\n\t\tExample: insert (id, firstname, lastname, dateofbirth) values ('1', 'John', 'Doe', '5/18/1986')\n\t\tThe order in different brackets should matching.";
 
         private const string CommandUpdateDescription =
-            "update the record with specified fields.\n\t\tExample: update set firstname = 'John', lastname = 'Doe' , dateofbirth = '5/18/1986' where id = '1'\n\t\tset ... - editable parameters in found records.\n\t\twhere - conditions to get neccessary records";
+            "update the record with specified fields.\n\t\tExample: update set firstname = 'John', lastname = 'Doe' , dateofbirth = '5/18/1986' where id = '1' and firstname=John or lastname=Jigurda\n\t\tset ... - editable parameters in found records.\n\t\twhere - conditions to get neccessary records";
 
         private const string CommandDeleteDescription =
-            "delete records by specified fields.\n\t\tExample: where id = '1'\n\t\twhere - conditions to get neccessary records.";
+            "delete records by specified fields.\n\t\tExample: delete where id = '1'\n\t\twhere - conditions to get neccessary records.";
 
         private const string CommandSelectDescription =
             "select and show records by specified conditions.\n\t\tExample: select id, firstname, lastname where firstname = 'John' and lastname = 'Doe'\n\t\twhere - conditions to get neccessary records.\n\t\tid, firstname, lastname - display info.";
