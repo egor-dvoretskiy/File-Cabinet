@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using FileCabinetApp.ConditionWords;
 using FileCabinetApp.Interfaces;
 using FileCabinetApp.ServiceTools;
 
@@ -60,9 +61,11 @@ namespace FileCabinetApp.CommandHandlers
         {
             try
             {
-                var parameterTuple = this.GetParameterTuple(parameters);
+                string phrase = parameters[KeyWord.Length..];
+                ConditionWhere where = new ConditionWhere(this.service, this.inputValidator);
+                var records = where.GetFilteredRecords(phrase);
 
-                List<int> listOfIdToDelete = this.GetRecordsToDelete(parameterTuple);
+                List<int> listOfIdToDelete = this.GetListOfIds(records);
 
                 this.service.Delete(listOfIdToDelete);
             }
@@ -72,137 +75,16 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private Tuple<string, string> GetParameterTuple(string input)
+        private List<int> GetListOfIds(List<FileCabinetRecord> records)
         {
-            this.ValidateInputString(input);
+            List<int> ids = new List<int>();
 
-            input = input.Substring(KeyWord.Length);
-
-            string[] inputParts = input.Split(ParametersDivider);
-
-            if (inputParts.Length != AmountOfSplitedParameters)
+            for (int i = 0; i < records.Count; i++)
             {
-                throw new ArgumentException($"Wrong condition after keyword '{KeyWord}'. Please, try again!");
+                ids.Add(records[i].Id);
             }
 
-            inputParts = this.GetRidOfExtraSpace(inputParts);
-
-            string parameter = inputParts[ParameterIndex];
-            string valueInStringRepresentation = inputParts[ValueIndex];
-
-            return Tuple.Create(parameter, valueInStringRepresentation);
-        }
-
-        private List<int> GetRecordsToDelete(Tuple<string, string> parameterTuple)
-        {
-            string parameter = parameterTuple.Item1;
-            string value = parameterTuple.Item2;
-
-            List<int> listOfIds = new List<int>();
-
-            if (parameter.Equals(nameof(FileCabinetRecord.Id), StringComparison.OrdinalIgnoreCase))
-            {
-                int id = this.GetParsedAndValidatedParameter(value, InputConverter.IdConverter, this.inputValidator.IdValidator);
-                listOfIds.Add(id);
-            }
-            else if (parameter.Equals(nameof(FileCabinetRecord.FirstName), StringComparison.OrdinalIgnoreCase))
-            {
-                var enumerableRecords = this.service.FindByFirstName(value);
-                listOfIds = this.FillListFromEnumerable(enumerableRecords);
-            }
-            else if (parameter.Equals(nameof(FileCabinetRecord.LastName), StringComparison.OrdinalIgnoreCase))
-            {
-                var enumerableRecords = this.service.FindByLastName(value);
-                listOfIds = this.FillListFromEnumerable(enumerableRecords);
-            }
-            else if (parameter.Equals(nameof(FileCabinetRecord.DateOfBirth), StringComparison.OrdinalIgnoreCase))
-            {
-                var enumerableRecords = this.service.FindByBirthDate(value);
-                listOfIds = this.FillListFromEnumerable(enumerableRecords);
-            }
-            else if (parameter.Equals(nameof(FileCabinetRecord.PersonalRating), StringComparison.OrdinalIgnoreCase))
-            {
-                var enumerableRecords = this.service.FindByPersonalRating(value);
-                listOfIds = this.FillListFromEnumerable(enumerableRecords);
-            }
-            else if (parameter.Equals(nameof(FileCabinetRecord.Salary), StringComparison.OrdinalIgnoreCase))
-            {
-                var enumerableRecords = this.service.FindBySalary(value);
-                listOfIds = this.FillListFromEnumerable(enumerableRecords);
-            }
-            else if (parameter.Equals(nameof(FileCabinetRecord.Gender), StringComparison.OrdinalIgnoreCase))
-            {
-                var enumerableRecords = this.service.FindByGender(value);
-                listOfIds = this.FillListFromEnumerable(enumerableRecords);
-            }
-            else
-            {
-                throw new ArgumentException($"There is no such parameter as '{parameter}'. Please, try again.");
-            }
-
-            return listOfIds;
-        }
-
-        private List<int> FillListFromEnumerable(IEnumerable<FileCabinetRecord> records)
-        {
-            List<int> listOfIds = new List<int>();
-
-            foreach (var record in records)
-            {
-                listOfIds.Add(record.Id);
-            }
-
-            return listOfIds;
-        }
-
-        private void ValidateInputString(string input)
-        {
-            if (!input.Contains(KeyWord))
-            {
-                throw new ArgumentException($"There is no keyword '{KeyWord}' in input string. Please, try again!");
-            }
-
-            var index = input.Trim().IndexOf(KeyWord);
-
-            if (index != KeyWordPosition)
-            {
-                throw new ArgumentException($"Keyword '{KeyWord}' should follow 'delete' command. Please, try again!");
-            }
-        }
-
-        private string[] GetRidOfExtraSpace(string[] input)
-        {
-            for (int i = 0; i < input.Length; i++)
-            {
-                input[i] = input[i].Trim().Trim(ValuesBrackets);
-            }
-
-            return input;
-        }
-
-        private int GetParsedAndValidatedParameter(string input, Func<string, Tuple<bool, string, int>> converter, Func<int, Tuple<bool, string>> validator)
-        {
-            if (string.IsNullOrEmpty(input))
-            {
-                throw new ArgumentException($"Input parameter is null or empty. Please, try again.");
-            }
-
-            var conversionResult = converter(input);
-
-            if (!conversionResult.Item1)
-            {
-                throw new ArgumentException($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
-            }
-
-            var value = conversionResult.Item3;
-            var validationResult = validator(value);
-
-            if (!validationResult.Item1)
-            {
-                throw new ArgumentException($"Validation failed: {validationResult.Item2}. Please, correct your input.");
-            }
-
-            return value;
+            return ids;
         }
     }
 }
