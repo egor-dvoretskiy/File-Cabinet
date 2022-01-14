@@ -14,6 +14,39 @@ namespace FileCabinetApp.CommandHandlers
     {
         private const string CommandName = "help";
 
+        private const string CommandHelpDescription =
+            "prints the help screen.\n\t\tExample: help 'command'";
+
+        private const string CommandExitDescription =
+            "exits the application.\n\t\tExample(There are no additional parameters): exit";
+
+        private const string CommandStatDescription =
+            "display amount of records.\n\t\tExample(There are no additional parameters): stat";
+
+        private const string CommandCreateDescription =
+            "create record by manual input data.\n\t\tExample(There are no additional parameters): create";
+
+        private const string CommandExportDescription =
+            "export data list to specific format.\n\t\tExample: export csv records.csv\n\t\tcsv - file format.\n\t\trecords.csv - path to file.";
+
+        private const string CommandImportDescription =
+            "import data list from file.\n\t\tExample: import csv records.csv\n\t\tcsv - file format.\n\t\trecords.csv - path to file.";
+
+        private const string CommandPurgeDescription =
+            "defragments the data file.\n\t\tExample(There are no additional parameters): purge";
+
+        private const string CommandInsertDescription =
+            "add record to storage with specified fields.\n\t\tExample: insert (id, firstname, lastname, dateofbirth) values ('1', 'John', 'Doe', '5/18/1986')\n\t\tThe order in different brackets should matching.";
+
+        private const string CommandUpdateDescription =
+            "update the record with specified fields.\n\t\tExample: update set firstname = 'John', lastname = 'Doe' , dateofbirth = '5/18/1986' where id = '1'\n\t\tset ... - editable parameters in found records.\n\t\twhere - conditions to get neccessary records";
+
+        private const string CommandDeleteDescription =
+            "delete records by specified fields.\n\t\tExample: where id = '1'\n\t\twhere - conditions to get neccessary records.";
+
+        private const string CommandSelectDescription =
+            "select and show records by specified conditions.\n\t\tExample: select id, firstname, lastname where firstname = 'John' and lastname = 'Doe'\n\t\twhere - conditions to get neccessary records.\n\t\tid, firstname, lastname - display info.";
+
         /// <summary>
         /// Command help index.
         /// </summary>
@@ -34,17 +67,17 @@ namespace FileCabinetApp.CommandHandlers
         /// </summary>
         private readonly string[][] helpMessages = new string[][]
         {
-            new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
-            new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
-            new string[] { "stat", "display record statistics", "The 'stat' command displays record statistics." },
-            new string[] { "create", "create user data", "The 'create' command creates user data." },
-            new string[] { "export", "export data list to specific format", "The 'export' command converts data list to specific format." },
-            new string[] { "import", "import data list from file", "The 'import' command converts file data to filesystem." },
-            new string[] { "purge", "defragments the data file", "The 'purge' command defragments the data file." },
-            new string[] { "insert", "add record to storage with specified fields", "The 'insert' command adds record to storage with specified fields." },
-            new string[] { "update", "update the record with specified fields", "The 'update' command updates the record with specified fields." },
-            new string[] { "delete", "delete records by specified fields", "The 'delete' command deletes records by specified fields." },
-            new string[] { "select", "select records by specified conditions", "The 'select' command pick records by specified conditions." },
+            new string[] { "help", CommandHelpDescription, "The 'help' command prints the help screen." },
+            new string[] { "exit", CommandExitDescription, "The 'exit' command exits the application." },
+            new string[] { "stat", CommandStatDescription, "The 'stat' command displays record statistics." },
+            new string[] { "create", CommandCreateDescription, "The 'create' command creates user data." },
+            new string[] { "export", CommandExportDescription, "The 'export' command converts data list to specific format." },
+            new string[] { "import", CommandImportDescription, "The 'import' command converts file data to filesystem." },
+            new string[] { "purge", CommandPurgeDescription, "The 'purge' command defragments the data file." },
+            new string[] { "insert", CommandInsertDescription, "The 'insert' command adds record to storage with specified fields." },
+            new string[] { "update", CommandUpdateDescription, "The 'update' command updates the record with specified fields." },
+            new string[] { "delete", CommandDeleteDescription, "The 'delete' command deletes records by specified fields." },
+            new string[] { "select", CommandSelectDescription, "The 'select' command pick records by specified conditions." },
         };
 
         /// <inheritdoc/>
@@ -90,6 +123,7 @@ namespace FileCabinetApp.CommandHandlers
             }
 
             this.PrintAvailableParameters();
+            this.PrintAvailableFormats();
             Console.WriteLine();
         }
 
@@ -99,6 +133,12 @@ namespace FileCabinetApp.CommandHandlers
 
             Console.WriteLine();
             Console.WriteLine($"Available parameters: {parameters}");
+        }
+
+        private void PrintAvailableFormats()
+        {
+            Console.WriteLine();
+            Console.WriteLine($"Available file formats: xml, csv.");
         }
     }
 }

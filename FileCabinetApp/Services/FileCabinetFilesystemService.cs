@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using FileCabinetApp.ConditionWords;
 using FileCabinetApp.Interfaces;
 using FileCabinetApp.Iterators;
 using FileCabinetApp.ServiceTools;
@@ -381,8 +382,10 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public List<FileCabinetRecord> Select(string phrase, string memoizingKey, IRecordInputValidator inputValidator)
         {
-            Console.WriteLine("Not implemented yet.");
-            return new List<FileCabinetRecord>();
+            ConditionWhere where = new ConditionWhere(this, inputValidator);
+            var records = where.GetFilteredRecords(phrase);
+
+            return records;
         }
 
         private void EditRecord(int id, FileCabinetRecord record)
