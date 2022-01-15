@@ -9,3 +9,10 @@
 |    FileCabinetCustomService    |    CustomValidator    |    Aggregation    |
 |    DefaultValidator    |    IRecordValidator    |    Composition    |
 |    CustomValidator    |    IRecordValidator    |    Composition    |
+
+
+
+# TODO
+
+-> continue debugging commands under create.
+...

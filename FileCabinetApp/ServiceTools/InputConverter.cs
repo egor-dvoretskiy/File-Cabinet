@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.ServiceTools
 {
     /// <summary>
     /// Contains various converters.
@@ -45,7 +46,7 @@ namespace FileCabinetApp
             }
             else
             {
-                isConvertingSuccessful = DateTime.TryParse(input, out birthDate);
+                isConvertingSuccessful = DateTime.TryParse(input, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out birthDate);
 
                 if (!isConvertingSuccessful)
                 {
@@ -102,7 +103,7 @@ namespace FileCabinetApp
             }
             else
             {
-                isConvertingSuccessful = decimal.TryParse(input, out salary);
+                isConvertingSuccessful = decimal.TryParse(input.Replace('.', ','), out salary);
                 if (!isConvertingSuccessful)
                 {
                     errorMessage = "Cannot parse salary(decimal)";

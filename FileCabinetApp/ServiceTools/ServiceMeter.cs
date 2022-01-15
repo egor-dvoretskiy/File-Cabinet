@@ -10,7 +10,7 @@ using FileCabinetApp.Interfaces;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-namespace FileCabinetApp
+namespace FileCabinetApp.ServiceTools
 {
     /// <summary>
     /// Measures working time of service methods.
@@ -42,15 +42,13 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public int CreateRecord(FileCabinetRecord record)
+        public void CreateRecord(FileCabinetRecord record)
         {
             this.stopwatch.Restart();
-            int id = this.service.CreateRecord(record);
+            this.service.CreateRecord(record);
             this.stopwatch.Stop();
 
             this.GetElapsedTime(this.GetCallerName());
-
-            return id;
         }
 
         /// <inheritdoc/>
@@ -82,6 +80,42 @@ namespace FileCabinetApp
         {
             this.stopwatch.Restart();
             var collection = this.service.FindByLastName(lastName);
+            this.stopwatch.Stop();
+
+            this.GetElapsedTime(this.GetCallerName());
+
+            return collection;
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating)
+        {
+            this.stopwatch.Restart();
+            var collection = this.service.FindByPersonalRating(personalRating);
+            this.stopwatch.Stop();
+
+            this.GetElapsedTime(this.GetCallerName());
+
+            return collection;
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> FindBySalary(string salary)
+        {
+            this.stopwatch.Restart();
+            var collection = this.service.FindBySalary(salary);
+            this.stopwatch.Stop();
+
+            this.GetElapsedTime(this.GetCallerName());
+
+            return collection;
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> FindByGender(string gender)
+        {
+            this.stopwatch.Restart();
+            var collection = this.service.FindByGender(gender);
             this.stopwatch.Stop();
 
             this.GetElapsedTime(this.GetCallerName());
@@ -183,6 +217,18 @@ namespace FileCabinetApp
             this.GetElapsedTime(this.GetCallerName());
 
             return record;
+        }
+
+        /// <inheritdoc/>
+        public List<FileCabinetRecord> Select(string phrase, string memoizingKey, IRecordInputValidator inputValidator)
+        {
+            this.stopwatch.Restart();
+            var records = this.service.Select(phrase, memoizingKey, inputValidator);
+            this.stopwatch.Stop();
+
+            this.GetElapsedTime(this.GetCallerName());
+
+            return records;
         }
 
         private void GetElapsedTime(string methodName)

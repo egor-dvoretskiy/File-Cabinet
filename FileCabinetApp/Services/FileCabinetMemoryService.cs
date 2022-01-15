@@ -4,28 +4,22 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
+
+using FileCabinetApp.ConditionWords;
 using FileCabinetApp.Interfaces;
 using FileCabinetApp.Iterators;
+using FileCabinetApp.ServiceTools;
 
 namespace FileCabinetApp.Services
 {
     /// <summary>
     /// Records Processor Class.
     /// </summary>
-    public class FileCabinetMemoryService : IFileCabinetService
+    public class FileCabinetMemoryService : FileCabinetDictionary, IFileCabinetService
     {
         private IRecordValidator recordValidator;
 
         private List<FileCabinetRecord> list = new ();
-
-        /// <summary>
-        /// 1st arg - record's id, 2nd arg - position in list.
-        /// </summary>
-        private Dictionary<int, int> storedIdRecords = new Dictionary<int, int>();
-
-        private Dictionary<string, List<int>> firstNameDictionary = new Dictionary<string, List<int>>();
-        private Dictionary<string, List<int>> lastNameDictionary = new Dictionary<string, List<int>>();
-        private Dictionary<string, List<int>> dateOfBirthDictionary = new Dictionary<string, List<int>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
@@ -40,8 +34,7 @@ namespace FileCabinetApp.Services
         /// Creates record and adds to main list.
         /// </summary>
         /// <param name="record">Input parameter object.</param>
-        /// <returns>Record's id in list.</returns>
-        public int CreateRecord(FileCabinetRecord record)
+        public void CreateRecord(FileCabinetRecord record)
         {
             try
             {
@@ -49,7 +42,8 @@ namespace FileCabinetApp.Services
 
                 if (!isValid)
                 {
-                    return -1;
+                    Console.WriteLine($"Record validation failed.");
+                    return;
                 }
 
                 record.Id = this.GetUniqueId();
@@ -58,28 +52,22 @@ namespace FileCabinetApp.Services
 
                 int position = this.list.Count - 1;
 
-                this.AddOrChangeInformationInIdDictionary(record.Id, position, ref this.storedIdRecords, record);
+                this.AddRecordToDictionaries(record, position);
 
-                this.AddInformationToDictionary(record.FirstName, ref this.firstNameDictionary, record);
-                this.AddInformationToDictionary(record.LastName, ref this.lastNameDictionary, record);
-                this.AddInformationToDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture), ref this.dateOfBirthDictionary, record);
-
-                return record.Id;
+                Console.WriteLine($"Record #{record.Id} is created.");
             }
-            catch (ArgumentNullException anex)
+            catch (ArgumentNullException argumentNullException)
             {
-                Console.WriteLine(anex.Message);
+                Console.WriteLine(argumentNullException.Message);
             }
-            catch (ArgumentOutOfRangeException aorex)
+            catch (ArgumentOutOfRangeException argumentOutOfRangeException)
             {
-                Console.WriteLine(aorex.Message);
+                Console.WriteLine(argumentOutOfRangeException.Message);
             }
-            catch (ArgumentException aex)
+            catch (ArgumentException argumentException)
             {
-                Console.WriteLine(aex.Message);
+                Console.WriteLine(argumentException.Message);
             }
-
-            return -1;
         }
 
         /// <summary>
@@ -100,24 +88,13 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public bool CheckRecordPresence(int id)
-        {
-            bool listIdPresent = true;
-
-            if (!this.storedIdRecords.ContainsKey(id))
-            {
-                listIdPresent = false;
-            }
-
-            return listIdPresent;
-        }
+        public bool CheckRecordPresence(int id) => this.storedIdRecords.ContainsKey(id);
 
         /// <summary>
         /// Searches all matches by firstname parameter.
         /// </summary>
         /// <param name="firstName">Person's first name.</param>
         /// <returns>All records with the same firstname.</returns>
-
         public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName) => this.Memoized(firstName, x =>
         {
             List<int> listIdRecordsPositions = new List<int>();
@@ -171,11 +148,88 @@ namespace FileCabinetApp.Services
             List<int> listIdRecordsPositions = new List<int>();
 
             var isValidBirth = DateTime.TryParse(birthDate, out DateTime validBirthDate);
-            birthDate = validBirthDate.ToString("yyyy-MMM-dd");
 
-            if (isValidBirth && this.dateOfBirthDictionary.ContainsKey(birthDate))
+            if (isValidBirth && this.dateOfBirthDictionary.ContainsKey(validBirthDate))
             {
-                var listBirthDatesIds = this.dateOfBirthDictionary[birthDate];
+                var listBirthDatesIds = this.dateOfBirthDictionary[validBirthDate];
+                int id = 0;
+
+                for (int i = 0; i < listBirthDatesIds.Count; i++)
+                {
+                    id = listBirthDatesIds[i];
+                    listIdRecordsPositions.Add(this.storedIdRecords[id]);
+                }
+            }
+
+            return new RecordMemoryEnumerable(this.list, listIdRecordsPositions);
+        });
+
+        /// <summary>
+        /// Searches all matches by personalRating parameter.
+        /// </summary>
+        /// <param name="personalRating">Person's personal rating.</param>
+        /// <returns>All records with the same personal rating.</returns>
+        public IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating) => this.Memoized(personalRating, x =>
+        {
+            List<int> listIdRecordsPositions = new List<int>();
+
+            var isValidPersonalRating = short.TryParse(personalRating, out short validPersonalRating);
+
+            if (isValidPersonalRating && this.personalRatingDictionary.ContainsKey(validPersonalRating))
+            {
+                var listOfPersonalRating = this.personalRatingDictionary[validPersonalRating];
+                int id = 0;
+
+                for (int i = 0; i < listOfPersonalRating.Count; i++)
+                {
+                    id = listOfPersonalRating[i];
+                    listIdRecordsPositions.Add(this.storedIdRecords[id]);
+                }
+            }
+
+            return new RecordMemoryEnumerable(this.list, listIdRecordsPositions);
+        });
+
+        /// <summary>
+        /// Searches all matches by salary parameter.
+        /// </summary>
+        /// <param name="salary">Person's salary.</param>
+        /// <returns>All records with the same salary.</returns>
+        public IEnumerable<FileCabinetRecord> FindBySalary(string salary) => this.Memoized(salary, x =>
+        {
+            List<int> listIdRecordsPositions = new List<int>();
+
+            var isValidSalary = decimal.TryParse(salary, out decimal validSalary);
+
+            if (isValidSalary && this.salaryDictionary.ContainsKey(validSalary))
+            {
+                var listSalaryIds = this.salaryDictionary[validSalary];
+                int id = 0;
+
+                for (int i = 0; i < listSalaryIds.Count; i++)
+                {
+                    id = listSalaryIds[i];
+                    listIdRecordsPositions.Add(this.storedIdRecords[id]);
+                }
+            }
+
+            return new RecordMemoryEnumerable(this.list, listIdRecordsPositions);
+        });
+
+        /// <summary>
+        /// Searches all matches by gender parameter.
+        /// </summary>
+        /// <param name="gender">Person's gender.</param>
+        /// <returns>All records with the same gender.</returns>
+        public IEnumerable<FileCabinetRecord> FindByGender(string gender) => this.Memoized(gender, x =>
+        {
+            List<int> listIdRecordsPositions = new List<int>();
+
+            var isValidGender = char.TryParse(gender, out char validGender);
+
+            if (isValidGender && this.genderDictionary.ContainsKey(validGender))
+            {
+                var listBirthDatesIds = this.genderDictionary[validGender];
                 int id = 0;
 
                 for (int i = 0; i < listBirthDatesIds.Count; i++)
@@ -209,11 +263,7 @@ namespace FileCabinetApp.Services
             {
                 var record = unloadRecords[i];
 
-                this.AddOrChangeInformationInIdDictionary(record.Id, i, ref this.storedIdRecords, record);
-
-                this.EditInformationInDictionary(record.FirstName, ref this.firstNameDictionary, record);
-                this.EditInformationInDictionary(record.LastName, ref this.lastNameDictionary, record);
-                this.EditInformationInDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture), ref this.dateOfBirthDictionary, record);
+                this.EditRecordInDictionaries(record, i);
             }
 
             this.list = unloadRecords;
@@ -259,25 +309,21 @@ namespace FileCabinetApp.Services
 
                 int position = this.list.Count - 1;
 
-                this.AddOrChangeInformationInIdDictionary(record.Id, position, ref this.storedIdRecords, record);
-
-                this.AddInformationToDictionary(record.FirstName, ref this.firstNameDictionary, record);
-                this.AddInformationToDictionary(record.LastName, ref this.lastNameDictionary, record);
-                this.AddInformationToDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture), ref this.dateOfBirthDictionary, record);
+                this.AddRecordToDictionaries(record, position);
 
                 Console.WriteLine($"Record was successfully inserted in memory.");
             }
-            catch (ArgumentNullException anex)
+            catch (ArgumentNullException argumentNullException)
             {
-                Console.WriteLine(anex.Message);
+                Console.WriteLine(argumentNullException.Message);
             }
-            catch (ArgumentOutOfRangeException aorex)
+            catch (ArgumentOutOfRangeException argumentOutOfRangeException)
             {
-                Console.WriteLine(aorex.Message);
+                Console.WriteLine(argumentOutOfRangeException.Message);
             }
-            catch (ArgumentException aex)
+            catch (ArgumentException argumentException)
             {
-                Console.WriteLine(aex.Message);
+                Console.WriteLine(argumentException.Message);
             }
         }
 
@@ -291,14 +337,24 @@ namespace FileCabinetApp.Services
                 this.EditRecord(records[i].Id, records[i]);
             }
 
-            Console.WriteLine($"Record's updating completed.");
+            Console.WriteLine($"Records updating completed.");
         }
 
         /// <inheritdoc/>
         public FileCabinetRecord GetRecord(int id)
         {
+            // with preliminary check (checkpresenceid)
             return this.list[this.storedIdRecords[id]];
         }
+
+        /// <inheritdoc/>
+        public List<FileCabinetRecord> Select(string phrase, string memoizingKey, IRecordInputValidator inputValidator) => this.Memoized(memoizingKey, x =>
+        {
+            ConditionWhere where = new ConditionWhere(this, inputValidator);
+            var records = where.GetFilteredRecords(phrase);
+
+            return records;
+        });
 
         private void RemoveRecordById(int id)
         {
@@ -310,23 +366,15 @@ namespace FileCabinetApp.Services
 
             try
             {
-                string firstName = this.list[this.storedIdRecords[id]].FirstName;
-                this.RemoveRecordFromDictionary(firstName, id, ref this.firstNameDictionary);
+                int listIndex = this.storedIdRecords[id];
 
-                string lastName = this.list[this.storedIdRecords[id]].LastName;
-                this.RemoveRecordFromDictionary(lastName, id, ref this.lastNameDictionary);
+                FileCabinetRecord recordToDelete = this.list[listIndex];
 
-                string dateOfBirth = this.list[this.storedIdRecords[id]].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
-                this.RemoveRecordFromDictionary(dateOfBirth, id, ref this.dateOfBirthDictionary);
+                this.RemoveRecordFromDictionaries(id, listIndex, recordToDelete);
 
-                int indexInList = this.storedIdRecords[id];
+                this.list.RemoveAt(listIndex);
 
-                this.storedIdRecords.Remove(id);
-
-                int positionInList = this.list.FindIndex(x => x.Id == id);
-                this.list.RemoveAt(positionInList);
-
-                this.UpdateIdDictionaryAccordingToRemoveRecord(indexInList);
+                this.UpdateIdPositioningDictionaryAccordingToRemoveRecord(listIndex);
 
                 Console.WriteLine($"Record #{id} is deleted.");
             }
@@ -344,6 +392,7 @@ namespace FileCabinetApp.Services
 
                 if (!isValid)
                 {
+                    Console.WriteLine($"Record validation failed.");
                     return;
                 }
 
@@ -351,27 +400,23 @@ namespace FileCabinetApp.Services
 
                 this.list[index] = record;
 
-                this.AddOrChangeInformationInIdDictionary(record.Id, index, ref this.storedIdRecords, record);
-
-                this.EditInformationInDictionary(record.FirstName, ref this.firstNameDictionary, record);
-                this.EditInformationInDictionary(record.LastName, ref this.lastNameDictionary, record);
-                this.EditInformationInDictionary(record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture), ref this.dateOfBirthDictionary, record);
+                this.EditRecordInDictionaries(record, index);
             }
-            catch (ArgumentNullException anex)
+            catch (ArgumentNullException argumentNullException)
             {
-                Console.WriteLine(anex.Message);
+                Console.WriteLine(argumentNullException.Message);
             }
-            catch (ArgumentOutOfRangeException aorex)
+            catch (ArgumentOutOfRangeException argumentOutOfRangeException)
             {
-                Console.WriteLine(aorex.Message);
+                Console.WriteLine(argumentOutOfRangeException.Message);
             }
-            catch (ArgumentException aex)
+            catch (ArgumentException argumentException)
             {
-                Console.WriteLine(aex.Message);
+                Console.WriteLine(argumentException.Message);
             }
         }
 
-        private void UpdateIdDictionaryAccordingToRemoveRecord(int indexInList)
+        private void UpdateIdPositioningDictionaryAccordingToRemoveRecord(int indexInList)
         {
             if (indexInList >= this.list.Count)
             {
@@ -394,61 +439,6 @@ namespace FileCabinetApp.Services
             }
 
             return id;
-        }
-
-        private void AddInformationToDictionary(string parametrName, ref Dictionary<string, List<int>> dict, FileCabinetRecord record)
-        {
-            if (!dict.ContainsKey(parametrName))
-            {
-                dict.Add(parametrName, new List<int>() { record.Id });
-            }
-            else
-            {
-                dict[parametrName].Add(record.Id);
-            }
-        }
-
-        private void AddOrChangeInformationInIdDictionary(int id, int position, ref Dictionary<int, int> dict, FileCabinetRecord record)
-        {
-            if (!dict.ContainsKey(id))
-            {
-                dict.Add(id, position);
-            }
-            else
-            {
-                dict[id] = position;
-            }
-        }
-
-        private void EditInformationInDictionary(string parameterName, ref Dictionary<string, List<int>> dict, FileCabinetRecord record)
-        {
-            foreach (var element in dict)
-            {
-                int index = element.Value.IndexOf(record.Id);
-
-                if (index != -1)
-                {
-                    element.Value.RemoveAt(index);
-
-                    if (element.Value.Count == 0)
-                    {
-                        dict.Remove(element.Key);
-                    }
-
-                    break;
-                }
-            }
-
-            this.AddInformationToDictionary(parameterName, ref dict, record);
-        }
-
-        private void RemoveRecordFromDictionary(string parameterName, int id, ref Dictionary<string, List<int>> dict)
-        {
-            dict[parameterName].Remove(id);
-            if (dict[parameterName].Count == 0)
-            {
-                dict.Remove(parameterName);
-            }
         }
     }
 }

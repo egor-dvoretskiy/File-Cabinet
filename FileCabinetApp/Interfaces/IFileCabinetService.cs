@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using FileCabinetApp.ServiceTools;
 
 namespace FileCabinetApp.Interfaces
 {
@@ -11,8 +12,7 @@ namespace FileCabinetApp.Interfaces
         /// Creates record and adds to main list.
         /// </summary>
         /// <param name="record">Input parameter object.</param>
-        /// <returns>Record's id in list.</returns>
-        int CreateRecord(FileCabinetRecord record);
+        void CreateRecord(FileCabinetRecord record);
 
         /// <summary>
         /// Adds record with specific group of parameters.
@@ -47,6 +47,36 @@ namespace FileCabinetApp.Interfaces
         /// <param name="lastName">Person's last name.</param>
         /// <returns>All records with the same lastname.</returns>
         IEnumerable<FileCabinetRecord> FindByLastName(string lastName);
+
+        /// <summary>
+        /// Searches all matches by personalRating parameter.
+        /// </summary>
+        /// <param name="personalRating">Person's personal rating.</param>
+        /// <returns>All records with the same personal rating.</returns>
+        IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating);
+
+        /// <summary>
+        /// Searches all matches by salary parameter.
+        /// </summary>
+        /// <param name="salary">Person's salary.</param>
+        /// <returns>All records with the same salary.</returns>
+        IEnumerable<FileCabinetRecord> FindBySalary(string salary);
+
+        /// <summary>
+        /// Searches all matches by gender parameter.
+        /// </summary>
+        /// <param name="gender">Person's gender.</param>
+        /// <returns>All records with the same gender.</returns>
+        IEnumerable<FileCabinetRecord> FindByGender(string gender);
+
+        /// <summary>
+        /// Chooses records by conditions.
+        /// </summary>
+        /// <param name="phrase">Condition that goes after 'where'.</param>
+        /// <param name="memoizingKey">Key for memoizing.</param>
+        /// <param name="inputValidator">Validator for input.</param>
+        /// <returns>List of neccessary records.</returns>
+        List<FileCabinetRecord> Select(string phrase, string memoizingKey, IRecordInputValidator inputValidator);
 
         /// <summary>
         /// Method checks record presence in list by ID.

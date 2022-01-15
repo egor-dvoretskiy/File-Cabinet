@@ -19,7 +19,7 @@ namespace FileCabinetGenerator.FormatWriters
         /// <param name="record">Record to write.</param>
         public static void Write(FileCabinetRecord record, StreamWriter writer)
         {
-            writer.WriteLine(WriterAssistant.GetPropertiesValuesString(record));
+            writer.WriteLine(ReflectedRecordParams.GetPropertiesValuesString(record));
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace FileCabinetGenerator.FormatWriters
         /// <param name="type">Type of data.</param>
         public static void WriteHeader(Type type, StreamWriter writer)
         {
-            writer.WriteLine(WriterAssistant.GetPropertiesNameString(type));
+            writer.WriteLine(ReflectedRecordParams.GetPropertiesNameString(type));
         }
     }
 }

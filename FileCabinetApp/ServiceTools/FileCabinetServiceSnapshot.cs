@@ -9,7 +9,7 @@ using FileCabinetApp.FormatReaders;
 using FileCabinetApp.Interfaces;
 using FileCabinetApp.Validators;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.ServiceTools
 {
     /// <summary>
     /// holds snapshot for FileCabinetService.

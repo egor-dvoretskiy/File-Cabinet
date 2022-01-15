@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using FileCabinetApp.Interfaces;
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-
-namespace FileCabinetApp
+namespace FileCabinetApp.ServiceTools
 {
     /// <summary>
     /// Add call stack logs to file.
@@ -32,16 +26,19 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public bool CheckRecordPresence(int id)
         {
-            this.writer.WriteLine($"{this.GetLogTime()} - Calling CheckRecordPresence() with id = '{id}'.");
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{this.GetLogTime()} - Calling CheckRecordPresence() with id = '{id}'.");
             var value = this.service.CheckRecordPresence(id);
+            sb.AppendLine($"{this.GetLogTime()} - CheckRecordPresence() returns value: {value}.");
 
+            this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
 
             return value;
         }
 
         /// <inheritdoc/>
-        public int CreateRecord(FileCabinetRecord record)
+        public void CreateRecord(FileCabinetRecord record)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append($"{this.GetLogTime()} - Calling CreateRecord() with ");
@@ -53,14 +50,10 @@ namespace FileCabinetApp
             sb.Append($"Gender = '{record.Gender}'.");
             sb.Append(Environment.NewLine);
 
-            int id = this.service.CreateRecord(record);
-
-            sb.Append($"{this.GetLogTime()} - CreateRecord() returns '{id}'.");
+            this.service.CreateRecord(record);
 
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
-
-            return id;
         }
 
         /// <inheritdoc/>
@@ -68,8 +61,8 @@ namespace FileCabinetApp
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling FindByBirthDate() with DateOfBirth = {birthDate}.");
-
             var records = this.service.FindByBirthDate(birthDate);
+            sb.AppendLine($"{this.GetLogTime()} - FindByBirthDate() returns {records.Count()} record(s).");
 
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
@@ -82,8 +75,8 @@ namespace FileCabinetApp
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling FindByFirstName() with FirstName = {firstName}.");
-
             var records = this.service.FindByFirstName(firstName);
+            sb.AppendLine($"{this.GetLogTime()} - FindByFirstName() returns {records.Count()} record(s).");
 
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
@@ -96,8 +89,50 @@ namespace FileCabinetApp
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling FindByLastName() with LastName = {lastName}.");
-
             var records = this.service.FindByLastName(lastName);
+            sb.AppendLine($"{this.GetLogTime()} - FindByLastName() returns {records.Count()} record(s).");
+
+            this.writer.WriteLine(sb.ToString());
+            this.writer.Flush();
+
+            return records;
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{this.GetLogTime()} - Calling FindByPersonalRating() with personalRating = {personalRating}.");
+            var records = this.service.FindByPersonalRating(personalRating);
+            sb.AppendLine($"{this.GetLogTime()} - FindByPersonalRating() returns {records.Count()} record(s).");
+
+            this.writer.WriteLine(sb.ToString());
+            this.writer.Flush();
+
+            return records;
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> FindBySalary(string salary)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{this.GetLogTime()} - Calling FindBySalary() with salary = {salary}.");
+            var records = this.service.FindBySalary(salary);
+            sb.AppendLine($"{this.GetLogTime()} - FindBySalary() returns {records.Count()} record(s).");
+
+            this.writer.WriteLine(sb.ToString());
+            this.writer.Flush();
+
+            return records;
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<FileCabinetRecord> FindByGender(string gender)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"{this.GetLogTime()} - Calling FindByGender() with gender = {gender}.");
+            var records = this.service.FindByGender(gender);
+            sb.AppendLine($"{this.GetLogTime()} - FindByGender() returns {records.Count()} record(s).");
 
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
@@ -110,9 +145,7 @@ namespace FileCabinetApp
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling GetRecords().");
-
             var records = this.service.GetRecords();
-
             sb.Append($"{this.GetLogTime()} - GetRecords() returns {records.Count} record(s).");
 
             this.writer.WriteLine(sb.ToString());
@@ -126,7 +159,6 @@ namespace FileCabinetApp
         {
             StringBuilder sb = new StringBuilder();
             sb.Append($"{this.GetLogTime()} - Calling GetStat().");
-
             this.service.GetStat();
 
             this.writer.WriteLine(sb.ToString());
@@ -157,9 +189,7 @@ namespace FileCabinetApp
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling MakeSnapshot().");
-
             var snapshot = this.service.MakeSnapshot();
-
             sb.Append($"{this.GetLogTime()} - MakeSnapshot() returns snapshot.");
 
             this.writer.WriteLine(sb.ToString());
@@ -173,7 +203,6 @@ namespace FileCabinetApp
         {
             StringBuilder sb = new StringBuilder();
             sb.Append($"{this.GetLogTime()} - Calling Purge().");
-
             this.service.Purge();
 
             this.writer.WriteLine(sb.ToString());
@@ -185,9 +214,7 @@ namespace FileCabinetApp
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling Delete().");
-
             this.service.Delete(ids);
-
             sb.Append($"{this.GetLogTime()} - Delete() removes next record(s) with id:");
             sb.Append(string.Join(", ", ids));
             sb.Append($".");
@@ -201,7 +228,6 @@ namespace FileCabinetApp
         {
             StringBuilder sb = new StringBuilder();
             sb.Append($"{this.GetLogTime()} - Calling Restore() with snapshot.");
-
             this.service.Restore(fileCabinetServiceSnapshot);
 
             this.writer.WriteLine(sb.ToString());
@@ -213,10 +239,8 @@ namespace FileCabinetApp
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"{this.GetLogTime()} - Calling Update().");
-
             this.service.Update(records);
-
-            sb.Append($"{this.GetLogTime()} - Update() edit {records.Count} record(s).");
+            sb.Append($"{this.GetLogTime()} - Update() edits {records.Count} record(s).");
 
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
@@ -227,13 +251,26 @@ namespace FileCabinetApp
         {
             StringBuilder sb = new StringBuilder();
             sb.Append($"{this.GetLogTime()} - Calling GetRecord() with id='{id}'.");
-
             var record = this.service.GetRecord(id);
 
             this.writer.WriteLine(sb.ToString());
             this.writer.Flush();
 
             return record;
+        }
+
+        /// <inheritdoc/>
+        public List<FileCabinetRecord> Select(string phrase, string memoizingKey, IRecordInputValidator inputValidator)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"{this.GetLogTime()} - Calling Select().");
+            var records = this.service.Select(phrase, memoizingKey, inputValidator);
+            sb.Append($"{this.GetLogTime()} - Select() returns {records.Count} record(s).");
+
+            this.writer.WriteLine(sb.ToString());
+            this.writer.Flush();
+
+            return records;
         }
 
         private string GetLogTime()

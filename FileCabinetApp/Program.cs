@@ -6,9 +6,9 @@ using System.Text.RegularExpressions;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.Interfaces;
 using FileCabinetApp.Services;
+using FileCabinetApp.ServiceTools;
 using FileCabinetApp.Validators;
 
-#pragma warning disable SA1401 // Fields should be private
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 namespace FileCabinetApp
@@ -64,11 +64,6 @@ namespace FileCabinetApp
             "xml",
         };
 
-        /// <summary>
-        /// Validator.
-        /// </summary>
-        public static IRecordInputValidator InputValidator;
-
         private const string DeveloperName = "Egor Dvoretskiy";
         private const string WrongInputArgsMessage = "Wrong input arguments.";
         private const string WrongInputValidationArgsMessage = "Wrong validation rule.";
@@ -82,6 +77,7 @@ namespace FileCabinetApp
         private const string CorrectServiceMeterInputArgsMessage = "Using service time measuring.";
         private const string CorrectServiceLoggerInputArgsMessage = "Using service logger.";
 
+        private static IRecordInputValidator inputValidator;
         private static IRecordValidator recordValidator;
         private static IFileCabinetService fileCabinetService;
         private static bool isRunning = true;
@@ -118,7 +114,8 @@ namespace FileCabinetApp
 
             try
             {
-                ParseInputArgs(args);
+                args = ParseArgumentArray(args);
+                SetInputModes(args);
             }
             catch (ArgumentNullException argumentNullException)
             {
@@ -157,79 +154,8 @@ namespace FileCabinetApp
             while (isRunning);
         }
 
-        /// <summary>
-        /// Reads input string.
-        /// </summary>
-        /// <typeparam name="T">Depends on input.</typeparam>
-        /// <param name="converter">Converter depends on input.</param>
-        /// <param name="validator">Input validator.</param>
-        /// <returns>Type depends on input.</returns>
-        public static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        private static void SetInputModes(string[] args)
         {
-            do
-            {
-                T value;
-
-                var input = Console.ReadLine();
-
-                if (input is null)
-                {
-                    Console.WriteLine($"Incorrect input. Please, try again.");
-                    continue;
-                }
-
-                var conversionResult = converter(input);
-
-                if (!conversionResult.Item1)
-                {
-                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
-                    continue;
-                }
-
-                value = conversionResult.Item3;
-
-                var validationResult = validator(value);
-                if (!validationResult.Item1)
-                {
-                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
-                    continue;
-                }
-
-                return value;
-            }
-            while (true);
-        }
-
-        /// <summary>
-        /// Print records in console.
-        /// </summary>
-        /// <param name="records">Data to print.</param>
-        public static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)
-        {
-            foreach (FileCabinetRecord record in records)
-            {
-                Console.WriteLine(Program.GetRecordInStringRepresentation(record));
-            }
-        }
-
-        private static string GetRecordInStringRepresentation(FileCabinetRecord record)
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append($"#{record.Id}, ");
-            stringBuilder.Append($"{record.FirstName}, ");
-            stringBuilder.Append($"{record.LastName}, ");
-            stringBuilder.Append($"{record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, ");
-            stringBuilder.Append($"{record.PersonalRating}, ");
-            stringBuilder.Append($"{record.Salary}, ");
-            stringBuilder.Append($"{record.Gender}.");
-
-            return stringBuilder.ToString();
-        }
-
-        private static void ParseInputArgs(string[] args)
-        {
-            args = ParseArgumentArray(args);
-
             args.SetValidators();
             args.SetService();
             args.SetServiceMeterMode();
@@ -309,13 +235,13 @@ namespace FileCabinetApp
                 {
                     case SettingsType.Default:
                         Program.recordValidator = new ValidatorBuilder().CreateDefault();
-                        Program.InputValidator = new DefaultInputValidator();
+                        Program.inputValidator = new DefaultInputValidator();
 
                         Console.WriteLine(CorrectDefaultInputArgsMessage);
                         break;
                     case SettingsType.Custom:
                         Program.recordValidator = new ValidatorBuilder().CreateCustom();
-                        Program.InputValidator = new CustomInputValidator();
+                        Program.inputValidator = new CustomInputValidator();
 
                         Console.WriteLine(CorrectCustomInputArgsMessage);
                         break;
@@ -367,16 +293,16 @@ namespace FileCabinetApp
         private static ICommandHandler CreateCommandHandlers()
         {
             var helpHandler = new HelpCommandHandler();
-            var createHandler = new CreateCommandHandler(Program.fileCabinetService);
+            var createHandler = new CreateCommandHandler(Program.fileCabinetService, Program.inputValidator);
             var exitHandler = new ExitCommandHandler(Program.SetAppRunningStatus);
             var exportHandler = new ExportCommandHandler(Program.fileCabinetService);
             var importHandler = new ImportCommandHandler(Program.fileCabinetService);
             var purgeHandler = new PurgeCommandHandler(Program.fileCabinetService);
             var statHandler = new StatCommandHandler(Program.fileCabinetService);
-            var insertHandler = new InsertCommandHandler(Program.fileCabinetService);
-            var deleteHandler = new DeleteCommandHandler(Program.fileCabinetService);
-            var updateHandler = new UpdateCommandHandler(Program.fileCabinetService);
-            var selectHandler = new SelectCommandHandler(Program.fileCabinetService);
+            var insertHandler = new InsertCommandHandler(Program.fileCabinetService, Program.inputValidator);
+            var deleteHandler = new DeleteCommandHandler(Program.fileCabinetService, Program.inputValidator);
+            var updateHandler = new UpdateCommandHandler(Program.fileCabinetService, Program.inputValidator);
+            var selectHandler = new SelectCommandHandler(Program.fileCabinetService, Program.inputValidator);
 
             createHandler.SetNext(exitHandler);
             exitHandler.SetNext(exportHandler);

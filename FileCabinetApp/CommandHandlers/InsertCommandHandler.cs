@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using FileCabinetApp.Interfaces;
+using FileCabinetApp.ServiceTools;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -24,13 +26,17 @@ namespace FileCabinetApp.CommandHandlers
         private const char ValuesBrackets = '\'';
         private readonly char[] groupBracketsType = new char[] { '(', ')' };
 
+        private readonly IRecordInputValidator inputValidator;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="InsertCommandHandler"/> class.
         /// </summary>
         /// <param name="service">Specified service to work with.</param>
-        public InsertCommandHandler(IFileCabinetService service)
+        /// <param name="inputValidator">Validator for input args.</param>
+        public InsertCommandHandler(IFileCabinetService service, IRecordInputValidator inputValidator)
             : base(service)
         {
+            this.inputValidator = inputValidator;
         }
 
         /// <inheritdoc/>
@@ -57,19 +63,19 @@ namespace FileCabinetApp.CommandHandlers
             {
                 var parsedParameterPairs = this.ParseInputParameters(parameters);
 
-                int id = this.GetParsedParameter<int>(nameof(FileCabinetRecord.Id), parsedParameterPairs, InputConverter.IdConverter, Program.InputValidator.IdValidator);
+                int id = this.GetParsedParameter<int>(nameof(FileCabinetRecord.Id), parsedParameterPairs, InputConverter.IdConverter, this.inputValidator.IdValidator);
 
-                string firstName = this.GetParsedParameter<string>(nameof(FileCabinetRecord.FirstName), parsedParameterPairs, InputConverter.StringConverter, Program.InputValidator.FirstNameValidator);
+                string firstName = this.GetParsedParameter<string>(nameof(FileCabinetRecord.FirstName), parsedParameterPairs, InputConverter.StringConverter, this.inputValidator.FirstNameValidator);
 
-                var lastName = this.GetParsedParameter<string>(nameof(FileCabinetRecord.LastName), parsedParameterPairs, InputConverter.StringConverter, Program.InputValidator.LastNameValidator);
+                var lastName = this.GetParsedParameter<string>(nameof(FileCabinetRecord.LastName), parsedParameterPairs, InputConverter.StringConverter, this.inputValidator.LastNameValidator);
 
-                var birthDate = this.GetParsedParameter<DateTime>(nameof(FileCabinetRecord.DateOfBirth), parsedParameterPairs, InputConverter.BirthDateConverter, Program.InputValidator.DateOfBirthValidator);
+                var birthDate = this.GetParsedParameter<DateTime>(nameof(FileCabinetRecord.DateOfBirth), parsedParameterPairs, InputConverter.BirthDateConverter, this.inputValidator.DateOfBirthValidator);
 
-                var personalRating = this.GetParsedParameter<short>(nameof(FileCabinetRecord.PersonalRating), parsedParameterPairs, InputConverter.PersonalRatingConverter, Program.InputValidator.PersonalRatingValidator);
+                var personalRating = this.GetParsedParameter<short>(nameof(FileCabinetRecord.PersonalRating), parsedParameterPairs, InputConverter.PersonalRatingConverter, this.inputValidator.PersonalRatingValidator);
 
-                var salary = this.GetParsedParameter<decimal>(nameof(FileCabinetRecord.Salary), parsedParameterPairs, InputConverter.SalaryConverter, Program.InputValidator.SalaryValidator);
+                var salary = this.GetParsedParameter<decimal>(nameof(FileCabinetRecord.Salary), parsedParameterPairs, InputConverter.SalaryConverter, this.inputValidator.SalaryValidator);
 
-                var gender = this.GetParsedParameter<char>(nameof(FileCabinetRecord.Gender), parsedParameterPairs, InputConverter.GenderConverter, Program.InputValidator.GenderValidator);
+                var gender = this.GetParsedParameter<char>(nameof(FileCabinetRecord.Gender), parsedParameterPairs, InputConverter.GenderConverter, this.inputValidator.GenderValidator);
 
                 FileCabinetRecord record = new FileCabinetRecord()
                 {
