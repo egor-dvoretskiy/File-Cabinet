@@ -65,14 +65,12 @@ namespace FileCabinetApp
         };
 
         private const string DeveloperName = "Egor Dvoretskiy";
-        private const string WrongInputArgsMessage = "Wrong input arguments.";
-        private const string WrongInputValidationArgsMessage = "Wrong validation rule.";
-        private const string WrongInputStorageArgsMessage = "Wrong storage mode.";
         private const string CorrectCustomInputArgsMessage = "Using custom validation rules.";
         private const string CorrectDefaultInputArgsMessage = "Using default validation rules.";
         private const string NoInputValidationArgsMessage = "There is no specified validation rule. Using default validation rules.";
         private const string NoInputStorageArgsMessage = "There is no specified storage mode. Using file system storage mode.";
         private const string CorrectStorageMemoryInputArgsMessage = "Using storage memory mode.";
+        private const string CorrectStorageDatabaseInputArgsMessage = "Using storage database mode.";
         private const string CorrectStorageFilesystemInputArgsMessage = "Using storage filesystem mode.";
         private const string CorrectServiceMeterInputArgsMessage = "Using service time measuring.";
         private const string CorrectServiceLoggerInputArgsMessage = "Using service logger.";
@@ -102,6 +100,7 @@ namespace FileCabinetApp
         {
             "memory",
             "file",
+            "database",
         };
 
         /// <summary>
@@ -279,6 +278,10 @@ namespace FileCabinetApp
                     case 1:
                         Program.fileCabinetService = new FileCabinetFileSystemService(Program.fileStream, Program.recordValidator);
                         Console.WriteLine(Program.CorrectStorageFilesystemInputArgsMessage);
+                        break;
+                    case 2:
+                        Program.fileCabinetService = new FileCabinetDatabaseService();
+                        Console.WriteLine(CorrectStorageDatabaseInputArgsMessage);
                         break;
                     default:
                         throw new ArgumentException($"Storage args doesn't have such parameter as {storageValue}");
