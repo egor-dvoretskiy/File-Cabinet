@@ -356,6 +356,11 @@
             </summary>
             <returns>List if data.</returns>
         </member>
+        <member name="T:FileCabinetApp.FormatReaders.FileCabinetRecordDatabaseReader">
+            <summary>
+            Class provides reading from database.
+            </summary>
+        </member>
         <member name="T:FileCabinetApp.FormatReaders.FileCabinetRecordXmlReader">
             <summary>
             Class provides Xml file reading.
@@ -397,22 +402,16 @@
             </summary>
             <param name="type">Type of data.</param>
         </member>
-        <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
+        <member name="T:FileCabinetApp.FormatWriters.FileCabinetRecordDatabaseWriter">
             <summary>
-            Contains logics to work with xml.
+            Writer to database.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.#ctor(System.IO.TextWriter)">
+        <member name="M:FileCabinetApp.FormatWriters.FileCabinetRecordDatabaseWriter.Write(FileCabinetApp.FileCabinetRecord[])">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
+            Writes to database.
             </summary>
-            <param name="writer">Writer.</param>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord[])">
-            <summary>
-            Writes to xml file.
-            </summary>
-            <param name="records">Records to write.</param>
+            <param name="records">File cabinet records.</param>
         </member>
         <member name="T:FileCabinetApp.FormatWriters.ReflectedRecordParams">
             <summary>
@@ -432,6 +431,23 @@
             </summary>
             <param name="type">Neccessary type to get names in.</param>
             <returns>Concatenated properties values.</returns>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
+            <summary>
+            Contains logics to work with xml.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.#ctor(System.IO.TextWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+            <param name="writer">Writer.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord[])">
+            <summary>
+            Writes to xml file.
+            </summary>
+            <param name="records">Records to write.</param>
         </member>
         <member name="T:FileCabinetApp.Interfaces.ICommandHandler">
             <summary>

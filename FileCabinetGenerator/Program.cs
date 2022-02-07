@@ -55,6 +55,7 @@ namespace FileCabinetGenerator
         {
             "csv",
             "xml",
+            "database",
         };
 
         private static string pathToFileWithRecords = string.Empty;
@@ -117,6 +118,9 @@ namespace FileCabinetGenerator
                             break;
                         case "xml":
                             WriterDistributor.WriteToXml(writer, recordsAmount);
+                            break;
+                        case "database":
+                            WriterDistributor.WriteToDatabase(recordsAmount);
                             break;
                         default:
                             Console.WriteLine("Wrong type of file.");

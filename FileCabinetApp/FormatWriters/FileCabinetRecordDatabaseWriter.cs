@@ -17,7 +17,6 @@ namespace FileCabinetApp.FormatWriters
         /// <param name="records">File cabinet records.</param>
         internal void Write(FileCabinetRecord[] records)
         {
-
         }
     }
 }
