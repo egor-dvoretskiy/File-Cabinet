@@ -157,7 +157,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            throw new NotImplementedException();
+            return new FileCabinetServiceSnapshot(this.GetRecords().ToList(), this.recordValidator);
         }
 
         /// <inheritdoc/>
