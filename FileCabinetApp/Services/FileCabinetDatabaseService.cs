@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,21 +9,28 @@ using FileCabinetApp.Interfaces;
 using FileCabinetApp.ServiceTools;
 using Microsoft.Data.SqlClient;
 
+#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
 namespace FileCabinetApp.Services
 {
     /// <summary>
     /// Database service class.
     /// </summary>
-    internal class FileCabinetDatabaseService : FileCabinetDictionary, IFileCabinetService
+    internal class FileCabinetDatabaseService : FileCabinetDictionary, IFileCabinetService, IDisposable
     {
-        private const string ConnectionString = "Data Source=PC1-5514;Initial Catalog=FileCabinet;Integrated Security=True";
+        private const string ConnectionString = "Data Source=PC1-5514;Initial Catalog=FileCabinet;Integrated Security=True;TrustServerCertificate=True;";
+        private const string TableName = "FileCabinetRecords";
+        private readonly IRecordValidator recordValidator;
+        private SqlConnection serverConnection = new SqlConnection(ConnectionString);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetDatabaseService"/> class.
         /// </summary>
-        public FileCabinetDatabaseService()
+        /// <param name="recordValidator">Validator for record.</param>
+        public FileCabinetDatabaseService(IRecordValidator recordValidator)
         {
-            this.AcquireDatabaseConnection();
+            this.recordValidator = recordValidator;
+
+            this.CheckTablePresenceInDatabase();
         }
 
         /// <inheritdoc/>
@@ -88,7 +96,50 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            throw new NotImplementedException();
+            this.OpenServerConnection();
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+
+            SqlCommand command = new SqlCommand();
+            command.CommandText = $"SELECT * FROM {TableName}";
+            command.Connection = this.serverConnection;
+
+            var reader = command.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    object id = reader["Id"];
+                    object firstName = reader["FirstName"];
+                    object lastName = reader["LastName"];
+                    object birthDate = reader["DateOfBirth"];
+                    object personalRating = reader["PersonalRating"];
+                    object salary = reader["Salary"];
+                    object gender = reader["Gender"];
+
+                    FileCabinetRecord record = new FileCabinetRecord()
+                    {
+                        Id = (int)id,
+                        FirstName = (string)firstName,
+                        LastName = (string)lastName,
+                        DateOfBirth = (DateTime)birthDate,
+                        PersonalRating = (short)personalRating,
+                        Salary = (decimal)salary,
+                        Gender = Convert.ToChar(gender),
+                    };
+
+                    bool isValid = this.recordValidator.ValidateParameters(record);
+
+                    if (isValid)
+                    {
+                        records.Add(record);
+                    }
+                }
+            }
+
+            this.CloseServerConnection();
+
+            return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
         /// <inheritdoc/>
@@ -133,38 +184,75 @@ namespace FileCabinetApp.Services
             throw new NotImplementedException();
         }
 
-        private async void AcquireDatabaseConnection()
+        /// <inheritdoc/>
+        public void Dispose()
         {
-            SqlConnection connection = new SqlConnection(ConnectionString);
+            this.serverConnection.Dispose();
+        }
 
+        private void CheckTablePresenceInDatabase()
+        {
+            this.OpenServerConnection();
             try
             {
-                await connection.OpenAsync(); // Вывод информации о подключении
-
-                Console.WriteLine("The connection is opened.");
-
-                Console.WriteLine("Connection settings:");
-                Console.WriteLine($"\tConnection string: {connection.ConnectionString}");
-                Console.WriteLine($"\tDatabase: {connection.Database}");
-                Console.WriteLine($"\tServer: {connection.DataSource}");
-                Console.WriteLine($"\tServer version: {connection.ServerVersion}");
-                Console.WriteLine($"\tStatus: {connection.State}");
-                Console.WriteLine($"\tWorkstationld: {connection.WorkstationId}");
+                Console.WriteLine($"Table '{TableName}' creating...");
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandText = this.GetCreateTableCommand(TableName);
+                cmd.Connection = this.serverConnection;
+                _ = cmd.ExecuteNonQuery();
+                Console.WriteLine($"Table created.");
             }
             catch (SqlException sqlException)
             {
                 Console.WriteLine(sqlException.Message);
             }
-            finally
+
+            this.CloseServerConnection();
+        }
+
+        private string GetCreateTableCommand(string tableName)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append($"CREATE TABLE {TableName} (");
+            builder.Append("Id INT NOT NULL,");
+            builder.Append("FirstName VARCHAR(120) NOT NULL,");
+            builder.Append("LastName VARCHAR(120) NOT NULL,");
+            builder.Append("DateOfBirth DATETIME NOT NULL,");
+            builder.Append("PersonalRating SMALLINT NOT NULL,");
+            builder.Append("Salary DECIMAL(18,0) NOT NULL,");
+            builder.Append("Gender CHAR(1) NOT NULL)");
+
+            return builder.ToString();
+        }
+
+        private void OpenServerConnection()
+        {
+            try
             {
-                if (connection.State == System.Data.ConnectionState.Open)
+                this.serverConnection.Open();
+
+                Console.WriteLine($"-{Environment.NewLine}The connection to server('{this.serverConnection.DataSource}') is opened.");
+            }
+            catch (SqlException sqlException)
+            {
+                Console.WriteLine(sqlException.Message);
+            }
+        }
+
+        private void CloseServerConnection()
+        {
+            try
+            {
+                if (this.serverConnection.State == System.Data.ConnectionState.Open)
                 {
-                    await connection.CloseAsync();
-                    Console.WriteLine("The connection is closed.");
+                    this.serverConnection.Close();
+                    Console.WriteLine($"The connection is closed.{Environment.NewLine}-");
                 }
             }
-
-            Console.WriteLine("SqlConnection stopped.");
+            catch (SqlException sqlException)
+            {
+                Console.WriteLine(sqlException.Message);
+            }
         }
     }
 }

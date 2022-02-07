@@ -825,10 +825,11 @@
             Database service class.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.#ctor">
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.#ctor(FileCabinetApp.Interfaces.IRecordValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetDatabaseService"/> class.
             </summary>
+            <param name="recordValidator">Validator for record.</param>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.CheckRecordPresence(System.Int32)">
             <inheritdoc/>
@@ -882,6 +883,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.Update(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.Dispose">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Services.FileCabinetDictionary">

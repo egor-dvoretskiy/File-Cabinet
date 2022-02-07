@@ -280,7 +280,7 @@ namespace FileCabinetApp
                         Console.WriteLine(Program.CorrectStorageFilesystemInputArgsMessage);
                         break;
                     case 2:
-                        Program.fileCabinetService = new FileCabinetDatabaseService();
+                        Program.fileCabinetService = new FileCabinetDatabaseService(Program.recordValidator);
                         Console.WriteLine(CorrectStorageDatabaseInputArgsMessage);
                         break;
                     default:
