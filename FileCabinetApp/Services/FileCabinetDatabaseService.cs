@@ -15,12 +15,9 @@ namespace FileCabinetApp.Services
     /// <summary>
     /// Database service class.
     /// </summary>
-    internal class FileCabinetDatabaseService : FileCabinetDictionary, IFileCabinetService, IDisposable
+    internal class FileCabinetDatabaseService : FileCabinetDictionary, IFileCabinetService
     {
-        private const string ConnectionString = "Data Source=PC1-5514;Initial Catalog=FileCabinet;Integrated Security=True;TrustServerCertificate=True;";
-        private const string TableName = "FileCabinetRecords";
         private readonly IRecordValidator recordValidator;
-        private SqlConnection serverConnection = new SqlConnection(ConnectionString);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetDatabaseService"/> class.
@@ -96,12 +93,12 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            this.OpenServerConnection();
+            ServerCommunicator.OpenServerConnection();
             List<FileCabinetRecord> records = new List<FileCabinetRecord>();
 
             SqlCommand command = new SqlCommand();
-            command.CommandText = $"SELECT * FROM {TableName}";
-            command.Connection = this.serverConnection;
+            command.CommandText = $"SELECT * FROM {ServerCommunicator.TableName}";
+            command.Connection = ServerCommunicator.ServerConnection;
 
             var reader = command.ExecuteReader();
 
@@ -137,7 +134,7 @@ namespace FileCabinetApp.Services
                 }
             }
 
-            this.CloseServerConnection();
+            ServerCommunicator.CloseServerConnection();
 
             return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
@@ -184,21 +181,15 @@ namespace FileCabinetApp.Services
             throw new NotImplementedException();
         }
 
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            this.serverConnection.Dispose();
-        }
-
         private void CheckTablePresenceInDatabase()
         {
-            this.OpenServerConnection();
+            ServerCommunicator.OpenServerConnection();
             try
             {
-                Console.WriteLine($"Table '{TableName}' creating...");
+                Console.WriteLine($"Table '{ServerCommunicator.TableName}' creating...");
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = this.GetCreateTableCommand(TableName);
-                cmd.Connection = this.serverConnection;
+                cmd.CommandText = this.GetCreateTableCommand(ServerCommunicator.TableName);
+                cmd.Connection = ServerCommunicator.ServerConnection;
                 _ = cmd.ExecuteNonQuery();
                 Console.WriteLine($"Table created.");
             }
@@ -206,14 +197,18 @@ namespace FileCabinetApp.Services
             {
                 Console.WriteLine(sqlException.Message);
             }
+            catch (InvalidOperationException invalidOperationException)
+            {
+                Console.WriteLine(invalidOperationException.Message);
+            }
 
-            this.CloseServerConnection();
+            ServerCommunicator.CloseServerConnection();
         }
 
         private string GetCreateTableCommand(string tableName)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append($"CREATE TABLE {TableName} (");
+            builder.Append($"CREATE TABLE {ServerCommunicator.TableName} (");
             builder.Append("Id INT NOT NULL,");
             builder.Append("FirstName VARCHAR(120) NOT NULL,");
             builder.Append("LastName VARCHAR(120) NOT NULL,");
@@ -223,36 +218,6 @@ namespace FileCabinetApp.Services
             builder.Append("Gender CHAR(1) NOT NULL)");
 
             return builder.ToString();
-        }
-
-        private void OpenServerConnection()
-        {
-            try
-            {
-                this.serverConnection.Open();
-
-                Console.WriteLine($"-{Environment.NewLine}The connection to server('{this.serverConnection.DataSource}') is opened.");
-            }
-            catch (SqlException sqlException)
-            {
-                Console.WriteLine(sqlException.Message);
-            }
-        }
-
-        private void CloseServerConnection()
-        {
-            try
-            {
-                if (this.serverConnection.State == System.Data.ConnectionState.Open)
-                {
-                    this.serverConnection.Close();
-                    Console.WriteLine($"The connection is closed.{Environment.NewLine}-");
-                }
-            }
-            catch (SqlException sqlException)
-            {
-                Console.WriteLine(sqlException.Message);
-            }
         }
     }
 }

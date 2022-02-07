@@ -885,9 +885,6 @@
         <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.Update(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.Dispose">
-            <inheritdoc/>
-        </member>
         <member name="T:FileCabinetApp.Services.FileCabinetDictionary">
             <summary>
             Class that holds dictionaries methods.
@@ -1265,6 +1262,36 @@
             </summary>
             <param name="phrase">Init phrase.</param>
             <returns>Returns string for memoization.</returns>
+        </member>
+        <member name="T:FileCabinetApp.ServiceTools.ServerCommunicator">
+            <summary>
+            Class provides communication with server.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.ServiceTools.ServerCommunicator.ConnectionString">
+            <summary>
+            String to connect with server.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.ServiceTools.ServerCommunicator.TableName">
+            <summary>
+            Name of the table on the server's side.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.ServiceTools.ServerCommunicator.ServerConnection">
+            <summary>
+            Instance of server connection.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.ServerCommunicator.OpenServerConnection">
+            <summary>
+            Open server communication.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.ServerCommunicator.CloseServerConnection">
+            <summary>
+            Close server connection.
+            </summary>
         </member>
         <member name="T:FileCabinetApp.ServiceTools.ServiceBufferCommunicator">
             <summary>
