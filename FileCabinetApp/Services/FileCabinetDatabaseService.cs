@@ -71,10 +71,6 @@ namespace FileCabinetApp.Services
                 _ = command.ExecuteNonQuery();
                 ServerCommunicator.CloseServerConnection();
 
-                int position = this.GetRecordsCount() - 1;
-
-                this.AddRecordToDictionaries(record, position);
-
                 Console.WriteLine($"Record #{record.Id} is created.");
             }
             catch (ArgumentNullException argumentNullException)
@@ -226,7 +222,43 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void InsertRecord(FileCabinetRecord record)
         {
-            throw new NotImplementedException();
+            MemoizerService.RefreshMemoizer();
+
+            try
+            {
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (!isValid)
+                {
+                    throw new ArgumentException("Record you want to add is not valid. Please try again!");
+                }
+
+                if (this.storedIdRecords.ContainsKey(record.Id))
+                {
+                    throw new ArgumentException($"Memory is already has a record #{record.Id}.");
+                }
+
+                ServerCommunicator.OpenServerConnection();
+                SqlCommand command = new SqlCommand();
+                command.Connection = ServerCommunicator.ServerConnection;
+                command.CommandText = this.GetInsertCommandWithRecord(record);
+                _ = command.ExecuteNonQuery();
+                ServerCommunicator.CloseServerConnection();
+
+                Console.WriteLine($"Record was successfully inserted in database");
+            }
+            catch (ArgumentNullException argumentNullException)
+            {
+                Console.WriteLine(argumentNullException.Message);
+            }
+            catch (ArgumentOutOfRangeException argumentOutOfRangeException)
+            {
+                Console.WriteLine(argumentOutOfRangeException.Message);
+            }
+            catch (ArgumentException argumentException)
+            {
+                Console.WriteLine(argumentException.Message);
+            }
         }
 
         /// <inheritdoc/>
