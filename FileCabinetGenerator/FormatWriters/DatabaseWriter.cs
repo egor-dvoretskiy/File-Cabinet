@@ -10,7 +10,7 @@ namespace FileCabinetGenerator.FormatWriters
 {
     internal static class DatabaseWriter
     {
-        internal const string ConnectionString = "Data Source=LANCER\\ERGOSERVER;Initial Catalog=FileCabinet;Integrated Security=True;TrustServerCertificate=True;";
+        internal const string ConnectionString = "Data Source=PC1-5514;Initial Catalog=FileCabinet;Integrated Security=True;TrustServerCertificate=True;";
         internal const string TableName = "FileCabinetRecords";
 
         internal static void Write(FileCabinetRecord[] records)
@@ -22,7 +22,7 @@ namespace FileCabinetGenerator.FormatWriters
                 var record = records[i];
                 SqlCommand cmd = new SqlCommand();
                 cmd.Connection = connection;
-                cmd.CommandText = $"INSERT INTO {TableName} (Id,FirstName,LastName,DateOfBirth,PersonalRating,Salary,Gender) VALUES ({record.Id},'{record.FirstName}','{record.LastName}',{record.DateOfBirth.ToString("MM-dd-yyyy")},{record.PersonalRating},{record.Salary},'{record.Gender}')";
+                cmd.CommandText = $"INSERT INTO {TableName} (Id,FirstName,LastName,DateOfBirth,PersonalRating,Salary,Gender) VALUES ({record.Id},'{record.FirstName}','{record.LastName}','{record.DateOfBirth.ToString("yyyy-MM-dd")}',{record.PersonalRating},{record.Salary.ToString().Replace(',', '.')},'{record.Gender}');";
                 _ = cmd.ExecuteNonQuery();
             }
 

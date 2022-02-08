@@ -212,9 +212,9 @@ namespace FileCabinetApp.Services
             builder.Append("Id INT NOT NULL,");
             builder.Append("FirstName VARCHAR(120) NOT NULL,");
             builder.Append("LastName VARCHAR(120) NOT NULL,");
-            builder.Append("DateOfBirth DATETIME NOT NULL,");
+            builder.Append("DateOfBirth DATE NOT NULL,");
             builder.Append("PersonalRating SMALLINT NOT NULL,");
-            builder.Append("Salary DECIMAL(18,0) NOT NULL,");
+            builder.Append("Salary DECIMAL(18,3) NOT NULL,");
             builder.Append("Gender CHAR(1) NOT NULL)");
 
             return builder.ToString();

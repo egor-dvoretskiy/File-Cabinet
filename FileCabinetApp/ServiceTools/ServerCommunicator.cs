@@ -16,7 +16,7 @@ namespace FileCabinetApp.ServiceTools
         /// <summary>
         /// String to connect with server.
         /// </summary>
-        internal const string ConnectionString = "Data Source=LANCER\\ERGOSERVER;Initial Catalog=FileCabinet;Integrated Security=True;TrustServerCertificate=True;";
+        internal const string ConnectionString = "Data Source=PC1-5514;Initial Catalog=FileCabinet;Integrated Security=True;TrustServerCertificate=True;";
 
         /// <summary>
         /// Name of the table on the server's side.
