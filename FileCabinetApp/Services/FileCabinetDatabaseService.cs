@@ -94,7 +94,21 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void Delete(List<int> ids)
         {
-            throw new NotImplementedException();
+            MemoizerService.RefreshMemoizer();
+
+            ServerCommunicator.OpenServerConnection();
+
+            for (int i = 0; i < ids.Count; i++)
+            {
+                SqlCommand command = new SqlCommand();
+                command.CommandText = $"DELETE FROM {ServerCommunicator.TableName} WHERE Id={ids[i]}";
+                command.Connection = ServerCommunicator.ServerConnection;
+                _ = command.ExecuteNonQuery();
+            }
+
+            ServerCommunicator.CloseServerConnection();
+
+            Console.WriteLine($"Deleted {ids.Count} record(s).");
         }
 
         /// <inheritdoc/>
