@@ -5,7 +5,9 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FileCabinetApp.ConditionWords;
 using FileCabinetApp.Interfaces;
+using FileCabinetApp.Iterators;
 using FileCabinetApp.ServiceTools;
 using Microsoft.Data.SqlClient;
 
@@ -98,43 +100,75 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate)
         {
-            throw new NotImplementedException();
+            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE DateOfBirth='{birthDate}'";
+            var records = this.FindBySqlCommand(command);
+
+            return new RecordDatabaseEnumerable(records);
         }
 
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            throw new NotImplementedException();
+            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE FirstName='{firstName}'";
+            var records = this.FindBySqlCommand(command);
+
+            return new RecordDatabaseEnumerable(records);
         }
 
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByGender(string gender)
         {
-            throw new NotImplementedException();
+            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE Gender='{gender}'";
+            var records = this.FindBySqlCommand(command);
+
+            return new RecordDatabaseEnumerable(records);
         }
 
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            throw new NotImplementedException();
+            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE LastName='{lastName}'";
+            var records = this.FindBySqlCommand(command);
+
+            return new RecordDatabaseEnumerable(records);
         }
 
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating)
         {
-            throw new NotImplementedException();
+            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE PersonalRating='{personalRating}'";
+            var records = this.FindBySqlCommand(command);
+
+            return new RecordDatabaseEnumerable(records);
         }
 
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindBySalary(string salary)
         {
-            throw new NotImplementedException();
+            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE Salary='{salary}'";
+            var records = this.FindBySqlCommand(command);
+
+            return new RecordDatabaseEnumerable(records);
         }
 
         /// <inheritdoc/>
         public FileCabinetRecord GetRecord(int id)
         {
-            throw new NotImplementedException();
+            ServerCommunicator.OpenServerConnection();
+            SqlCommand command = new SqlCommand();
+            command.Connection = ServerCommunicator.ServerConnection;
+            command.CommandText = $"SELECT * FROM {ServerCommunicator.TableName}";
+            var reader = command.ExecuteReader();
+
+            reader.Read();
+            var record = this.GetRecordByParseSqlDataReader(reader);
+
+            if (record == null)
+            {
+                throw new ArgumentNullException("Invalid record.");
+            }
+
+            return record;
         }
 
         /// <inheritdoc/>
@@ -153,28 +187,9 @@ namespace FileCabinetApp.Services
             {
                 while (reader.Read())
                 {
-                    object id = reader["Id"];
-                    object firstName = reader["FirstName"];
-                    object lastName = reader["LastName"];
-                    object birthDate = reader["DateOfBirth"];
-                    object personalRating = reader["PersonalRating"];
-                    object salary = reader["Salary"];
-                    object gender = reader["Gender"];
+                    var record = this.GetRecordByParseSqlDataReader(reader);
 
-                    FileCabinetRecord record = new FileCabinetRecord()
-                    {
-                        Id = (int)id,
-                        FirstName = (string)firstName,
-                        LastName = (string)lastName,
-                        DateOfBirth = (DateTime)birthDate,
-                        PersonalRating = (short)personalRating,
-                        Salary = (decimal)salary,
-                        Gender = Convert.ToChar(gender),
-                    };
-
-                    bool isValid = this.recordValidator.ValidateParameters(record);
-
-                    if (isValid)
+                    if (record != null)
                     {
                         records.Add(record);
                     }
@@ -209,7 +224,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void Purge()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Wrong service to use. Please, choose another one.");
         }
 
         /// <inheritdoc/>
@@ -219,15 +234,32 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public List<FileCabinetRecord> Select(string phrase, string memoizingKey, IRecordInputValidator inputValidator)
+        public List<FileCabinetRecord> Select(string phrase, string memoizingKey, IRecordInputValidator inputValidator) => this.Memoized(memoizingKey, x =>
         {
-            throw new NotImplementedException();
-        }
+            ConditionWhere where = new ConditionWhere(this, inputValidator);
+            var records = where.GetFilteredRecords(phrase);
+
+            return records;
+        });
 
         /// <inheritdoc/>
         public void Update(List<FileCabinetRecord> records)
         {
-            throw new NotImplementedException();
+            MemoizerService.RefreshMemoizer();
+
+            ServerCommunicator.OpenServerConnection();
+
+            for (int i = 0; i < records.Count; i++)
+            {
+                SqlCommand command = new SqlCommand();
+                command.CommandText = this.GetUpdateCommandWithRecord(records[i]);
+                command.Connection = ServerCommunicator.ServerConnection;
+                _ = command.ExecuteNonQuery();
+            }
+
+            ServerCommunicator.CloseServerConnection();
+
+            Console.WriteLine($"Records updating completed.");
         }
 
         private int GetUniqueId()
@@ -267,6 +299,81 @@ namespace FileCabinetApp.Services
             builder.Append($"'{record.Gender}');");
 
             return builder.ToString();
+        }
+
+        private string GetUpdateCommandWithRecord(FileCabinetRecord record)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append($"UPDATE {ServerCommunicator.TableName} SET ");
+            builder.Append($"FirstName='{record.FirstName}',");
+            builder.Append($"LastName='{record.LastName}',");
+            builder.Append($"DateOfBirth='{record.DateOfBirth.ToString("yyyy-MM-dd")}',");
+            builder.Append($"PersonalRating={record.PersonalRating},");
+            builder.Append($"Salary={record.Salary.ToString().Replace(',', '.')},");
+            builder.Append($"Gender='{record.Gender}' ");
+            builder.Append($"WHERE Id={record.Id};");
+
+            return builder.ToString();
+        }
+
+        private FileCabinetRecord? GetRecordByParseSqlDataReader(SqlDataReader reader)
+        {
+            object id = reader["Id"];
+            object firstName = reader["FirstName"];
+            object lastName = reader["LastName"];
+            object birthDate = reader["DateOfBirth"];
+            object personalRating = reader["PersonalRating"];
+            object salary = reader["Salary"];
+            object gender = reader["Gender"];
+
+            FileCabinetRecord record = new FileCabinetRecord()
+            {
+                Id = (int)id,
+                FirstName = (string)firstName,
+                LastName = (string)lastName,
+                DateOfBirth = (DateTime)birthDate,
+                PersonalRating = (short)personalRating,
+                Salary = (decimal)salary,
+                Gender = Convert.ToChar(gender),
+            };
+
+            bool isValid = this.recordValidator.ValidateParameters(record);
+
+            if (isValid)
+            {
+                return record;
+            }
+
+            return null;
+        }
+
+        private List<FileCabinetRecord> FindBySqlCommand(string input)
+        {
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+
+            ServerCommunicator.OpenServerConnection();
+
+            SqlCommand command = new SqlCommand();
+            command.Connection = ServerCommunicator.ServerConnection;
+            command.CommandText = input;
+            var reader = command.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    var record = this.GetRecordByParseSqlDataReader(reader);
+
+                    if (record != null)
+                    {
+                        records.Add(record);
+                    }
+                }
+            }
+
+            ServerCommunicator.CloseServerConnection();
+
+            return records;
         }
     }
 }

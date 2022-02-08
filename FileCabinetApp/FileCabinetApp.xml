@@ -671,6 +671,49 @@
             <param name="parameters">Record parameters.</param>
             <returns>Return validation result as boolean value.</returns>
         </member>
+        <member name="T:FileCabinetApp.Iterators.RecordDatabaseEnumerable">
+            <summary>
+            Iterator for <see cref="T:FileCabinetApp.Services.FileCabinetDatabaseService"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordDatabaseEnumerable.#ctor(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.RecordDatabaseEnumerable"/> class.
+            </summary>
+            <param name="records">Stored records in database.</param>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordDatabaseEnumerable.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordDatabaseEnumerable.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.Iterators.RecordDatabaseEnumerator">
+            <summary>
+            Database enumerator for records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordDatabaseEnumerator.#ctor(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.RecordDatabaseEnumerator"/> class.
+            </summary>
+            <param name="records">Stored records in database.</param>
+        </member>
+        <member name="P:FileCabinetApp.Iterators.RecordDatabaseEnumerator.Current">
+            <inheritdoc/>
+        </member>
+        <member name="P:FileCabinetApp.Iterators.RecordDatabaseEnumerator.System#Collections#IEnumerator#Current">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordDatabaseEnumerator.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordDatabaseEnumerator.MoveNext">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordDatabaseEnumerator.Reset">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Iterators.RecordFilesystemEnumerable">
             <summary>
             Iterator for <see cref="T:FileCabinetApp.Services.FileCabinetFileSystemService"/> class.

@@ -31,6 +31,7 @@ namespace FileCabinetApp.ServiceTools
             cellLengthArray = TablePrinter.AssignMinimalCellLengthArrayWithRecordValues(records, cellLengthArray, listOfParametersToPrint);
             string output = TablePrinter.GetPrintString(cellLengthArray, listOfParametersToPrint, records);
             Console.WriteLine(output);
+            Console.WriteLine($"{records.Count} records displayed");
         }
 
         private static string GetPrintString(int[] cellLengthArray, string[] parametersList, List<FileCabinetRecord> records)
