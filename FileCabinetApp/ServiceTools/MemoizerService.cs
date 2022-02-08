@@ -11,7 +11,7 @@ namespace FileCabinetApp.ServiceTools
     /// <summary>
     /// Class that holds memoized method for find purpuses in memory service.
     /// </summary>
-    internal static class MemoizerForMemoryService
+    internal static class MemoizerService
     {
         /// <summary>
         /// Holds function results.

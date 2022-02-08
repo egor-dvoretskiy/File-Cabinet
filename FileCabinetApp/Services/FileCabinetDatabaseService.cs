@@ -27,19 +27,66 @@ namespace FileCabinetApp.Services
         {
             this.recordValidator = recordValidator;
 
-            this.CheckTablePresenceInDatabase();
+            ServerCommunicator.CheckTablePresenceInDatabase();
         }
 
         /// <inheritdoc/>
         public bool CheckRecordPresence(int id)
         {
-            throw new NotImplementedException();
+            ServerCommunicator.OpenServerConnection();
+
+            SqlCommand command = new SqlCommand();
+            command.CommandText = $"SELECT * FROM {ServerCommunicator.TableName} WHERE Id={id}";
+            command.Connection = ServerCommunicator.ServerConnection;
+
+            var reader = command.ExecuteReader();
+            bool hasRecords = reader.HasRows;
+
+            ServerCommunicator.CloseServerConnection();
+
+            return hasRecords;
         }
 
         /// <inheritdoc/>
         public void CreateRecord(FileCabinetRecord record)
         {
-            throw new NotImplementedException();
+            try
+            {
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (!isValid)
+                {
+                    Console.WriteLine($"Record validation failed.");
+                    return;
+                }
+
+                record.Id = this.GetUniqueId();
+
+                ServerCommunicator.OpenServerConnection();
+                SqlCommand command = new SqlCommand();
+                command.Connection = ServerCommunicator.ServerConnection;
+                command.CommandText = this.GetInsertCommandWithRecord(record);
+                _ = command.ExecuteNonQuery();
+                ServerCommunicator.CloseServerConnection();
+
+                int position = this.GetRecordsCount() - 1;
+
+                this.AddRecordToDictionaries(record, position);
+
+                Console.WriteLine($"Record #{record.Id} is created.");
+            }
+            catch (ArgumentNullException argumentNullException)
+            {
+                Console.WriteLine(argumentNullException.Message);
+            }
+            catch (ArgumentOutOfRangeException argumentOutOfRangeException)
+            {
+                Console.WriteLine(argumentOutOfRangeException.Message);
+            }
+            catch (ArgumentException argumentException)
+            {
+                Console.WriteLine(argumentException.Message);
+            }
         }
 
         /// <inheritdoc/>
@@ -142,12 +189,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void GetStat()
         {
-            ServerCommunicator.OpenServerConnection();
-            SqlCommand command = new SqlCommand();
-            command.CommandText = "SELECT COUNT(*) FROM FileCabinetRecords;";
-            command.Connection = ServerCommunicator.ServerConnection;
-            var count = command.ExecuteScalar();
-            ServerCommunicator.CloseServerConnection();
+            int count = this.GetRecordsCount();
 
             Console.WriteLine($"Stored {count} record(s).");
         }
@@ -188,41 +230,41 @@ namespace FileCabinetApp.Services
             throw new NotImplementedException();
         }
 
-        private void CheckTablePresenceInDatabase()
+        private int GetUniqueId()
         {
-            ServerCommunicator.OpenServerConnection();
-            try
+            int id = 1;
+
+            while (this.CheckRecordPresence(id))
             {
-                Console.WriteLine($"Table '{ServerCommunicator.TableName}' creating...");
-                SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = this.GetCreateTableCommand(ServerCommunicator.TableName);
-                cmd.Connection = ServerCommunicator.ServerConnection;
-                _ = cmd.ExecuteNonQuery();
-                Console.WriteLine($"Table created.");
-            }
-            catch (SqlException sqlException)
-            {
-                Console.WriteLine(sqlException.Message);
-            }
-            catch (InvalidOperationException invalidOperationException)
-            {
-                Console.WriteLine(invalidOperationException.Message);
+                id++;
             }
 
-            ServerCommunicator.CloseServerConnection();
+            return id;
         }
 
-        private string GetCreateTableCommand(string tableName)
+        private int GetRecordsCount()
+        {
+            ServerCommunicator.OpenServerConnection();
+            SqlCommand command = new SqlCommand();
+            command.CommandText = $"SELECT COUNT(*) FROM {ServerCommunicator.TableName};";
+            command.Connection = ServerCommunicator.ServerConnection;
+            var count = command.ExecuteScalar();
+            ServerCommunicator.CloseServerConnection();
+
+            return (int)count;
+        }
+
+        private string GetInsertCommandWithRecord(FileCabinetRecord record)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append($"CREATE TABLE {ServerCommunicator.TableName} (");
-            builder.Append("Id INT NOT NULL,");
-            builder.Append("FirstName VARCHAR(120) NOT NULL,");
-            builder.Append("LastName VARCHAR(120) NOT NULL,");
-            builder.Append("DateOfBirth DATE NOT NULL,");
-            builder.Append("PersonalRating SMALLINT NOT NULL,");
-            builder.Append("Salary DECIMAL(18,3) NOT NULL,");
-            builder.Append("Gender CHAR(1) NOT NULL)");
+            builder.Append($"INSERT INTO {ServerCommunicator.TableName} (Id,FirstName,LastName,DateOfBirth,PersonalRating,Salary,Gender) VALUES (");
+            builder.Append($"{record.Id},");
+            builder.Append($"'{record.FirstName}',");
+            builder.Append($"'{record.LastName}',");
+            builder.Append($"'{record.DateOfBirth.ToString("yyyy-MM-dd")}',");
+            builder.Append($"{record.PersonalRating},");
+            builder.Append($"{record.Salary.ToString().Replace(',', '.')},");
+            builder.Append($"'{record.Gender}');");
 
             return builder.ToString();
         }

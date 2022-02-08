@@ -1244,17 +1244,17 @@
             <param name="input">Input string.</param>
             <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
         </member>
-        <member name="T:FileCabinetApp.ServiceTools.MemoizerForMemoryService">
+        <member name="T:FileCabinetApp.ServiceTools.MemoizerService">
             <summary>
             Class that holds memoized method for find purpuses in memory service.
             </summary>
         </member>
-        <member name="F:FileCabinetApp.ServiceTools.MemoizerForMemoryService.cache">
+        <member name="F:FileCabinetApp.ServiceTools.MemoizerService.cache">
             <summary>
             Holds function results.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.ServiceTools.MemoizerForMemoryService.Memoized``2(System.Object,``0,System.Func{``0,``1},System.String)">
+        <member name="M:FileCabinetApp.ServiceTools.MemoizerService.Memoized``2(System.Object,``0,System.Func{``0,``1},System.String)">
             <summary>
             Memoize function results.
             </summary>
@@ -1267,12 +1267,12 @@
             <returns>Expected output.</returns>
             <exception cref="T:System.ArgumentNullException">Throws when contex or caller's name is null.</exception>
         </member>
-        <member name="M:FileCabinetApp.ServiceTools.MemoizerForMemoryService.RefreshMemoizer">
+        <member name="M:FileCabinetApp.ServiceTools.MemoizerService.RefreshMemoizer">
             <summary>
             Clears cache.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.ServiceTools.MemoizerForMemoryService.FormIdentificatorForMemoizing(System.String)">
+        <member name="M:FileCabinetApp.ServiceTools.MemoizerService.FormIdentificatorForMemoizing(System.String)">
             <summary>
             Forming string for memoizing.
             </summary>
@@ -1307,6 +1307,18 @@
         <member name="M:FileCabinetApp.ServiceTools.ServerCommunicator.CloseServerConnection">
             <summary>
             Close server connection.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.ServerCommunicator.GetSqlDataReader(System.String)">
+            <summary>
+            Gets data reader by command.
+            </summary>
+            <param name="inputCommand">Input command to interact with database.</param>
+            <returns>Sql Data Reader.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.ServerCommunicator.CheckTablePresenceInDatabase">
+            <summary>
+            Check table presence in database.
             </summary>
         </member>
         <member name="T:FileCabinetApp.ServiceTools.ServiceBufferCommunicator">

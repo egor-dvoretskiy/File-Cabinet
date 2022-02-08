@@ -272,7 +272,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void Delete(List<int> ids)
         {
-            MemoizerForMemoryService.RefreshMemoizer();
+            MemoizerService.RefreshMemoizer();
 
             for (int i = 0; i < ids.Count; i++)
             {
@@ -289,7 +289,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void InsertRecord(FileCabinetRecord record)
         {
-            MemoizerForMemoryService.RefreshMemoizer();
+            MemoizerService.RefreshMemoizer();
 
             try
             {
@@ -330,7 +330,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void Update(List<FileCabinetRecord> records)
         {
-            MemoizerForMemoryService.RefreshMemoizer();
+            MemoizerService.RefreshMemoizer();
 
             for (int i = 0; i < records.Count; i++)
             {

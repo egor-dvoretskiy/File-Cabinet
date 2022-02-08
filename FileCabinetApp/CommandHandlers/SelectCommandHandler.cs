@@ -75,7 +75,7 @@ namespace FileCabinetApp.CommandHandlers
                     }
 
                     string condition = splitedParams.Last();
-                    string memoizerKey = MemoizerForMemoryService.FormIdentificatorForMemoizing(condition);
+                    string memoizerKey = MemoizerService.FormIdentificatorForMemoizing(condition);
                     var filteredRecords = this.service.Select(condition, memoizerKey, this.inputValidator);
 
                     parametersToPrint = splitedParams.First().Equals("*", StringComparison.OrdinalIgnoreCase) ? this.allParametersToPrint : splitedParams.First();

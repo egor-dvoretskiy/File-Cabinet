@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 
-#pragma warning disable SA1401 // Fields should be private
+#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
 namespace FileCabinetApp.ServiceTools
 {
     /// <summary>
@@ -26,7 +26,7 @@ namespace FileCabinetApp.ServiceTools
         /// <summary>
         /// Instance of server connection.
         /// </summary>
-        internal static SqlConnection ServerConnection = new SqlConnection(ConnectionString);
+        internal static readonly SqlConnection ServerConnection = new SqlConnection(ConnectionString);
 
         /// <summary>
         /// Open server communication.
@@ -63,6 +63,65 @@ namespace FileCabinetApp.ServiceTools
             {
                 Console.WriteLine(sqlException.Message);
             }
+        }
+
+        /// <summary>
+        /// Gets data reader by command.
+        /// </summary>
+        /// <param name="inputCommand">Input command to interact with database.</param>
+        /// <returns>Sql Data Reader.</returns>
+        internal static SqlDataReader GetSqlDataReader(string inputCommand)
+        {
+            ServerCommunicator.OpenServerConnection();
+            SqlCommand command = new SqlCommand();
+            command.CommandText = inputCommand;
+            command.Connection = ServerCommunicator.ServerConnection;
+            var reader = command.ExecuteReader();
+            ServerCommunicator.CloseServerConnection();
+
+            return reader;
+        }
+
+        /// <summary>
+        /// Check table presence in database.
+        /// </summary>
+        internal static void CheckTablePresenceInDatabase()
+        {
+            ServerCommunicator.OpenServerConnection();
+            try
+            {
+                Console.WriteLine($"Table '{ServerCommunicator.TableName}' creating...");
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandText = ServerCommunicator.GetCreateTableCommand(ServerCommunicator.TableName);
+                cmd.Connection = ServerCommunicator.ServerConnection;
+                _ = cmd.ExecuteNonQuery();
+                Console.WriteLine($"Table created.");
+            }
+            catch (SqlException sqlException)
+            {
+                Console.WriteLine(sqlException.Message);
+            }
+            catch (InvalidOperationException invalidOperationException)
+            {
+                Console.WriteLine(invalidOperationException.Message);
+            }
+
+            ServerCommunicator.CloseServerConnection();
+        }
+
+        private static string GetCreateTableCommand(string tableName)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append($"CREATE TABLE {ServerCommunicator.TableName} (");
+            builder.Append("Id INT NOT NULL,");
+            builder.Append("FirstName VARCHAR(120) NOT NULL,");
+            builder.Append("LastName VARCHAR(120) NOT NULL,");
+            builder.Append("DateOfBirth DATE NOT NULL,");
+            builder.Append("PersonalRating SMALLINT NOT NULL,");
+            builder.Append("Salary DECIMAL(18,3) NOT NULL,");
+            builder.Append("Gender CHAR(1) NOT NULL)");
+
+            return builder.ToString();
         }
     }
 }
