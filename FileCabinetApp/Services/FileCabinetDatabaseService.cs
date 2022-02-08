@@ -142,7 +142,14 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void GetStat()
         {
-            throw new NotImplementedException();
+            ServerCommunicator.OpenServerConnection();
+            SqlCommand command = new SqlCommand();
+            command.CommandText = "SELECT COUNT(*) FROM FileCabinetRecords;";
+            command.Connection = ServerCommunicator.ServerConnection;
+            var count = command.ExecuteScalar();
+            ServerCommunicator.CloseServerConnection();
+
+            Console.WriteLine($"Stored {count} record(s).");
         }
 
         /// <inheritdoc/>

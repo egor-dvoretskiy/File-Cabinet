@@ -37,7 +37,7 @@ namespace FileCabinetApp.ServiceTools
             {
                 ServerConnection.Open();
 
-                Console.WriteLine($"-{Environment.NewLine}The connection to server('{ServerConnection.DataSource}') is opened.");
+                // Console.WriteLine($"-{Environment.NewLine}The connection to server('{ServerConnection.DataSource}') is opened.");
             }
             catch (SqlException sqlException)
             {
@@ -55,7 +55,8 @@ namespace FileCabinetApp.ServiceTools
                 if (ServerConnection.State == System.Data.ConnectionState.Open)
                 {
                     ServerConnection.Close();
-                    Console.WriteLine($"The connection is closed.{Environment.NewLine}-");
+
+                    // Console.WriteLine($"The connection is closed.{Environment.NewLine}-");
                 }
             }
             catch (SqlException sqlException)
