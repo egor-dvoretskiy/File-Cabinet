@@ -37,9 +37,13 @@ namespace FileCabinetApp.Services
         {
             ServerCommunicator.OpenServerConnection();
 
+            string sqlExpression = $"SELECT * FROM {ServerCommunicator.TableName} WHERE Id=@id";
+
+            SqlParameter parameter = new SqlParameter("@id", id);
             SqlCommand command = new SqlCommand();
-            command.CommandText = $"SELECT * FROM {ServerCommunicator.TableName} WHERE Id={id}";
+            command.CommandText = sqlExpression;
             command.Connection = ServerCommunicator.ServerConnection;
+            command.Parameters.Add(parameter);
 
             var reader = command.ExecuteReader();
             bool hasRecords = reader.HasRows;
@@ -65,10 +69,13 @@ namespace FileCabinetApp.Services
                 record.Id = this.GetUniqueId();
 
                 ServerCommunicator.OpenServerConnection();
+
                 SqlCommand command = new SqlCommand();
                 command.Connection = ServerCommunicator.ServerConnection;
                 command.CommandText = this.GetInsertCommandWithRecord(record);
+                this.AssignRecordParametersToCommand(ref command, record);
                 _ = command.ExecuteNonQuery();
+
                 ServerCommunicator.CloseServerConnection();
 
                 Console.WriteLine($"Record #{record.Id} is created.");
@@ -96,9 +103,13 @@ namespace FileCabinetApp.Services
 
             for (int i = 0; i < ids.Count; i++)
             {
+                string sqlExpression = $"DELETE FROM {ServerCommunicator.TableName} WHERE Id=@id";
+
+                SqlParameter parameter = new SqlParameter("@id", ids[i]);
                 SqlCommand command = new SqlCommand();
-                command.CommandText = $"DELETE FROM {ServerCommunicator.TableName} WHERE Id={ids[i]}";
+                command.CommandText = sqlExpression;
                 command.Connection = ServerCommunicator.ServerConnection;
+                command.Parameters.Add(parameter);
                 _ = command.ExecuteNonQuery();
             }
 
@@ -110,8 +121,9 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate)
         {
-            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE DateOfBirth='{birthDate}'";
-            var records = this.FindBySqlCommand(command);
+            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE DateOfBirth=@birthDate";
+            SqlParameter parameter = new SqlParameter("@birthDate", birthDate);
+            var records = this.FindBySqlCommand(command, parameter);
 
             return new RecordDatabaseEnumerable(records);
         }
@@ -119,8 +131,9 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE FirstName='{firstName}'";
-            var records = this.FindBySqlCommand(command);
+            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE FirstName=@firstName";
+            SqlParameter parameter = new SqlParameter("@firstName", firstName);
+            var records = this.FindBySqlCommand(command, parameter);
 
             return new RecordDatabaseEnumerable(records);
         }
@@ -128,8 +141,9 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByGender(string gender)
         {
-            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE Gender='{gender}'";
-            var records = this.FindBySqlCommand(command);
+            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE Gender=@gender";
+            SqlParameter parameter = new SqlParameter("@gender", gender);
+            var records = this.FindBySqlCommand(command, parameter);
 
             return new RecordDatabaseEnumerable(records);
         }
@@ -137,8 +151,9 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE LastName='{lastName}'";
-            var records = this.FindBySqlCommand(command);
+            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE LastName=@lastName";
+            SqlParameter parameter = new SqlParameter("@lastName", lastName);
+            var records = this.FindBySqlCommand(command, parameter);
 
             return new RecordDatabaseEnumerable(records);
         }
@@ -146,8 +161,9 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating)
         {
-            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE PersonalRating='{personalRating}'";
-            var records = this.FindBySqlCommand(command);
+            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE PersonalRating=@personalRating";
+            SqlParameter parameter = new SqlParameter("@personalRating", personalRating);
+            var records = this.FindBySqlCommand(command, parameter);
 
             return new RecordDatabaseEnumerable(records);
         }
@@ -155,8 +171,9 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindBySalary(string salary)
         {
-            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE Salary='{salary}'";
-            var records = this.FindBySqlCommand(command);
+            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE Salary=@salary";
+            SqlParameter parameter = new SqlParameter("@salary", salary);
+            var records = this.FindBySqlCommand(command, parameter);
 
             return new RecordDatabaseEnumerable(records);
         }
@@ -239,10 +256,13 @@ namespace FileCabinetApp.Services
                 }
 
                 ServerCommunicator.OpenServerConnection();
+
                 SqlCommand command = new SqlCommand();
                 command.Connection = ServerCommunicator.ServerConnection;
                 command.CommandText = this.GetInsertCommandWithRecord(record);
+                this.AssignRecordParametersToCommand(ref command, record);
                 _ = command.ExecuteNonQuery();
+
                 ServerCommunicator.CloseServerConnection();
 
                 Console.WriteLine($"Record was successfully inserted in database");
@@ -285,6 +305,7 @@ namespace FileCabinetApp.Services
                 SqlCommand command = new SqlCommand();
                 command.Connection = ServerCommunicator.ServerConnection;
                 command.CommandText = this.GetInsertCommandWithRecord(unloadRecords[i]);
+                this.AssignRecordParametersToCommand(ref command, unloadRecords[i]);
                 _ = command.ExecuteNonQuery();
             }
 
@@ -312,6 +333,7 @@ namespace FileCabinetApp.Services
                 SqlCommand command = new SqlCommand();
                 command.CommandText = this.GetUpdateCommandWithRecord(records[i]);
                 command.Connection = ServerCommunicator.ServerConnection;
+                this.AssignRecordParametersToCommand(ref command, records[i]);
                 _ = command.ExecuteNonQuery();
             }
 
@@ -348,13 +370,13 @@ namespace FileCabinetApp.Services
         {
             StringBuilder builder = new StringBuilder();
             builder.Append($"INSERT INTO {ServerCommunicator.TableName} (Id,FirstName,LastName,DateOfBirth,PersonalRating,Salary,Gender) VALUES (");
-            builder.Append($"{record.Id},");
-            builder.Append($"'{record.FirstName}',");
-            builder.Append($"'{record.LastName}',");
-            builder.Append($"'{record.DateOfBirth.ToString("yyyy-MM-dd")}',");
-            builder.Append($"{record.PersonalRating},");
-            builder.Append($"{record.Salary.ToString().Replace(',', '.')},");
-            builder.Append($"'{record.Gender}');");
+            builder.Append($"@id,");
+            builder.Append($"@firstName,");
+            builder.Append($"@lastName,");
+            builder.Append($"@dateOfBirth,");
+            builder.Append($"@personalRating,");
+            builder.Append($"@salary,");
+            builder.Append($"@gender);");
 
             return builder.ToString();
         }
@@ -363,15 +385,34 @@ namespace FileCabinetApp.Services
         {
             StringBuilder builder = new StringBuilder();
             builder.Append($"UPDATE {ServerCommunicator.TableName} SET ");
-            builder.Append($"FirstName='{record.FirstName}',");
-            builder.Append($"LastName='{record.LastName}',");
-            builder.Append($"DateOfBirth='{record.DateOfBirth.ToString("yyyy-MM-dd")}',");
-            builder.Append($"PersonalRating={record.PersonalRating},");
-            builder.Append($"Salary={record.Salary.ToString().Replace(',', '.')},");
-            builder.Append($"Gender='{record.Gender}' ");
-            builder.Append($"WHERE Id={record.Id};");
+            builder.Append($"FirstName=@firstName,");
+            builder.Append($"LastName=@lastName,");
+            builder.Append($"DateOfBirth=@dateOfBirth,");
+            builder.Append($"PersonalRating=@personalRating,");
+            builder.Append($"Salary=@salary,");
+            builder.Append($"Gender=@gender ");
+            builder.Append($"WHERE Id=@id;");
 
             return builder.ToString();
+        }
+
+        private void AssignRecordParametersToCommand(ref SqlCommand command, FileCabinetRecord record)
+        {
+            SqlParameter parameterId = new SqlParameter("@id", record.Id);
+            SqlParameter parameterFirstName = new SqlParameter("@firstName", record.FirstName);
+            SqlParameter parameterLastName = new SqlParameter("@lastName", record.LastName);
+            SqlParameter parameterDateOfBirth = new SqlParameter("@dateOfBirth", record.DateOfBirth.ToString("yyyy-MM-dd"));
+            SqlParameter parameterPersonalRating = new SqlParameter("@personalRating", record.PersonalRating);
+            SqlParameter parameterSalary = new SqlParameter("@salary", record.Salary.ToString().Replace(',', '.'));
+            SqlParameter parameterGender = new SqlParameter("@gender", record.Gender);
+
+            command.Parameters.Add(parameterId);
+            command.Parameters.Add(parameterFirstName);
+            command.Parameters.Add(parameterLastName);
+            command.Parameters.Add(parameterDateOfBirth);
+            command.Parameters.Add(parameterPersonalRating);
+            command.Parameters.Add(parameterSalary);
+            command.Parameters.Add(parameterGender);
         }
 
         private FileCabinetRecord? GetRecordByParseSqlDataReader(SqlDataReader reader)
@@ -405,7 +446,7 @@ namespace FileCabinetApp.Services
             return null;
         }
 
-        private List<FileCabinetRecord> FindBySqlCommand(string input)
+        private List<FileCabinetRecord> FindBySqlCommand(string input, SqlParameter parameter)
         {
             List<FileCabinetRecord> records = new List<FileCabinetRecord>();
 
@@ -414,6 +455,7 @@ namespace FileCabinetApp.Services
             SqlCommand command = new SqlCommand();
             command.Connection = ServerCommunicator.ServerConnection;
             command.CommandText = input;
+            command.Parameters.Add(parameter);
             var reader = command.ExecuteReader();
 
             if (reader.HasRows)

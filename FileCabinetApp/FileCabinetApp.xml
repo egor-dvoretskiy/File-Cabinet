@@ -356,11 +356,6 @@
             </summary>
             <returns>List if data.</returns>
         </member>
-        <member name="T:FileCabinetApp.FormatReaders.FileCabinetRecordDatabaseReader">
-            <summary>
-            Class provides reading from database.
-            </summary>
-        </member>
         <member name="T:FileCabinetApp.FormatReaders.FileCabinetRecordXmlReader">
             <summary>
             Class provides Xml file reading.
