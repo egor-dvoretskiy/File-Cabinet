@@ -113,7 +113,7 @@ namespace FileCabinetApp.ServiceTools
         {
             StringBuilder builder = new StringBuilder();
             builder.Append($"CREATE TABLE {ServerCommunicator.TableName} (");
-            builder.Append("Id INT NOT NULL,");
+            builder.Append("Id INT NOT NULL PRIMARY KEY,");
             builder.Append("FirstName VARCHAR(120) NOT NULL,");
             builder.Append("LastName VARCHAR(120) NOT NULL,");
             builder.Append("DateOfBirth DATE NOT NULL,");

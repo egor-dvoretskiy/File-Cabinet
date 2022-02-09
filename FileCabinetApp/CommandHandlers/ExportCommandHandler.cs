@@ -86,9 +86,6 @@ namespace FileCabinetApp.CommandHandlers
                         case "xml":
                             snapshot.SaveToXml(writer);
                             break;
-                        case "database":
-                            // snapshot.SaveToDatabase();
-                            break;
                         default:
                             Console.WriteLine("There is no such format to export.");
                             break;

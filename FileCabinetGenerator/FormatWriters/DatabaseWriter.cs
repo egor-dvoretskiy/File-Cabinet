@@ -11,7 +11,8 @@ namespace FileCabinetGenerator.FormatWriters
     internal static class DatabaseWriter
     {
         internal const string ConnectionString = "Data Source=PC1-5514;Initial Catalog=FileCabinet;Integrated Security=True;TrustServerCertificate=True;";
-        internal const string TableName = "FileCabinetRecords";
+        //internal const string TableName = "FileCabinetRecords";
+        internal const string TableName = "table1";
 
         internal static void Write(FileCabinetRecord[] records)
         {

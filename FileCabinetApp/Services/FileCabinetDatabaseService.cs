@@ -276,7 +276,19 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
         {
-            throw new NotImplementedException();
+            var unloadRecords = fileCabinetServiceSnapshot.Records.ToList();
+
+            ServerCommunicator.OpenServerConnection();
+
+            for (int i = 0; i < unloadRecords.Count; i++)
+            {
+                SqlCommand command = new SqlCommand();
+                command.Connection = ServerCommunicator.ServerConnection;
+                command.CommandText = this.GetInsertCommandWithRecord(unloadRecords[i]);
+                _ = command.ExecuteNonQuery();
+            }
+
+            ServerCommunicator.CloseServerConnection();
         }
 
         /// <inheritdoc/>

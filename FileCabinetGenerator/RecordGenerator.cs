@@ -14,7 +14,7 @@ namespace FileCabinetGenerator
 
         private static int currentId = 0; 
 
-        private static Tuple<DateTime, DateTime> birthDateLimits = new Tuple<DateTime, DateTime>(new DateTime(1950,1,1), DateTime.Now);
+        private static Tuple<DateTime, DateTime> birthDateLimits = new Tuple<DateTime, DateTime>(new DateTime(1900,1,1), DateTime.Now);
 
         private static Random random = new Random();
 
