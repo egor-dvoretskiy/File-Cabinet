@@ -66,6 +66,6 @@ namespace FileCabinetApp
         /// <value>
         /// Person's gender.
         /// </value>
-        public char Gender { get; set; }
+        public char Gender { get; set; } = char.MinValue;
     }
 }

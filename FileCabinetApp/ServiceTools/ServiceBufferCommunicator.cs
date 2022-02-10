@@ -17,7 +17,7 @@ namespace FileCabinetApp.ServiceTools
         /// <param name="bytesRecord">Acquired from file buffer.</param>
         /// <param name="maxNameLength">Maximum length of name in binary file.</param>
         /// <returns>Returns read record and isDeleted flag.</returns>
-        public static Tuple<FileCabinetRecord, short> ReadRecordFromBuffer(byte[] bytesRecord, byte maxNameLength)
+        internal static Tuple<FileCabinetRecord, short> ReadRecordFromBuffer(byte[] bytesRecord, byte maxNameLength)
         {
             short isRecordDeleted = 0;
             FileCabinetRecord record = new FileCabinetRecord();

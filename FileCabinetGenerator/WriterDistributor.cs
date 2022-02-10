@@ -33,5 +33,17 @@ namespace FileCabinetGenerator
 
             XmlWriter.Write(writer, records);
         }
+
+        public static void WriteToDatabase(int recordAmount)
+        {
+            FileCabinetRecord[] records = new FileCabinetRecord[recordAmount];
+
+            for (int i = 0; i < recordAmount; i++)
+            {
+                records[i] = RecordGenerator.GetRecord();
+            }
+
+            DatabaseWriter.Write(records);
+        }
     }
 }

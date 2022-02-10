@@ -1,0 +1,127 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
+
+#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
+namespace FileCabinetApp.ServiceTools
+{
+    /// <summary>
+    /// Class provides communication with server.
+    /// </summary>
+    internal static class ServerCommunicator
+    {
+        /// <summary>
+        /// String to connect with server.
+        /// </summary>
+        internal const string ConnectionString = "Data Source=PC1-5514;Initial Catalog=FileCabinet;Integrated Security=True;TrustServerCertificate=True;";
+
+        /// <summary>
+        /// Name of the table on the server's side.
+        /// </summary>
+        internal const string TableName = "FileCabinetRecords";
+
+        /// <summary>
+        /// Instance of server connection.
+        /// </summary>
+        internal static readonly SqlConnection ServerConnection = new SqlConnection(ConnectionString);
+
+        /// <summary>
+        /// Open server communication.
+        /// </summary>
+        internal static void OpenServerConnection()
+        {
+            try
+            {
+                ServerConnection.Open();
+
+                // Console.WriteLine($"-{Environment.NewLine}The connection to server('{ServerConnection.DataSource}') is opened.");
+            }
+            catch (SqlException sqlException)
+            {
+                Console.WriteLine(sqlException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Close server connection.
+        /// </summary>
+        internal static void CloseServerConnection()
+        {
+            try
+            {
+                if (ServerConnection.State == System.Data.ConnectionState.Open)
+                {
+                    ServerConnection.Close();
+
+                    // Console.WriteLine($"The connection is closed.{Environment.NewLine}-");
+                }
+            }
+            catch (SqlException sqlException)
+            {
+                Console.WriteLine(sqlException.Message);
+            }
+        }
+
+        /// <summary>
+        /// Gets data reader by command.
+        /// </summary>
+        /// <param name="inputCommand">Input command to interact with database.</param>
+        /// <returns>Sql Data Reader.</returns>
+        internal static SqlDataReader GetSqlDataReader(string inputCommand)
+        {
+            ServerCommunicator.OpenServerConnection();
+            SqlCommand command = new SqlCommand();
+            command.CommandText = inputCommand;
+            command.Connection = ServerCommunicator.ServerConnection;
+            var reader = command.ExecuteReader();
+            ServerCommunicator.CloseServerConnection();
+
+            return reader;
+        }
+
+        /// <summary>
+        /// Check table presence in database.
+        /// </summary>
+        internal static void CheckTablePresenceInDatabase()
+        {
+            ServerCommunicator.OpenServerConnection();
+            try
+            {
+                Console.WriteLine($"Table '{ServerCommunicator.TableName}' creating...");
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandText = ServerCommunicator.GetCreateTableCommand(ServerCommunicator.TableName);
+                cmd.Connection = ServerCommunicator.ServerConnection;
+                _ = cmd.ExecuteNonQuery();
+                Console.WriteLine($"Table created.");
+            }
+            catch (SqlException sqlException)
+            {
+                Console.WriteLine(sqlException.Message);
+            }
+            catch (InvalidOperationException invalidOperationException)
+            {
+                Console.WriteLine(invalidOperationException.Message);
+            }
+
+            ServerCommunicator.CloseServerConnection();
+        }
+
+        private static string GetCreateTableCommand(string tableName)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append($"CREATE TABLE {ServerCommunicator.TableName} (");
+            builder.Append("Id INT NOT NULL PRIMARY KEY,");
+            builder.Append("FirstName VARCHAR(120) NOT NULL,");
+            builder.Append("LastName VARCHAR(120) NOT NULL,");
+            builder.Append("DateOfBirth DATE NOT NULL,");
+            builder.Append("PersonalRating SMALLINT NOT NULL,");
+            builder.Append("Salary DECIMAL(18,3) NOT NULL,");
+            builder.Append("Gender CHAR(1) NOT NULL)");
+
+            return builder.ToString();
+        }
+    }
+}

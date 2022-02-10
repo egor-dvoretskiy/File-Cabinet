@@ -397,22 +397,16 @@
             </summary>
             <param name="type">Type of data.</param>
         </member>
-        <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
+        <member name="T:FileCabinetApp.FormatWriters.FileCabinetRecordDatabaseWriter">
             <summary>
-            Contains logics to work with xml.
+            Writer to database.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.#ctor(System.IO.TextWriter)">
+        <member name="M:FileCabinetApp.FormatWriters.FileCabinetRecordDatabaseWriter.Write(FileCabinetApp.FileCabinetRecord[])">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
+            Writes to database.
             </summary>
-            <param name="writer">Writer.</param>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord[])">
-            <summary>
-            Writes to xml file.
-            </summary>
-            <param name="records">Records to write.</param>
+            <param name="records">File cabinet records.</param>
         </member>
         <member name="T:FileCabinetApp.FormatWriters.ReflectedRecordParams">
             <summary>
@@ -432,6 +426,23 @@
             </summary>
             <param name="type">Neccessary type to get names in.</param>
             <returns>Concatenated properties values.</returns>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
+            <summary>
+            Contains logics to work with xml.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.#ctor(System.IO.TextWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+            <param name="writer">Writer.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord[])">
+            <summary>
+            Writes to xml file.
+            </summary>
+            <param name="records">Records to write.</param>
         </member>
         <member name="T:FileCabinetApp.Interfaces.ICommandHandler">
             <summary>
@@ -655,6 +666,49 @@
             <param name="parameters">Record parameters.</param>
             <returns>Return validation result as boolean value.</returns>
         </member>
+        <member name="T:FileCabinetApp.Iterators.RecordDatabaseEnumerable">
+            <summary>
+            Iterator for <see cref="T:FileCabinetApp.Services.FileCabinetDatabaseService"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordDatabaseEnumerable.#ctor(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.RecordDatabaseEnumerable"/> class.
+            </summary>
+            <param name="records">Stored records in database.</param>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordDatabaseEnumerable.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordDatabaseEnumerable.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.Iterators.RecordDatabaseEnumerator">
+            <summary>
+            Database enumerator for records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordDatabaseEnumerator.#ctor(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.RecordDatabaseEnumerator"/> class.
+            </summary>
+            <param name="records">Stored records in database.</param>
+        </member>
+        <member name="P:FileCabinetApp.Iterators.RecordDatabaseEnumerator.Current">
+            <inheritdoc/>
+        </member>
+        <member name="P:FileCabinetApp.Iterators.RecordDatabaseEnumerator.System#Collections#IEnumerator#Current">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordDatabaseEnumerator.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordDatabaseEnumerator.MoveNext">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.RecordDatabaseEnumerator.Reset">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Iterators.RecordFilesystemEnumerable">
             <summary>
             Iterator for <see cref="T:FileCabinetApp.Services.FileCabinetFileSystemService"/> class.
@@ -819,6 +873,71 @@
             Init Method.
             </summary>
             <param name="args">Default parameters.</param>
+        </member>
+        <member name="T:FileCabinetApp.Services.FileCabinetDatabaseService">
+            <summary>
+            Database service class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.#ctor(FileCabinetApp.Interfaces.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetDatabaseService"/> class.
+            </summary>
+            <param name="recordValidator">Validator for record.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.CheckRecordPresence(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.CreateRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.Delete(System.Collections.Generic.List{System.Int32})">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.FindByBirthDate(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.FindByGender(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.FindByPersonalRating(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.FindBySalary(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.GetRecord(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.InsertRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.Restore(FileCabinetApp.ServiceTools.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.Select(System.String,System.String,FileCabinetApp.Interfaces.IRecordInputValidator)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetDatabaseService.Update(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Services.FileCabinetDictionary">
             <summary>
@@ -1163,17 +1282,17 @@
             <param name="input">Input string.</param>
             <returns>Tuple values (isValid, errorMessage, resultOfConverting).</returns>
         </member>
-        <member name="T:FileCabinetApp.ServiceTools.MemoizerForMemoryService">
+        <member name="T:FileCabinetApp.ServiceTools.MemoizerService">
             <summary>
             Class that holds memoized method for find purpuses in memory service.
             </summary>
         </member>
-        <member name="F:FileCabinetApp.ServiceTools.MemoizerForMemoryService.cache">
+        <member name="F:FileCabinetApp.ServiceTools.MemoizerService.cache">
             <summary>
             Holds function results.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.ServiceTools.MemoizerForMemoryService.Memoized``2(System.Object,``0,System.Func{``0,``1},System.String)">
+        <member name="M:FileCabinetApp.ServiceTools.MemoizerService.Memoized``2(System.Object,``0,System.Func{``0,``1},System.String)">
             <summary>
             Memoize function results.
             </summary>
@@ -1186,17 +1305,59 @@
             <returns>Expected output.</returns>
             <exception cref="T:System.ArgumentNullException">Throws when contex or caller's name is null.</exception>
         </member>
-        <member name="M:FileCabinetApp.ServiceTools.MemoizerForMemoryService.RefreshMemoizer">
+        <member name="M:FileCabinetApp.ServiceTools.MemoizerService.RefreshMemoizer">
             <summary>
             Clears cache.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.ServiceTools.MemoizerForMemoryService.FormIdentificatorForMemoizing(System.String)">
+        <member name="M:FileCabinetApp.ServiceTools.MemoizerService.FormIdentificatorForMemoizing(System.String)">
             <summary>
             Forming string for memoizing.
             </summary>
             <param name="phrase">Init phrase.</param>
             <returns>Returns string for memoization.</returns>
+        </member>
+        <member name="T:FileCabinetApp.ServiceTools.ServerCommunicator">
+            <summary>
+            Class provides communication with server.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.ServiceTools.ServerCommunicator.ConnectionString">
+            <summary>
+            String to connect with server.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.ServiceTools.ServerCommunicator.TableName">
+            <summary>
+            Name of the table on the server's side.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.ServiceTools.ServerCommunicator.ServerConnection">
+            <summary>
+            Instance of server connection.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.ServerCommunicator.OpenServerConnection">
+            <summary>
+            Open server communication.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.ServerCommunicator.CloseServerConnection">
+            <summary>
+            Close server connection.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.ServerCommunicator.GetSqlDataReader(System.String)">
+            <summary>
+            Gets data reader by command.
+            </summary>
+            <param name="inputCommand">Input command to interact with database.</param>
+            <returns>Sql Data Reader.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.ServerCommunicator.CheckTablePresenceInDatabase">
+            <summary>
+            Check table presence in database.
+            </summary>
         </member>
         <member name="T:FileCabinetApp.ServiceTools.ServiceBufferCommunicator">
             <summary>
