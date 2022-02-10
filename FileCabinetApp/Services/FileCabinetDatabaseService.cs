@@ -17,7 +17,7 @@ namespace FileCabinetApp.Services
     /// <summary>
     /// Database service class.
     /// </summary>
-    internal class FileCabinetDatabaseService : FileCabinetDictionary, IFileCabinetService
+    internal class FileCabinetDatabaseService : IFileCabinetService
     {
         private readonly IRecordValidator recordValidator;
 
@@ -252,7 +252,7 @@ namespace FileCabinetApp.Services
                     throw new ArgumentException("Record you want to add is not valid. Please try again!");
                 }
 
-                if (this.storedIdRecords.ContainsKey(record.Id))
+                if (this.CheckRecordPresence(record.Id))
                 {
                     throw new ArgumentException($"Memory is already has a record #{record.Id}.");
                 }
