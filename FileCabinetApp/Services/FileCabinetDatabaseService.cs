@@ -190,6 +190,8 @@ namespace FileCabinetApp.Services
             reader.Read();
             var record = this.GetRecordByParseSqlDataReader(reader);
 
+            ServerCommunicator.CloseServerConnection();
+
             if (record == null)
             {
                 throw new ArgumentNullException("Invalid record.");
