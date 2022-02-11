@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using FileCabinetApp.ConditionWords;
 using FileCabinetApp.Interfaces;
 using FileCabinetApp.ServiceTools;
 using Microsoft.EntityFrameworkCore;
@@ -160,10 +161,13 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public List<FileCabinetRecord> Select(string phrase, string memoizingKey, IRecordInputValidator inputValidator)
+        public List<FileCabinetRecord> Select(string phrase, string memoizingKey, IRecordInputValidator inputValidator) => this.Memoized(memoizingKey, x =>
         {
-            throw new NotImplementedException();
-        }
+            ConditionWhere where = new ConditionWhere(this, inputValidator);
+            var records = where.GetFilteredRecords(phrase);
+
+            return records;
+        });
 
         /// <inheritdoc/>
         public void Update(List<FileCabinetRecord> records)
