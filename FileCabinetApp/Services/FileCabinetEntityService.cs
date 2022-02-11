@@ -9,7 +9,7 @@ namespace FileCabinetApp.Services
     /// <summary>
     /// Class that works with database by using entity framework.
     /// </summary>
-    internal class FileCabinetEntityService : DbContext, IFileCabinetService
+    internal class FileCabinetEntityService : IFileCabinetService
     {
         private IRecordValidator recordValidator;
 
@@ -20,16 +20,12 @@ namespace FileCabinetApp.Services
         internal FileCabinetEntityService(IRecordValidator recordValidator)
         {
             this.recordValidator = recordValidator;
-            this.Database.EnsureCreated();
-        }
 
-        /// <summary>
-        /// Gets or sets group of objects stored in database.
-        /// </summary>
-        /// <value>
-        /// Group of objects stored in database.
-        /// </value>
-        internal DbSet<FileCabinetRecord> Records { get; set; }
+            using (ApplicationContext context = new ApplicationContext()) // ensure created lasts more than 1s. 
+            {
+                Console.WriteLine("Entities initialized.");
+            }
+        }
 
         /// <inheritdoc/>
         public bool CheckRecordPresence(int id)
@@ -94,13 +90,25 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+
+            using (ApplicationContext context = new ApplicationContext())
+            {
+                records = context.FileCabinetRecords.ToList();
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
         /// <inheritdoc/>
         public void GetStat()
         {
-            throw new NotImplementedException();
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                int recordsCount = db.FileCabinetRecords.Count();
+
+                Console.WriteLine($"Stored {recordsCount} record(s).");
+            }
         }
 
         /// <inheritdoc/>
@@ -137,12 +145,6 @@ namespace FileCabinetApp.Services
         public void Update(List<FileCabinetRecord> records)
         {
             throw new NotImplementedException();
-        }
-
-        /// <inheritdoc/>
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(ServerCommunicator.ConnectionString);
         }
     }
 }

@@ -1012,14 +1012,6 @@
             </summary>
             <param name="recordValidator">Validator for records.</param>
         </member>
-        <member name="P:FileCabinetApp.Services.FileCabinetEntityService.Records">
-            <summary>
-            Gets or sets group of objects stored in database.
-            </summary>
-            <value>
-            Group of objects stored in database.
-            </value>
-        </member>
         <member name="M:FileCabinetApp.Services.FileCabinetEntityService.CheckRecordPresence(System.Int32)">
             <inheritdoc/>
         </member>
@@ -1072,9 +1064,6 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetEntityService.Update(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetEntityService.OnConfiguring(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Services.FileCabinetFileSystemService">
@@ -1255,6 +1244,30 @@
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Select(System.String,System.String,FileCabinetApp.Interfaces.IRecordInputValidator)">
             <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.ServiceTools.ApplicationContext">
+            <summary>
+            Context for Entity framework.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.ApplicationContext.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ServiceTools.ApplicationContext"/> class.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.ServiceTools.ApplicationContext.FileCabinetRecords">
+            <summary>
+            Gets or sets stored records.
+            </summary>
+            <value>
+            Stored records.
+            </value>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.ApplicationContext.OnConfiguring(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder)">
+            <summary>
+            Configure connection to database.
+            </summary>
+            <param name="optionsBuilder">Settings of connection.</param>
         </member>
         <member name="T:FileCabinetApp.ServiceTools.FileCabinetServiceSnapshot">
             <summary>
