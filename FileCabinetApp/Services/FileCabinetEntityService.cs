@@ -40,7 +40,37 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void CreateRecord(FileCabinetRecord record)
         {
-            throw new NotImplementedException();
+            MemoizerService.RefreshMemoizer();
+
+            try
+            {
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (!isValid)
+                {
+                    Console.WriteLine($"Record validation failed.");
+                    return;
+                }
+
+                record.Id = this.GetUniqueId();
+
+                this.context.FileCabinetRecords.Add(record);
+                this.context.SaveChanges();
+
+                Console.WriteLine($"Record #{record.Id} is created.");
+            }
+            catch (ArgumentNullException argumentNullException)
+            {
+                Console.WriteLine(argumentNullException.Message);
+            }
+            catch (ArgumentOutOfRangeException argumentOutOfRangeException)
+            {
+                Console.WriteLine(argumentOutOfRangeException.Message);
+            }
+            catch (ArgumentException argumentException)
+            {
+                Console.WriteLine(argumentException.Message);
+            }
         }
 
         /// <inheritdoc/>
@@ -214,6 +244,18 @@ namespace FileCabinetApp.Services
         public void Dispose()
         {
             this.context.Dispose();
+        }
+
+        private int GetUniqueId()
+        {
+            int id = 1;
+
+            while (this.CheckRecordPresence(id))
+            {
+                id++;
+            }
+
+            return id;
         }
     }
 }

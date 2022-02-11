@@ -56,6 +56,8 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void CreateRecord(FileCabinetRecord record)
         {
+            MemoizerService.RefreshMemoizer();
+
             try
             {
                 bool isValid = this.recordValidator.ValidateParameters(record);
