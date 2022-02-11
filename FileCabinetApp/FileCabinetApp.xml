@@ -1066,6 +1066,9 @@
         <member name="M:FileCabinetApp.Services.FileCabinetEntityService.Update(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetEntityService.Dispose">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Services.FileCabinetFileSystemService">
             <summary>
             File system service.

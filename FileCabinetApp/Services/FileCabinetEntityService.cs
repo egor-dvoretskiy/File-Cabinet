@@ -9,8 +9,9 @@ namespace FileCabinetApp.Services
     /// <summary>
     /// Class that works with database by using entity framework.
     /// </summary>
-    internal class FileCabinetEntityService : IFileCabinetService
+    internal class FileCabinetEntityService : IFileCabinetService, IDisposable
     {
+        private ApplicationContext context = new ApplicationContext();
         private IRecordValidator recordValidator;
 
         /// <summary>
@@ -30,7 +31,9 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public bool CheckRecordPresence(int id)
         {
-            throw new NotImplementedException();
+            var record = this.context.FileCabinetRecords.FirstOrDefault(x => x.Id == id);
+
+            return record is null ? false : true;
         }
 
         /// <inheritdoc/>
@@ -48,54 +51,78 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate)
         {
-            throw new NotImplementedException();
+            var records = this.context.FileCabinetRecords
+                .Where(x => x.DateOfBirth.ToString("yyyy-MM-dd") == birthDate)
+                .ToList();
+
+            return new List<FileCabinetRecord>(records);
         }
 
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            throw new NotImplementedException();
+            var records = this.context.FileCabinetRecords
+                .Where(x => x.FirstName == firstName)
+                .ToList();
+
+            return new List<FileCabinetRecord>(records);
         }
 
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByGender(string gender)
         {
-            throw new NotImplementedException();
+            var records = this.context.FileCabinetRecords
+                .Where(x => x.Gender.ToString() == gender)
+                .ToList();
+
+            return new List<FileCabinetRecord>(records);
         }
 
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            throw new NotImplementedException();
+            var records = this.context.FileCabinetRecords
+                .Where(x => x.LastName == lastName)
+                .ToList();
+
+            return new List<FileCabinetRecord>(records);
         }
 
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating)
         {
-            throw new NotImplementedException();
+            var records = this.context.FileCabinetRecords
+                .Where(x => x.PersonalRating.ToString() == personalRating)
+                .ToList();
+
+            return new List<FileCabinetRecord>(records);
         }
 
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindBySalary(string salary)
         {
-            throw new NotImplementedException();
+            var records = this.context.FileCabinetRecords
+                .Where(x => x.Salary.ToString() == salary)
+                .ToList();
+
+            return new List<FileCabinetRecord>(records);
         }
 
         /// <inheritdoc/>
         public FileCabinetRecord GetRecord(int id)
         {
-            throw new NotImplementedException();
+            // record is not null, due to previous check of record presence in stored records.
+            var record = this.context.FileCabinetRecords
+                .Where(x => x.Id == id)
+                .First();
+
+            return record;
         }
 
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
-
-            using (ApplicationContext context = new ApplicationContext())
-            {
-                records = context.FileCabinetRecords.ToList();
-            }
+            List<FileCabinetRecord> records = this.context.FileCabinetRecords.ToList();
 
             return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
@@ -103,12 +130,9 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void GetStat()
         {
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                int recordsCount = db.FileCabinetRecords.Count();
+            int recordsCount = this.context.FileCabinetRecords.Count();
 
-                Console.WriteLine($"Stored {recordsCount} record(s).");
-            }
+            Console.WriteLine($"Stored {recordsCount} record(s).");
         }
 
         /// <inheritdoc/>
@@ -145,6 +169,12 @@ namespace FileCabinetApp.Services
         public void Update(List<FileCabinetRecord> records)
         {
             throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            this.context.Dispose();
         }
     }
 }
