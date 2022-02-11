@@ -157,7 +157,10 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
         {
-            throw new NotImplementedException();
+            var unloadRecords = fileCabinetServiceSnapshot.Records.ToList();
+
+            this.context.AddRange(unloadRecords);
+            this.context.SaveChanges();
         }
 
         /// <inheritdoc/>
