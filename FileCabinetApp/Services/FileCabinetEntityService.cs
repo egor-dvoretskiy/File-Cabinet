@@ -76,7 +76,16 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void Delete(List<int> ids)
         {
-            throw new NotImplementedException();
+            MemoizerService.RefreshMemoizer();
+
+            var recordsToDelete = this.context.FileCabinetRecords
+                .Where(x => ids.Contains(x.Id))
+                .ToArray();
+
+            this.context.FileCabinetRecords.RemoveRange(recordsToDelete);
+            this.context.SaveChanges();
+
+            Console.WriteLine($"Deleted {ids.Count} record(s).");
         }
 
         /// <inheritdoc/>
