@@ -31,6 +31,16 @@ namespace FileCabinetApp.ServiceTools
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(ServerCommunicator.ConnectionString);
+            // optionsBuilder.LogTo(System.Console.WriteLine);
+        }
+
+        /// <inheritdoc/>
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<FileCabinetRecord>()
+                .Property(p => p.Salary)
+                .HasColumnType("decimal(18,3)");
         }
     }
 }

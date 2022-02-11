@@ -2,6 +2,7 @@
 using FileCabinetApp.ConditionWords;
 using FileCabinetApp.Interfaces;
 using FileCabinetApp.ServiceTools;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -105,6 +106,10 @@ namespace FileCabinetApp.Services
                 .Where(x => x.FirstName == firstName)
                 .ToList();
 
+            /*SqlParameter parameter = new SqlParameter("@firstname", firstName);
+            var records = this.context.FileCabinetRecords
+                .FromSqlRaw($"SELECT * FROM {ServerCommunicator.TableName} WHERE FirstName=@firstname", parameter).ToList();*/
+
             return new List<FileCabinetRecord>(records);
         }
 
@@ -114,6 +119,10 @@ namespace FileCabinetApp.Services
             var records = this.context.FileCabinetRecords
                 .Where(x => x.Gender.ToString() == gender)
                 .ToList();
+
+            /*SqlParameter parameter = new SqlParameter("@gender", gender);
+            var records = this.context.FileCabinetRecords
+                .FromSqlRaw($"SELECT * FROM {ServerCommunicator.TableName} WHERE Gender=@gender", parameter).ToList();*/
 
             return new List<FileCabinetRecord>(records);
         }

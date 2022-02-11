@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
 #pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
 namespace FileCabinetApp.ServiceTools
@@ -14,14 +15,15 @@ namespace FileCabinetApp.ServiceTools
     internal static class ServerCommunicator
     {
         /// <summary>
-        /// String to connect with server.
-        /// </summary>
-        internal const string ConnectionString = "Data Source=PC1-5514;Initial Catalog=FileCabinet;Integrated Security=True;TrustServerCertificate=True;";
-
-        /// <summary>
         /// Name of the table on the server's side.
         /// </summary>
         internal const string TableName = "FileCabinetRecords";
+
+        /// <summary>
+        /// String to connect with server.
+        /// </summary>
+        // internal const string ConnectionString = "Data Source=PC1-5514;Initial Catalog=FileCabinet;Integrated Security=True;TrustServerCertificate=True;";
+        internal static readonly string ConnectionString = "Data Source=PC1-5514;Initial Catalog=FileCabinet;Integrated Security=True;TrustServerCertificate=True;";
 
         /// <summary>
         /// Instance of server connection.

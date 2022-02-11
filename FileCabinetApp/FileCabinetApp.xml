@@ -1272,6 +1272,9 @@
             </summary>
             <param name="optionsBuilder">Settings of connection.</param>
         </member>
+        <member name="M:FileCabinetApp.ServiceTools.ApplicationContext.OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.ServiceTools.FileCabinetServiceSnapshot">
             <summary>
             holds snapshot for FileCabinetService.
@@ -1403,14 +1406,14 @@
             Class provides communication with server.
             </summary>
         </member>
-        <member name="F:FileCabinetApp.ServiceTools.ServerCommunicator.ConnectionString">
-            <summary>
-            String to connect with server.
-            </summary>
-        </member>
         <member name="F:FileCabinetApp.ServiceTools.ServerCommunicator.TableName">
             <summary>
             Name of the table on the server's side.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.ServiceTools.ServerCommunicator.ConnectionString">
+            <summary>
+            String to connect with server.
             </summary>
         </member>
         <member name="F:FileCabinetApp.ServiceTools.ServerCommunicator.ServerConnection">
