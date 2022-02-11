@@ -120,13 +120,13 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            throw new NotImplementedException();
+            return new FileCabinetServiceSnapshot(this.GetRecords().ToList(), this.recordValidator);
         }
 
         /// <inheritdoc/>
         public void Purge()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Wrong service to use. Please, choose another one.");
         }
 
         /// <inheritdoc/>
