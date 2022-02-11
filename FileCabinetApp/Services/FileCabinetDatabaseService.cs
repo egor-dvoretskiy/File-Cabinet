@@ -182,9 +182,11 @@ namespace FileCabinetApp.Services
         public FileCabinetRecord GetRecord(int id)
         {
             ServerCommunicator.OpenServerConnection();
+            SqlParameter parameter = new SqlParameter("@id", id);
             SqlCommand command = new SqlCommand();
             command.Connection = ServerCommunicator.ServerConnection;
-            command.CommandText = $"SELECT * FROM {ServerCommunicator.TableName}";
+            command.CommandText = $"SELECT * FROM {ServerCommunicator.TableName} WHERE Id=@id";
+            command.Parameters.Add(parameter);
             var reader = command.ExecuteReader();
 
             reader.Read();
