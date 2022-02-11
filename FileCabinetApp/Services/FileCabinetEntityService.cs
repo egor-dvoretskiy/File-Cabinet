@@ -23,7 +23,7 @@ namespace FileCabinetApp.Services
         {
             this.recordValidator = recordValidator;
 
-            using (ApplicationContext context = new ApplicationContext()) // ensure created lasts more than 1s. 
+            using (ApplicationContext context = new ApplicationContext()) // ensure created lasts more than 1s.
             {
                 Console.WriteLine("Entities initialized.");
             }
@@ -246,7 +246,18 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void Update(List<FileCabinetRecord> records)
         {
-            throw new NotImplementedException();
+            MemoizerService.RefreshMemoizer();
+
+            foreach (var record in records)
+            {
+                var tableRecord = this.context.FileCabinetRecords.Single(x => x.Id == record.Id);
+                this.AssignRecordToTable(ref tableRecord, record);
+                this.context.FileCabinetRecords.Update(tableRecord);
+            }
+
+            this.context.SaveChanges();
+
+            Console.WriteLine($"Records updating completed.");
         }
 
         /// <inheritdoc/>
@@ -265,6 +276,17 @@ namespace FileCabinetApp.Services
             }
 
             return id;
+        }
+
+        private void AssignRecordToTable(ref FileCabinetRecord tableRecord, FileCabinetRecord record)
+        {
+            tableRecord.Id = record.Id;
+            tableRecord.FirstName = record.FirstName;
+            tableRecord.LastName = record.LastName;
+            tableRecord.DateOfBirth = record.DateOfBirth;
+            tableRecord.PersonalRating = record.PersonalRating;
+            tableRecord.Salary = record.Salary;
+            tableRecord.Gender = record.Gender;
         }
     }
 }
