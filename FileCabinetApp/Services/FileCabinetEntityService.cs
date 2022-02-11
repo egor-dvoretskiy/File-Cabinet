@@ -139,7 +139,39 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void InsertRecord(FileCabinetRecord record)
         {
-            throw new NotImplementedException();
+            MemoizerService.RefreshMemoizer();
+
+            try
+            {
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (!isValid)
+                {
+                    throw new ArgumentException("Record you want to add is not valid. Please try again!");
+                }
+
+                if (this.CheckRecordPresence(record.Id))
+                {
+                    throw new ArgumentException($"Memory is already has a record #{record.Id}.");
+                }
+
+                this.context.FileCabinetRecords.Add(record);
+                this.context.SaveChanges();
+
+                Console.WriteLine($"Record was successfully inserted in database");
+            }
+            catch (ArgumentNullException argumentNullException)
+            {
+                Console.WriteLine(argumentNullException.Message);
+            }
+            catch (ArgumentOutOfRangeException argumentOutOfRangeException)
+            {
+                Console.WriteLine(argumentOutOfRangeException.Message);
+            }
+            catch (ArgumentException argumentException)
+            {
+                Console.WriteLine(argumentException.Message);
+            }
         }
 
         /// <inheritdoc/>
