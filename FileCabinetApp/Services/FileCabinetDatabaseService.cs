@@ -17,7 +17,7 @@ namespace FileCabinetApp.Services
     /// <summary>
     /// Database service class.
     /// </summary>
-    internal class FileCabinetDatabaseService : FileCabinetDictionary, IFileCabinetService
+    internal class FileCabinetDatabaseService : IFileCabinetService
     {
         private readonly IRecordValidator recordValidator;
 
@@ -56,6 +56,8 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void CreateRecord(FileCabinetRecord record)
         {
+            MemoizerService.RefreshMemoizer();
+
             try
             {
                 bool isValid = this.recordValidator.ValidateParameters(record);
@@ -182,9 +184,11 @@ namespace FileCabinetApp.Services
         public FileCabinetRecord GetRecord(int id)
         {
             ServerCommunicator.OpenServerConnection();
+            SqlParameter parameter = new SqlParameter("@id", id);
             SqlCommand command = new SqlCommand();
             command.Connection = ServerCommunicator.ServerConnection;
-            command.CommandText = $"SELECT * FROM {ServerCommunicator.TableName}";
+            command.CommandText = $"SELECT * FROM {ServerCommunicator.TableName} WHERE Id=@id";
+            command.Parameters.Add(parameter);
             var reader = command.ExecuteReader();
 
             reader.Read();
@@ -252,7 +256,7 @@ namespace FileCabinetApp.Services
                     throw new ArgumentException("Record you want to add is not valid. Please try again!");
                 }
 
-                if (this.storedIdRecords.ContainsKey(record.Id))
+                if (this.CheckRecordPresence(record.Id))
                 {
                     throw new ArgumentException($"Memory is already has a record #{record.Id}.");
                 }

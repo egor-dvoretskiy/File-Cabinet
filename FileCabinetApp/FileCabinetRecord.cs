@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -58,6 +59,7 @@ namespace FileCabinetApp
         /// <value>
         /// Person's amount of debt.
         /// </value>
+        // [Column(TypeName = "decimal(18,3)")]
         public decimal Salary { get; set; }
 
         /// <summary>
