@@ -1253,10 +1253,11 @@
             Class for work with noSQL mongoDB.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.#ctor">
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.#ctor(FileCabinetApp.Interfaces.IRecordValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetMongoService"/> class.
             </summary>
+            <param name="recordValidator">Validator for records.</param>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMongoService.CheckRecordPresence(System.Int32)">
             <inheritdoc/>

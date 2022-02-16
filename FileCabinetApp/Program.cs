@@ -292,7 +292,7 @@ namespace FileCabinetApp
                         Console.WriteLine(CorrectStorageEntityInputArgsMessage);
                         break;
                     case 4:
-                        Program.fileCabinetService = new FileCabinetMongoService();
+                        Program.fileCabinetService = new FileCabinetMongoService(Program.recordValidator);
                         Console.WriteLine(CorrectStorageMongoInputArgsMessage);
                         break;
                     default:

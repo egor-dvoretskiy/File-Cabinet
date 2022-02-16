@@ -15,23 +15,64 @@ namespace FileCabinetApp.Services
     /// </summary>
     internal class FileCabinetMongoService : IFileCabinetService
     {
+        private IRecordValidator recordValidator;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetMongoService"/> class.
         /// </summary>
-        public FileCabinetMongoService()
+        /// <param name="recordValidator">Validator for records.</param>
+        public FileCabinetMongoService(IRecordValidator recordValidator)
         {
+            this.recordValidator = recordValidator;
         }
 
         /// <inheritdoc/>
         public bool CheckRecordPresence(int id)
         {
-            throw new NotImplementedException();
+            var collection = MongoService.GetMongoCollection();
+
+            bool isRecordInDatabase = collection
+                .AsQueryable<FileCabinetRecord>()
+                .Where(x => x.Id == id)
+                .Count() > 0;
+
+            return isRecordInDatabase;
         }
 
         /// <inheritdoc/>
         public void CreateRecord(FileCabinetRecord record)
         {
-            throw new NotImplementedException();
+            MemoizerService.RefreshMemoizer();
+
+            try
+            {
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (!isValid)
+                {
+                    Console.WriteLine($"Record validation failed.");
+                    return;
+                }
+
+                record.Id = this.GetUniqueId();
+
+                var collection = MongoService.GetMongoCollection();
+                collection.InsertOne(record);
+
+                Console.WriteLine($"Record #{record.Id} is created.");
+            }
+            catch (ArgumentNullException argumentNullException)
+            {
+                Console.WriteLine(argumentNullException.Message);
+            }
+            catch (ArgumentOutOfRangeException argumentOutOfRangeException)
+            {
+                Console.WriteLine(argumentOutOfRangeException.Message);
+            }
+            catch (ArgumentException argumentException)
+            {
+                Console.WriteLine(argumentException.Message);
+            }
         }
 
         /// <inheritdoc/>
@@ -132,6 +173,18 @@ namespace FileCabinetApp.Services
         public void Update(List<FileCabinetRecord> records)
         {
             throw new NotImplementedException();
+        }
+
+        private int GetUniqueId()
+        {
+            int id = 1;
+
+            while (this.CheckRecordPresence(id))
+            {
+                id++;
+            }
+
+            return id;
         }
     }
 }
