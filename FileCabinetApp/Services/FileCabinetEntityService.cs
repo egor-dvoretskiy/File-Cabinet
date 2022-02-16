@@ -92,8 +92,15 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate)
         {
+            bool isValid = DateTime.TryParse(birthDate, out DateTime dateOfBirth);
+
+            if (!isValid)
+            {
+                return new List<FileCabinetRecord>();
+            }
+
             var records = this.context.FileCabinetRecords
-                .Where(x => x.DateOfBirth.ToString("yyyy-MM-dd") == birthDate)
+                .Where(x => x.DateOfBirth == dateOfBirth)
                 .ToList();
 
             return new List<FileCabinetRecord>(records);

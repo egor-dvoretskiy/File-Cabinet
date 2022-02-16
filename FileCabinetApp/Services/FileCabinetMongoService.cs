@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FileCabinetApp.ConditionWords;
 using FileCabinetApp.Interfaces;
 using FileCabinetApp.ServiceTools;
 using MongoDB.Driver;
@@ -82,40 +83,120 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate)
+        public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate) => this.Memoized(birthDate, x =>
         {
-            throw new NotImplementedException();
-        }
+            var collection = MongoService.GetMongoCollection();
+
+            bool isValid = DateTime.TryParse(birthDate, out DateTime dateOfBirth);
+
+            if (!isValid)
+            {
+                return new List<FileCabinetRecord>();
+            }
+
+            List<FileCabinetRecord> records = collection
+                .AsQueryable<FileCabinetRecord>()
+                .Where(x => x.DateOfBirth == dateOfBirth)
+                .ToList();
+
+            return records;
+        });
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName) => this.Memoized(firstName, x =>
         {
-            throw new NotImplementedException();
-        }
+            var collection = MongoService.GetMongoCollection();
+
+            if (string.IsNullOrEmpty(firstName))
+            {
+                return new List<FileCabinetRecord>();
+            }
+
+            List<FileCabinetRecord> records = collection
+                .AsQueryable<FileCabinetRecord>()
+                .Where(x => x.FirstName == firstName)
+                .ToList();
+
+            return records;
+        });
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByGender(string gender)
+        public IEnumerable<FileCabinetRecord> FindByGender(string gender) => this.Memoized(gender, x =>
         {
-            throw new NotImplementedException();
-        }
+            var collection = MongoService.GetMongoCollection();
+
+            bool isValid = char.TryParse(gender, out char charGender);
+
+            if (!isValid)
+            {
+                return new List<FileCabinetRecord>();
+            }
+
+            List<FileCabinetRecord> records = collection
+                .AsQueryable<FileCabinetRecord>()
+                .Where(x => x.Gender == charGender)
+                .ToList();
+
+            return records;
+        });
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName) => this.Memoized(lastName, x =>
         {
-            throw new NotImplementedException();
-        }
+            var collection = MongoService.GetMongoCollection();
+
+            if (string.IsNullOrEmpty(lastName))
+            {
+                return new List<FileCabinetRecord>();
+            }
+
+            List<FileCabinetRecord> records = collection
+                .AsQueryable<FileCabinetRecord>()
+                .Where(x => x.LastName == lastName)
+                .ToList();
+
+            return records;
+        });
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating)
+        public IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating) => this.Memoized(personalRating, x =>
         {
-            throw new NotImplementedException();
-        }
+            var collection = MongoService.GetMongoCollection();
+
+            bool isValid = short.TryParse(personalRating, out short shortPersonalRating);
+
+            if (!isValid)
+            {
+                return new List<FileCabinetRecord>();
+            }
+
+            List<FileCabinetRecord> records = collection
+                .AsQueryable<FileCabinetRecord>()
+                .Where(x => x.PersonalRating == shortPersonalRating)
+                .ToList();
+
+            return records;
+        });
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindBySalary(string salary)
+        public IEnumerable<FileCabinetRecord> FindBySalary(string salary) => this.Memoized(salary, x =>
         {
-            throw new NotImplementedException();
-        }
+            var collection = MongoService.GetMongoCollection();
+
+            bool isValid = decimal.TryParse(salary, out decimal decimalSalary);
+
+            if (!isValid)
+            {
+                return new List<FileCabinetRecord>();
+            }
+
+            List<FileCabinetRecord> records = collection
+                .AsQueryable<FileCabinetRecord>()
+                .Where(x => x.Salary == decimalSalary)
+                .ToList();
+
+            return records;
+        });
 
         /// <inheritdoc/>
         public FileCabinetRecord GetRecord(int id)
@@ -164,10 +245,13 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public List<FileCabinetRecord> Select(string phrase, string memoizingKey, IRecordInputValidator inputValidator)
+        public List<FileCabinetRecord> Select(string phrase, string memoizingKey, IRecordInputValidator inputValidator) => this.Memoized(memoizingKey, x =>
         {
-            throw new NotImplementedException();
-        }
+            ConditionWhere where = new ConditionWhere(this, inputValidator);
+            var records = where.GetFilteredRecords(phrase);
+
+            return records;
+        });
 
         /// <inheritdoc/>
         public void Update(List<FileCabinetRecord> records)
