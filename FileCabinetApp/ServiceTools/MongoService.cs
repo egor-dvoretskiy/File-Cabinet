@@ -12,19 +12,10 @@ namespace FileCabinetApp.ServiceTools
     /// <summary>
     /// Class for work with nosql mongodb.
     /// </summary>
-    internal class MongoService
+    public static class MongoService
     {
         private static readonly string ConnectionString = ConfigurationManager.ConnectionStrings["MongoDb"].ConnectionString;
         private static MongoClient client = new MongoClient(ConnectionString);
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MongoService"/> class.
-        /// </summary>
-        internal MongoService()
-        {
-            // this.GetCollectionsNames(this.client);
-            // this.CreateDatabase(this.client);
-        }
 
         /// <summary>
         /// Gets the collection from mongo database object.

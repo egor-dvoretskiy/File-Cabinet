@@ -34,7 +34,7 @@ namespace FileCabinetGenerator
             XmlWriter.Write(writer, records);
         }
 
-        public static void WriteToDatabase(int recordAmount)
+        public static void WriteToSQLDatabase(int recordAmount)
         {
             FileCabinetRecord[] records = new FileCabinetRecord[recordAmount];
 
@@ -43,7 +43,19 @@ namespace FileCabinetGenerator
                 records[i] = RecordGenerator.GetRecord();
             }
 
-            DatabaseWriter.Write(records);
+            SQLDatabaseWriter.Write(records);
+        }
+
+        public static void WriteToNoSQLDatabase(int recordAmount)
+        {
+            FileCabinetRecord[] records = new FileCabinetRecord[recordAmount];
+
+            for (int i = 0; i < recordAmount; i++)
+            {
+                records[i] = RecordGenerator.GetRecord();
+            }
+
+            NoSQLDatabaseWriter.Write(records);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Globalization;
 using FileCabinetApp.ConditionWords;
 using FileCabinetApp.Interfaces;
 using FileCabinetApp.ServiceTools;
@@ -92,7 +93,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate)
         {
-            bool isValid = DateTime.TryParse(birthDate, out DateTime dateOfBirth);
+            bool isValid = DateTime.TryParse(birthDate, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth);
 
             if (!isValid)
             {
@@ -100,7 +101,7 @@ namespace FileCabinetApp.Services
             }
 
             var records = this.context.FileCabinetRecords
-                .Where(x => x.DateOfBirth == dateOfBirth)
+                .Where(x => CustomComparer.IsEqualDatesUpToDays(x.DateOfBirth, dateOfBirth))
                 .ToList();
 
             return new List<FileCabinetRecord>(records);

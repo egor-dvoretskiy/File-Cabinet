@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -87,7 +88,7 @@ namespace FileCabinetApp.Services
         {
             var collection = MongoService.GetMongoCollection();
 
-            bool isValid = DateTime.TryParse(birthDate, out DateTime dateOfBirth);
+            bool isValid = DateTime.TryParse(birthDate, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth);
 
             if (!isValid)
             {
@@ -96,7 +97,7 @@ namespace FileCabinetApp.Services
 
             List<FileCabinetRecord> records = collection
                 .AsQueryable<FileCabinetRecord>()
-                .Where(x => x.DateOfBirth == dateOfBirth)
+                .Where(x => CustomComparer.IsEqualDatesUpToDays(x.DateOfBirth, dateOfBirth))
                 .ToList();
 
             return records;

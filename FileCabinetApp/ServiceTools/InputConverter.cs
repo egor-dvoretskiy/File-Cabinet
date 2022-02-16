@@ -46,7 +46,7 @@ namespace FileCabinetApp.ServiceTools
             }
             else
             {
-                isConvertingSuccessful = DateTime.TryParse(input, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out birthDate);
+                isConvertingSuccessful = DateTime.TryParse(input, CultureInfo.InvariantCulture, DateTimeStyles.None, out birthDate);
 
                 if (!isConvertingSuccessful)
                 {

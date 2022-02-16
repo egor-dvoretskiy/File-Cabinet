@@ -1355,6 +1355,19 @@
             Check table presence in database.
             </summary>
         </member>
+        <member name="T:FileCabinetApp.ServiceTools.CustomComparer">
+            <summary>
+            Compare fields by specific rules.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.CustomComparer.IsEqualDatesUpToDays(System.DateTime,System.DateTime)">
+            <summary>
+            Compares dates.
+            </summary>
+            <param name="d1">Date 1 to compare.</param>
+            <param name="d2">Date 2 to compare.</param>
+            <returns>Returns result of comparing two dates.</returns>
+        </member>
         <member name="T:FileCabinetApp.ServiceTools.EntityService">
             <summary>
             Context for Entity framework.
@@ -1511,11 +1524,6 @@
         <member name="T:FileCabinetApp.ServiceTools.MongoService">
             <summary>
             Class for work with nosql mongodb.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.ServiceTools.MongoService.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.ServiceTools.MongoService"/> class.
             </summary>
         </member>
         <member name="M:FileCabinetApp.ServiceTools.MongoService.GetMongoCollection">
