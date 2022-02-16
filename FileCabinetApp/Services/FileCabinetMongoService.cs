@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FileCabinetApp.Interfaces;
 using FileCabinetApp.ServiceTools;
+using MongoDB.Driver;
 
 namespace FileCabinetApp.Services
 {
@@ -19,7 +20,6 @@ namespace FileCabinetApp.Services
         /// </summary>
         public FileCabinetMongoService()
         {
-            MongoService mongoService = new MongoService();
         }
 
         /// <inheritdoc/>
@@ -85,13 +85,17 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            throw new NotImplementedException();
+            var records = MongoService.GetMongoCollection().AsQueryable<FileCabinetRecord>().ToList();
+
+            return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
         /// <inheritdoc/>
         public void GetStat()
         {
-            throw new NotImplementedException();
+            var recordsCount = MongoService.GetMongoCollection().EstimatedDocumentCount();
+
+            Console.WriteLine($"Stored {recordsCount} record(s).");
         }
 
         /// <inheritdoc/>
