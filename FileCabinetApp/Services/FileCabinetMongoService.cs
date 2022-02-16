@@ -14,6 +14,14 @@ namespace FileCabinetApp.Services
     /// </summary>
     internal class FileCabinetMongoService : IFileCabinetService
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetMongoService"/> class.
+        /// </summary>
+        public FileCabinetMongoService()
+        {
+            MongoService mongoService = new MongoService();
+        }
+
         /// <inheritdoc/>
         public bool CheckRecordPresence(int id)
         {

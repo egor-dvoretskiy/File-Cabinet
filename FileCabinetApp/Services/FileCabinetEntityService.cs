@@ -13,7 +13,7 @@ namespace FileCabinetApp.Services
     /// </summary>
     internal class FileCabinetEntityService : IFileCabinetService, IDisposable
     {
-        private ApplicationContext context = new ApplicationContext();
+        private EntityService context = new EntityService();
         private IRecordValidator recordValidator;
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace FileCabinetApp.Services
         {
             this.recordValidator = recordValidator;
 
-            using (ApplicationContext context = new ApplicationContext()) // ensure created lasts more than 1s.
+            using (EntityService context = new EntityService()) // ensure created lasts more than 1s.
             {
                 Console.WriteLine("Entities initialized.");
             }

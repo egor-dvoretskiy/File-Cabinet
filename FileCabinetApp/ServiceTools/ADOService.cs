@@ -12,7 +12,7 @@ namespace FileCabinetApp.ServiceTools
     /// <summary>
     /// Class provides communication with server.
     /// </summary>
-    internal static class ServerCommunicator
+    internal static class ADOService
     {
         /// <summary>
         /// Name of the table on the server's side.
@@ -74,12 +74,12 @@ namespace FileCabinetApp.ServiceTools
         /// <returns>Sql Data Reader.</returns>
         internal static SqlDataReader GetSqlDataReader(string inputCommand)
         {
-            ServerCommunicator.OpenServerConnection();
+            ADOService.OpenServerConnection();
             SqlCommand command = new SqlCommand();
             command.CommandText = inputCommand;
-            command.Connection = ServerCommunicator.ServerConnection;
+            command.Connection = ADOService.ServerConnection;
             var reader = command.ExecuteReader();
-            ServerCommunicator.CloseServerConnection();
+            ADOService.CloseServerConnection();
 
             return reader;
         }
@@ -89,13 +89,13 @@ namespace FileCabinetApp.ServiceTools
         /// </summary>
         internal static void CheckTablePresenceInDatabase()
         {
-            ServerCommunicator.OpenServerConnection();
+            ADOService.OpenServerConnection();
             try
             {
-                Console.WriteLine($"Table '{ServerCommunicator.TableName}' creating...");
+                Console.WriteLine($"Table '{ADOService.TableName}' creating...");
                 SqlCommand cmd = new SqlCommand();
-                cmd.CommandText = ServerCommunicator.GetCreateTableCommand(ServerCommunicator.TableName);
-                cmd.Connection = ServerCommunicator.ServerConnection;
+                cmd.CommandText = ADOService.GetCreateTableCommand(ADOService.TableName);
+                cmd.Connection = ADOService.ServerConnection;
                 _ = cmd.ExecuteNonQuery();
                 Console.WriteLine($"Table created.");
             }
@@ -108,13 +108,13 @@ namespace FileCabinetApp.ServiceTools
                 Console.WriteLine(invalidOperationException.Message);
             }
 
-            ServerCommunicator.CloseServerConnection();
+            ADOService.CloseServerConnection();
         }
 
         private static string GetCreateTableCommand(string tableName)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append($"CREATE TABLE {ServerCommunicator.TableName} (");
+            builder.Append($"CREATE TABLE {ADOService.TableName} (");
             builder.Append("Id INT NOT NULL PRIMARY KEY,");
             builder.Append("FirstName VARCHAR(120) NOT NULL,");
             builder.Append("LastName VARCHAR(120) NOT NULL,");
