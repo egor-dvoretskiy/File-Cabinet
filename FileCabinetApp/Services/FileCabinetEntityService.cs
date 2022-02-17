@@ -2,6 +2,7 @@
 using System.Globalization;
 using FileCabinetApp.ConditionWords;
 using FileCabinetApp.Interfaces;
+using FileCabinetApp.Iterators;
 using FileCabinetApp.ServiceTools;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -91,79 +92,102 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate)
+        public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate) => this.Memoized(birthDate, x =>
         {
             bool isValid = DateTime.TryParse(birthDate, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth);
 
             if (!isValid)
             {
-                return new List<FileCabinetRecord>();
+                return new RecordDatabaseEnumerable(new List<FileCabinetRecord>());
             }
 
             var records = this.context.FileCabinetRecords
                 .Where(x => CustomComparer.IsEqualDatesUpToDays(x.DateOfBirth, dateOfBirth))
                 .ToList();
 
-            return new List<FileCabinetRecord>(records);
-        }
+            return new RecordDatabaseEnumerable(records);
+        });
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName) => this.Memoized(firstName, x =>
         {
+            if (string.IsNullOrEmpty(firstName))
+            {
+                return new RecordDatabaseEnumerable(new List<FileCabinetRecord>());
+            }
+
             var records = this.context.FileCabinetRecords
                 .Where(x => x.FirstName == firstName)
                 .ToList();
 
-            /*SqlParameter parameter = new SqlParameter("@firstname", firstName);
-            var records = this.context.FileCabinetRecords
-                .FromSqlRaw($"SELECT * FROM {ServerCommunicator.TableName} WHERE FirstName=@firstname", parameter).ToList();*/
-
-            return new List<FileCabinetRecord>(records);
-        }
+            return new RecordDatabaseEnumerable(records);
+        });
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByGender(string gender)
+        public IEnumerable<FileCabinetRecord> FindByGender(string gender) => this.Memoized(gender, x =>
         {
+            bool isValid = char.TryParse(gender, out char charGender);
+
+            if (!isValid)
+            {
+                return new RecordDatabaseEnumerable(new List<FileCabinetRecord>());
+            }
+
             var records = this.context.FileCabinetRecords
-                .Where(x => x.Gender.ToString() == gender)
+                .Where(x => x.Gender == charGender)
                 .ToList();
 
-            /*SqlParameter parameter = new SqlParameter("@gender", gender);
-            var records = this.context.FileCabinetRecords
-                .FromSqlRaw($"SELECT * FROM {ServerCommunicator.TableName} WHERE Gender=@gender", parameter).ToList();*/
-
-            return new List<FileCabinetRecord>(records);
-        }
+            return new RecordDatabaseEnumerable(records);
+        });
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName) => this.Memoized(lastName, x =>
         {
+            if (string.IsNullOrEmpty(lastName))
+            {
+                return new RecordDatabaseEnumerable(new List<FileCabinetRecord>());
+            }
+
             var records = this.context.FileCabinetRecords
                 .Where(x => x.LastName == lastName)
                 .ToList();
 
-            return new List<FileCabinetRecord>(records);
-        }
+            return new RecordDatabaseEnumerable(records);
+        });
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating)
+        public IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating) => this.Memoized(personalRating, x =>
         {
+            bool isValid = short.TryParse(personalRating, out short shortPersonalRating);
+
+            if (!isValid)
+            {
+                return new RecordDatabaseEnumerable(new List<FileCabinetRecord>());
+            }
+
             var records = this.context.FileCabinetRecords
-                .Where(x => x.PersonalRating.ToString() == personalRating)
+                .Where(x => x.PersonalRating == shortPersonalRating)
                 .ToList();
 
-            return new List<FileCabinetRecord>(records);
-        }
+            return new RecordDatabaseEnumerable(records);
+        });
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindBySalary(string salary)
+        public IEnumerable<FileCabinetRecord> FindBySalary(string salary) => this.Memoized(salary, x =>
         {
+            bool isValid = decimal.TryParse(salary, out decimal decimalSalary);
+
+            if (!isValid)
+            {
+                return new RecordDatabaseEnumerable(new List<FileCabinetRecord>());
+            }
+
             var records = this.context.FileCabinetRecords
-                .Where(x => x.Salary.ToString() == salary)
+                .Where(x => x.Salary == decimalSalary)
                 .ToList();
 
-            return new List<FileCabinetRecord>(records);
-        }
+            return new RecordDatabaseEnumerable(records);
+        });
 
         /// <inheritdoc/>
         public FileCabinetRecord GetRecord(int id)
