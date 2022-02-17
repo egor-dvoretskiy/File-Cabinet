@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using FileCabinetApp.ConditionWords;
 using FileCabinetApp.Interfaces;
 using FileCabinetApp.ServiceTools;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace FileCabinetApp.Services
@@ -206,7 +207,9 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public FileCabinetRecord GetRecord(int id)
         {
-            throw new NotImplementedException();
+            var collection = MongoService.GetMongoCollection();
+            FileCabinetRecord record = collection.AsQueryable<FileCabinetRecord>().First(x => x.Id == id);
+            return record;
         }
 
         /// <inheritdoc/>
@@ -228,25 +231,60 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void InsertRecord(FileCabinetRecord record)
         {
-            throw new NotImplementedException();
+            MemoizerService.RefreshMemoizer();
+
+            try
+            {
+                bool isValid = this.recordValidator.ValidateParameters(record);
+
+                if (!isValid)
+                {
+                    throw new ArgumentException("Record you want to add is not valid. Please try again!");
+                }
+
+                if (this.CheckRecordPresence(record.Id))
+                {
+                    throw new ArgumentException($"Memory is already has a record #{record.Id}.");
+                }
+
+                var collection = MongoService.GetMongoCollection();
+                collection.InsertOne(record);
+
+                Console.WriteLine($"Record was successfully inserted in database");
+            }
+            catch (ArgumentNullException argumentNullException)
+            {
+                Console.WriteLine(argumentNullException.Message);
+            }
+            catch (ArgumentOutOfRangeException argumentOutOfRangeException)
+            {
+                Console.WriteLine(argumentOutOfRangeException.Message);
+            }
+            catch (ArgumentException argumentException)
+            {
+                Console.WriteLine(argumentException.Message);
+            }
         }
 
         /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            throw new NotImplementedException();
+            return new FileCabinetServiceSnapshot(this.GetRecords().ToList(), this.recordValidator);
         }
 
         /// <inheritdoc/>
         public void Purge()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Wrong service to use. Please, choose another one.");
         }
 
         /// <inheritdoc/>
         public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
         {
-            throw new NotImplementedException();
+            var unloadRecords = fileCabinetServiceSnapshot.Records.ToList();
+
+            var collection = MongoService.GetMongoCollection();
+            collection.InsertMany(unloadRecords);
         }
 
         /// <inheritdoc/>
@@ -261,7 +299,16 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void Update(List<FileCabinetRecord> records)
         {
-            throw new NotImplementedException();
+            MemoizerService.RefreshMemoizer();
+
+            var collection = MongoService.GetMongoCollection();
+
+            foreach (var record in records)
+            {
+                collection.ReplaceOne(x => x.Id == record.Id, record);
+            }
+
+            Console.WriteLine($"Records updating completed.");
         }
 
         private int GetUniqueId()
