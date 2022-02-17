@@ -29,26 +29,26 @@ namespace FileCabinetApp.Services
         {
             this.recordValidator = recordValidator;
 
-            ServerCommunicator.CheckTablePresenceInDatabase();
+            ADOService.CheckTablePresenceInDatabase();
         }
 
         /// <inheritdoc/>
         public bool CheckRecordPresence(int id)
         {
-            ServerCommunicator.OpenServerConnection();
+            ADOService.OpenServerConnection();
 
-            string sqlExpression = $"SELECT * FROM {ServerCommunicator.TableName} WHERE Id=@id";
+            string sqlExpression = $"SELECT * FROM {ADOService.TableName} WHERE Id=@id";
 
             SqlParameter parameter = new SqlParameter("@id", id);
             SqlCommand command = new SqlCommand();
             command.CommandText = sqlExpression;
-            command.Connection = ServerCommunicator.ServerConnection;
+            command.Connection = ADOService.ServerConnection;
             command.Parameters.Add(parameter);
 
             var reader = command.ExecuteReader();
             bool hasRecords = reader.HasRows;
 
-            ServerCommunicator.CloseServerConnection();
+            ADOService.CloseServerConnection();
 
             return hasRecords;
         }
@@ -70,15 +70,15 @@ namespace FileCabinetApp.Services
 
                 record.Id = this.GetUniqueId();
 
-                ServerCommunicator.OpenServerConnection();
+                ADOService.OpenServerConnection();
 
                 SqlCommand command = new SqlCommand();
-                command.Connection = ServerCommunicator.ServerConnection;
+                command.Connection = ADOService.ServerConnection;
                 command.CommandText = this.GetInsertCommandWithRecord(record);
                 this.AssignRecordParametersToCommand(ref command, record);
                 _ = command.ExecuteNonQuery();
 
-                ServerCommunicator.CloseServerConnection();
+                ADOService.CloseServerConnection();
 
                 Console.WriteLine($"Record #{record.Id} is created.");
             }
@@ -101,21 +101,21 @@ namespace FileCabinetApp.Services
         {
             MemoizerService.RefreshMemoizer();
 
-            ServerCommunicator.OpenServerConnection();
+            ADOService.OpenServerConnection();
 
             for (int i = 0; i < ids.Count; i++)
             {
-                string sqlExpression = $"DELETE FROM {ServerCommunicator.TableName} WHERE Id=@id";
+                string sqlExpression = $"DELETE FROM {ADOService.TableName} WHERE Id=@id";
 
                 SqlParameter parameter = new SqlParameter("@id", ids[i]);
                 SqlCommand command = new SqlCommand();
                 command.CommandText = sqlExpression;
-                command.Connection = ServerCommunicator.ServerConnection;
+                command.Connection = ADOService.ServerConnection;
                 command.Parameters.Add(parameter);
                 _ = command.ExecuteNonQuery();
             }
 
-            ServerCommunicator.CloseServerConnection();
+            ADOService.CloseServerConnection();
 
             Console.WriteLine($"Deleted {ids.Count} record(s).");
         }
@@ -123,7 +123,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate)
         {
-            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE DateOfBirth=@birthDate";
+            string command = $"SELECT * FROM {ADOService.TableName} WHERE DateOfBirth=@birthDate";
             SqlParameter parameter = new SqlParameter("@birthDate", birthDate);
             var records = this.FindBySqlCommand(command, parameter);
 
@@ -133,7 +133,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE FirstName=@firstName";
+            string command = $"SELECT * FROM {ADOService.TableName} WHERE FirstName=@firstName";
             SqlParameter parameter = new SqlParameter("@firstName", firstName);
             var records = this.FindBySqlCommand(command, parameter);
 
@@ -143,7 +143,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByGender(string gender)
         {
-            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE Gender=@gender";
+            string command = $"SELECT * FROM {ADOService.TableName} WHERE Gender=@gender";
             SqlParameter parameter = new SqlParameter("@gender", gender);
             var records = this.FindBySqlCommand(command, parameter);
 
@@ -153,7 +153,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE LastName=@lastName";
+            string command = $"SELECT * FROM {ADOService.TableName} WHERE LastName=@lastName";
             SqlParameter parameter = new SqlParameter("@lastName", lastName);
             var records = this.FindBySqlCommand(command, parameter);
 
@@ -163,7 +163,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating)
         {
-            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE PersonalRating=@personalRating";
+            string command = $"SELECT * FROM {ADOService.TableName} WHERE PersonalRating=@personalRating";
             SqlParameter parameter = new SqlParameter("@personalRating", personalRating);
             var records = this.FindBySqlCommand(command, parameter);
 
@@ -173,7 +173,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindBySalary(string salary)
         {
-            string command = $"SELECT * FROM {ServerCommunicator.TableName} WHERE Salary=@salary";
+            string command = $"SELECT * FROM {ADOService.TableName} WHERE Salary=@salary";
             SqlParameter parameter = new SqlParameter("@salary", salary);
             var records = this.FindBySqlCommand(command, parameter);
 
@@ -183,18 +183,18 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public FileCabinetRecord GetRecord(int id)
         {
-            ServerCommunicator.OpenServerConnection();
+            ADOService.OpenServerConnection();
             SqlParameter parameter = new SqlParameter("@id", id);
             SqlCommand command = new SqlCommand();
-            command.Connection = ServerCommunicator.ServerConnection;
-            command.CommandText = $"SELECT * FROM {ServerCommunicator.TableName} WHERE Id=@id";
+            command.Connection = ADOService.ServerConnection;
+            command.CommandText = $"SELECT * FROM {ADOService.TableName} WHERE Id=@id";
             command.Parameters.Add(parameter);
             var reader = command.ExecuteReader();
 
             reader.Read();
             var record = this.GetRecordByParseSqlDataReader(reader);
 
-            ServerCommunicator.CloseServerConnection();
+            ADOService.CloseServerConnection();
 
             if (record == null)
             {
@@ -207,12 +207,12 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            ServerCommunicator.OpenServerConnection();
+            ADOService.OpenServerConnection();
             List<FileCabinetRecord> records = new List<FileCabinetRecord>();
 
             SqlCommand command = new SqlCommand();
-            command.CommandText = $"SELECT * FROM {ServerCommunicator.TableName}";
-            command.Connection = ServerCommunicator.ServerConnection;
+            command.CommandText = $"SELECT * FROM {ADOService.TableName}";
+            command.Connection = ADOService.ServerConnection;
 
             var reader = command.ExecuteReader();
 
@@ -229,7 +229,7 @@ namespace FileCabinetApp.Services
                 }
             }
 
-            ServerCommunicator.CloseServerConnection();
+            ADOService.CloseServerConnection();
 
             return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
@@ -261,15 +261,15 @@ namespace FileCabinetApp.Services
                     throw new ArgumentException($"Memory is already has a record #{record.Id}.");
                 }
 
-                ServerCommunicator.OpenServerConnection();
+                ADOService.OpenServerConnection();
 
                 SqlCommand command = new SqlCommand();
-                command.Connection = ServerCommunicator.ServerConnection;
+                command.Connection = ADOService.ServerConnection;
                 command.CommandText = this.GetInsertCommandWithRecord(record);
                 this.AssignRecordParametersToCommand(ref command, record);
                 _ = command.ExecuteNonQuery();
 
-                ServerCommunicator.CloseServerConnection();
+                ADOService.CloseServerConnection();
 
                 Console.WriteLine($"Record was successfully inserted in database");
             }
@@ -304,18 +304,18 @@ namespace FileCabinetApp.Services
         {
             var unloadRecords = fileCabinetServiceSnapshot.Records.ToList();
 
-            ServerCommunicator.OpenServerConnection();
+            ADOService.OpenServerConnection();
 
             for (int i = 0; i < unloadRecords.Count; i++)
             {
                 SqlCommand command = new SqlCommand();
-                command.Connection = ServerCommunicator.ServerConnection;
+                command.Connection = ADOService.ServerConnection;
                 command.CommandText = this.GetInsertCommandWithRecord(unloadRecords[i]);
                 this.AssignRecordParametersToCommand(ref command, unloadRecords[i]);
                 _ = command.ExecuteNonQuery();
             }
 
-            ServerCommunicator.CloseServerConnection();
+            ADOService.CloseServerConnection();
         }
 
         /// <inheritdoc/>
@@ -332,18 +332,18 @@ namespace FileCabinetApp.Services
         {
             MemoizerService.RefreshMemoizer();
 
-            ServerCommunicator.OpenServerConnection();
+            ADOService.OpenServerConnection();
 
             for (int i = 0; i < records.Count; i++)
             {
                 SqlCommand command = new SqlCommand();
                 command.CommandText = this.GetUpdateCommandWithRecord(records[i]);
-                command.Connection = ServerCommunicator.ServerConnection;
+                command.Connection = ADOService.ServerConnection;
                 this.AssignRecordParametersToCommand(ref command, records[i]);
                 _ = command.ExecuteNonQuery();
             }
 
-            ServerCommunicator.CloseServerConnection();
+            ADOService.CloseServerConnection();
 
             Console.WriteLine($"Records updating completed.");
         }
@@ -362,12 +362,12 @@ namespace FileCabinetApp.Services
 
         private int GetRecordsCount()
         {
-            ServerCommunicator.OpenServerConnection();
+            ADOService.OpenServerConnection();
             SqlCommand command = new SqlCommand();
-            command.CommandText = $"SELECT COUNT(*) FROM {ServerCommunicator.TableName};";
-            command.Connection = ServerCommunicator.ServerConnection;
+            command.CommandText = $"SELECT COUNT(*) FROM {ADOService.TableName};";
+            command.Connection = ADOService.ServerConnection;
             var count = command.ExecuteScalar();
-            ServerCommunicator.CloseServerConnection();
+            ADOService.CloseServerConnection();
 
             return (int)count;
         }
@@ -375,7 +375,7 @@ namespace FileCabinetApp.Services
         private string GetInsertCommandWithRecord(FileCabinetRecord record)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append($"INSERT INTO {ServerCommunicator.TableName} (Id,FirstName,LastName,DateOfBirth,PersonalRating,Salary,Gender) VALUES (");
+            builder.Append($"INSERT INTO {ADOService.TableName} (Id,FirstName,LastName,DateOfBirth,PersonalRating,Salary,Gender) VALUES (");
             builder.Append($"@id,");
             builder.Append($"@firstName,");
             builder.Append($"@lastName,");
@@ -390,7 +390,7 @@ namespace FileCabinetApp.Services
         private string GetUpdateCommandWithRecord(FileCabinetRecord record)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append($"UPDATE {ServerCommunicator.TableName} SET ");
+            builder.Append($"UPDATE {ADOService.TableName} SET ");
             builder.Append($"FirstName=@firstName,");
             builder.Append($"LastName=@lastName,");
             builder.Append($"DateOfBirth=@dateOfBirth,");
@@ -456,10 +456,10 @@ namespace FileCabinetApp.Services
         {
             List<FileCabinetRecord> records = new List<FileCabinetRecord>();
 
-            ServerCommunicator.OpenServerConnection();
+            ADOService.OpenServerConnection();
 
             SqlCommand command = new SqlCommand();
-            command.Connection = ServerCommunicator.ServerConnection;
+            command.Connection = ADOService.ServerConnection;
             command.CommandText = input;
             command.Parameters.Add(parameter);
             var reader = command.ExecuteReader();
@@ -477,7 +477,7 @@ namespace FileCabinetApp.Services
                 }
             }
 
-            ServerCommunicator.CloseServerConnection();
+            ADOService.CloseServerConnection();
 
             return records;
         }

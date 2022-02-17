@@ -112,7 +112,7 @@ namespace FileCabinetApp.ConditionWords
                     {
                         DateTime birthName = this.GetParsedAndValidatedParameter<DateTime>(value, InputConverter.BirthDateConverter, this.inputValidator.DateOfBirthValidator);
 
-                        if (DateTime.Compare(birthName, records[i].DateOfBirth) == 0)
+                        if (CustomComparer.IsEqualDatesUpToDays(birthName, records[i].DateOfBirth))
                         {
                             condition &= true;
                         }

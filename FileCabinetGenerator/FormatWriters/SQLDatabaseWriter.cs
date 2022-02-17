@@ -8,7 +8,7 @@ using Microsoft.Data.SqlClient;
 
 namespace FileCabinetGenerator.FormatWriters
 {
-    internal static class DatabaseWriter
+    internal static class SQLDatabaseWriter
     {
         internal const string ConnectionString = "Data Source=PC1-5514;Initial Catalog=FileCabinet;Integrated Security=True;TrustServerCertificate=True;";
         //internal const string TableName = "FileCabinetRecords";

@@ -1248,17 +1248,137 @@
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Select(System.String,System.String,FileCabinetApp.Interfaces.IRecordInputValidator)">
             <inheritdoc/>
         </member>
-        <member name="T:FileCabinetApp.ServiceTools.ApplicationContext">
+        <member name="T:FileCabinetApp.Services.FileCabinetMongoService">
+            <summary>
+            Class for work with noSQL mongoDB.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.#ctor(FileCabinetApp.Interfaces.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Services.FileCabinetMongoService"/> class.
+            </summary>
+            <param name="recordValidator">Validator for records.</param>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.CheckRecordPresence(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.CreateRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.Delete(System.Collections.Generic.List{System.Int32})">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.FindByBirthDate(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.FindByGender(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.FindByPersonalRating(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.FindBySalary(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.GetRecord(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.InsertRecord(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.Restore(FileCabinetApp.ServiceTools.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.Select(System.String,System.String,FileCabinetApp.Interfaces.IRecordInputValidator)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMongoService.Update(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.ServiceTools.ADOService">
+            <summary>
+            Class provides communication with server.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.ServiceTools.ADOService.TableName">
+            <summary>
+            Name of the table on the server's side.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.ServiceTools.ADOService.ConnectionString">
+            <summary>
+            String to connect with server.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.ServiceTools.ADOService.ServerConnection">
+            <summary>
+            Instance of server connection.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.ADOService.OpenServerConnection">
+            <summary>
+            Open server communication.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.ADOService.CloseServerConnection">
+            <summary>
+            Close server connection.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.ADOService.GetSqlDataReader(System.String)">
+            <summary>
+            Gets data reader by command.
+            </summary>
+            <param name="inputCommand">Input command to interact with database.</param>
+            <returns>Sql Data Reader.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.ADOService.CheckTablePresenceInDatabase">
+            <summary>
+            Check table presence in database.
+            </summary>
+        </member>
+        <member name="T:FileCabinetApp.ServiceTools.CustomComparer">
+            <summary>
+            Compare fields by specific rules.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceTools.CustomComparer.IsEqualDatesUpToDays(System.DateTime,System.DateTime)">
+            <summary>
+            Compares dates.
+            </summary>
+            <param name="d1">Date 1 to compare.</param>
+            <param name="d2">Date 2 to compare.</param>
+            <returns>Returns result of comparing two dates.</returns>
+        </member>
+        <member name="T:FileCabinetApp.ServiceTools.EntityService">
             <summary>
             Context for Entity framework.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.ServiceTools.ApplicationContext.#ctor">
+        <member name="M:FileCabinetApp.ServiceTools.EntityService.#ctor">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.ServiceTools.ApplicationContext"/> class.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ServiceTools.EntityService"/> class.
             </summary>
         </member>
-        <member name="P:FileCabinetApp.ServiceTools.ApplicationContext.FileCabinetRecords">
+        <member name="P:FileCabinetApp.ServiceTools.EntityService.FileCabinetRecords">
             <summary>
             Gets or sets stored records.
             </summary>
@@ -1266,13 +1386,13 @@
             Stored records.
             </value>
         </member>
-        <member name="M:FileCabinetApp.ServiceTools.ApplicationContext.OnConfiguring(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder)">
+        <member name="M:FileCabinetApp.ServiceTools.EntityService.OnConfiguring(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder)">
             <summary>
             Configure connection to database.
             </summary>
             <param name="optionsBuilder">Settings of connection.</param>
         </member>
-        <member name="M:FileCabinetApp.ServiceTools.ApplicationContext.OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:FileCabinetApp.ServiceTools.EntityService.OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.ServiceTools.FileCabinetServiceSnapshot">
@@ -1401,47 +1521,22 @@
             <param name="phrase">Init phrase.</param>
             <returns>Returns string for memoization.</returns>
         </member>
-        <member name="T:FileCabinetApp.ServiceTools.ServerCommunicator">
+        <member name="T:FileCabinetApp.ServiceTools.MongoService">
             <summary>
-            Class provides communication with server.
+            Class for work with nosql mongodb.
             </summary>
         </member>
-        <member name="F:FileCabinetApp.ServiceTools.ServerCommunicator.TableName">
+        <member name="M:FileCabinetApp.ServiceTools.MongoService.GetMongoCollection">
             <summary>
-            Name of the table on the server's side.
+            Gets the collection from mongo database object.
             </summary>
+            <returns>Returns IMongoCollection interface.</returns>
         </member>
-        <member name="F:FileCabinetApp.ServiceTools.ServerCommunicator.ConnectionString">
+        <member name="M:FileCabinetApp.ServiceTools.MongoService.GetMongoDatabase">
             <summary>
-            String to connect with server.
+            Get the mongo database object.
             </summary>
-        </member>
-        <member name="F:FileCabinetApp.ServiceTools.ServerCommunicator.ServerConnection">
-            <summary>
-            Instance of server connection.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.ServiceTools.ServerCommunicator.OpenServerConnection">
-            <summary>
-            Open server communication.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.ServiceTools.ServerCommunicator.CloseServerConnection">
-            <summary>
-            Close server connection.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.ServiceTools.ServerCommunicator.GetSqlDataReader(System.String)">
-            <summary>
-            Gets data reader by command.
-            </summary>
-            <param name="inputCommand">Input command to interact with database.</param>
-            <returns>Sql Data Reader.</returns>
-        </member>
-        <member name="M:FileCabinetApp.ServiceTools.ServerCommunicator.CheckTablePresenceInDatabase">
-            <summary>
-            Check table presence in database.
-            </summary>
+            <returns>Returns IMongoDatabase interface.</returns>
         </member>
         <member name="T:FileCabinetApp.ServiceTools.ServiceBufferCommunicator">
             <summary>

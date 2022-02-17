@@ -72,6 +72,7 @@ namespace FileCabinetApp
         private const string CorrectStorageMemoryInputArgsMessage = "Using storage memory mode.";
         private const string CorrectStorageDatabaseInputArgsMessage = "Using storage database mode.";
         private const string CorrectStorageEntityInputArgsMessage = "Using storage entity database mode.";
+        private const string CorrectStorageMongoInputArgsMessage = "Using storage mongo database mode.";
         private const string CorrectStorageFilesystemInputArgsMessage = "Using storage filesystem mode.";
         private const string CorrectServiceMeterInputArgsMessage = "Using service time measuring.";
         private const string CorrectServiceLoggerInputArgsMessage = "Using service logger.";
@@ -102,7 +103,8 @@ namespace FileCabinetApp
             "memory",
             "file",
             "database",
-            "edatabase",
+            "entity",
+            "mongo",
         };
 
         /// <summary>
@@ -288,6 +290,10 @@ namespace FileCabinetApp
                     case 3:
                         Program.fileCabinetService = new FileCabinetEntityService(Program.recordValidator);
                         Console.WriteLine(CorrectStorageEntityInputArgsMessage);
+                        break;
+                    case 4:
+                        Program.fileCabinetService = new FileCabinetMongoService(Program.recordValidator);
+                        Console.WriteLine(CorrectStorageMongoInputArgsMessage);
                         break;
                     default:
                         throw new ArgumentException($"Storage args doesn't have such parameter as {storageValue}");

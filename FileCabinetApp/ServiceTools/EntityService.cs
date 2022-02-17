@@ -6,12 +6,12 @@ namespace FileCabinetApp.ServiceTools
     /// <summary>
     /// Context for Entity framework.
     /// </summary>
-    internal class ApplicationContext : DbContext
+    internal class EntityService : DbContext
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ApplicationContext"/> class.
+        /// Initializes a new instance of the <see cref="EntityService"/> class.
         /// </summary>
-        internal ApplicationContext()
+        internal EntityService()
         {
             _ = this.Database.EnsureCreated();
         }
@@ -30,7 +30,8 @@ namespace FileCabinetApp.ServiceTools
         /// <param name="optionsBuilder">Settings of connection.</param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(ServerCommunicator.ConnectionString);
+            optionsBuilder.UseSqlServer(ADOService.ConnectionString);
+
             // optionsBuilder.LogTo(System.Console.WriteLine);
         }
 

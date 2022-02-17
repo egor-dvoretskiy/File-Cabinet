@@ -1,42 +1,45 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using FileCabinetApp.ConditionWords;
 using FileCabinetApp.Interfaces;
 using FileCabinetApp.ServiceTools;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 namespace FileCabinetApp.Services
 {
     /// <summary>
-    /// Class that works with database by using entity framework.
+    /// Class for work with noSQL mongoDB.
     /// </summary>
-    internal class FileCabinetEntityService : IFileCabinetService, IDisposable
+    internal class FileCabinetMongoService : IFileCabinetService
     {
-        private EntityService context = new EntityService();
         private IRecordValidator recordValidator;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetEntityService"/> class.
+        /// Initializes a new instance of the <see cref="FileCabinetMongoService"/> class.
         /// </summary>
         /// <param name="recordValidator">Validator for records.</param>
-        internal FileCabinetEntityService(IRecordValidator recordValidator)
+        public FileCabinetMongoService(IRecordValidator recordValidator)
         {
             this.recordValidator = recordValidator;
-
-            using (EntityService context = new EntityService()) // ensure created lasts more than 1s.
-            {
-                Console.WriteLine("Entities initialized.");
-            }
         }
 
         /// <inheritdoc/>
         public bool CheckRecordPresence(int id)
         {
-            var record = this.context.FileCabinetRecords.FirstOrDefault(x => x.Id == id);
+            var collection = MongoService.GetMongoCollection();
 
-            return record is null ? false : true;
+            bool isRecordInDatabase = collection
+                .AsQueryable<FileCabinetRecord>()
+                .Where(x => x.Id == id)
+                .Count() > 0;
+
+            return isRecordInDatabase;
         }
 
         /// <inheritdoc/>
@@ -56,8 +59,8 @@ namespace FileCabinetApp.Services
 
                 record.Id = this.GetUniqueId();
 
-                this.context.FileCabinetRecords.Add(record);
-                this.context.SaveChanges();
+                var collection = MongoService.GetMongoCollection();
+                collection.InsertOne(record);
 
                 Console.WriteLine($"Record #{record.Id} is created.");
             }
@@ -80,19 +83,16 @@ namespace FileCabinetApp.Services
         {
             MemoizerService.RefreshMemoizer();
 
-            var recordsToDelete = this.context.FileCabinetRecords
-                .Where(x => ids.Contains(x.Id))
-                .ToArray();
-
-            this.context.FileCabinetRecords.RemoveRange(recordsToDelete);
-            this.context.SaveChanges();
+            var deleteResult = MongoService.GetMongoCollection().DeleteMany(x => ids.Contains(x.Id));
 
             Console.WriteLine($"Deleted {ids.Count} record(s).");
         }
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate)
+        public IEnumerable<FileCabinetRecord> FindByBirthDate(string birthDate) => this.Memoized(birthDate, x =>
         {
+            var collection = MongoService.GetMongoCollection();
+
             bool isValid = DateTime.TryParse(birthDate, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth);
 
             if (!isValid)
@@ -100,86 +100,122 @@ namespace FileCabinetApp.Services
                 return new List<FileCabinetRecord>();
             }
 
-            var records = this.context.FileCabinetRecords
+            List<FileCabinetRecord> records = collection
+                .AsQueryable<FileCabinetRecord>()
                 .Where(x => CustomComparer.IsEqualDatesUpToDays(x.DateOfBirth, dateOfBirth))
                 .ToList();
 
-            return new List<FileCabinetRecord>(records);
-        }
+            return records;
+        });
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName) => this.Memoized(firstName, x =>
         {
-            var records = this.context.FileCabinetRecords
+            var collection = MongoService.GetMongoCollection();
+
+            if (string.IsNullOrEmpty(firstName))
+            {
+                return new List<FileCabinetRecord>();
+            }
+
+            List<FileCabinetRecord> records = collection
+                .AsQueryable<FileCabinetRecord>()
                 .Where(x => x.FirstName == firstName)
                 .ToList();
 
-            /*SqlParameter parameter = new SqlParameter("@firstname", firstName);
-            var records = this.context.FileCabinetRecords
-                .FromSqlRaw($"SELECT * FROM {ServerCommunicator.TableName} WHERE FirstName=@firstname", parameter).ToList();*/
-
-            return new List<FileCabinetRecord>(records);
-        }
+            return records;
+        });
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByGender(string gender)
+        public IEnumerable<FileCabinetRecord> FindByGender(string gender) => this.Memoized(gender, x =>
         {
-            var records = this.context.FileCabinetRecords
-                .Where(x => x.Gender.ToString() == gender)
+            var collection = MongoService.GetMongoCollection();
+
+            bool isValid = char.TryParse(gender, out char charGender);
+
+            if (!isValid)
+            {
+                return new List<FileCabinetRecord>();
+            }
+
+            List<FileCabinetRecord> records = collection
+                .AsQueryable<FileCabinetRecord>()
+                .Where(x => x.Gender == charGender)
                 .ToList();
 
-            /*SqlParameter parameter = new SqlParameter("@gender", gender);
-            var records = this.context.FileCabinetRecords
-                .FromSqlRaw($"SELECT * FROM {ServerCommunicator.TableName} WHERE Gender=@gender", parameter).ToList();*/
-
-            return new List<FileCabinetRecord>(records);
-        }
+            return records;
+        });
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName) => this.Memoized(lastName, x =>
         {
-            var records = this.context.FileCabinetRecords
+            var collection = MongoService.GetMongoCollection();
+
+            if (string.IsNullOrEmpty(lastName))
+            {
+                return new List<FileCabinetRecord>();
+            }
+
+            List<FileCabinetRecord> records = collection
+                .AsQueryable<FileCabinetRecord>()
                 .Where(x => x.LastName == lastName)
                 .ToList();
 
-            return new List<FileCabinetRecord>(records);
-        }
+            return records;
+        });
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating)
+        public IEnumerable<FileCabinetRecord> FindByPersonalRating(string personalRating) => this.Memoized(personalRating, x =>
         {
-            var records = this.context.FileCabinetRecords
-                .Where(x => x.PersonalRating.ToString() == personalRating)
+            var collection = MongoService.GetMongoCollection();
+
+            bool isValid = short.TryParse(personalRating, out short shortPersonalRating);
+
+            if (!isValid)
+            {
+                return new List<FileCabinetRecord>();
+            }
+
+            List<FileCabinetRecord> records = collection
+                .AsQueryable<FileCabinetRecord>()
+                .Where(x => x.PersonalRating == shortPersonalRating)
                 .ToList();
 
-            return new List<FileCabinetRecord>(records);
-        }
+            return records;
+        });
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindBySalary(string salary)
+        public IEnumerable<FileCabinetRecord> FindBySalary(string salary) => this.Memoized(salary, x =>
         {
-            var records = this.context.FileCabinetRecords
-                .Where(x => x.Salary.ToString() == salary)
+            var collection = MongoService.GetMongoCollection();
+
+            bool isValid = decimal.TryParse(salary, out decimal decimalSalary);
+
+            if (!isValid)
+            {
+                return new List<FileCabinetRecord>();
+            }
+
+            List<FileCabinetRecord> records = collection
+                .AsQueryable<FileCabinetRecord>()
+                .Where(x => x.Salary == decimalSalary)
                 .ToList();
 
-            return new List<FileCabinetRecord>(records);
-        }
+            return records;
+        });
 
         /// <inheritdoc/>
         public FileCabinetRecord GetRecord(int id)
         {
-            // record is not null, due to previous check of record presence in stored records.
-            var record = this.context.FileCabinetRecords
-                .Where(x => x.Id == id)
-                .First();
-
+            var collection = MongoService.GetMongoCollection();
+            FileCabinetRecord record = collection.AsQueryable<FileCabinetRecord>().First(x => x.Id == id);
             return record;
         }
 
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            List<FileCabinetRecord> records = this.context.FileCabinetRecords.ToList();
+            var records = MongoService.GetMongoCollection().AsQueryable<FileCabinetRecord>().ToList();
 
             return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
@@ -187,7 +223,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void GetStat()
         {
-            int recordsCount = this.context.FileCabinetRecords.Count();
+            var recordsCount = MongoService.GetMongoCollection().EstimatedDocumentCount();
 
             Console.WriteLine($"Stored {recordsCount} record(s).");
         }
@@ -211,8 +247,8 @@ namespace FileCabinetApp.Services
                     throw new ArgumentException($"Memory is already has a record #{record.Id}.");
                 }
 
-                this.context.FileCabinetRecords.Add(record);
-                this.context.SaveChanges();
+                var collection = MongoService.GetMongoCollection();
+                collection.InsertOne(record);
 
                 Console.WriteLine($"Record was successfully inserted in database");
             }
@@ -247,8 +283,8 @@ namespace FileCabinetApp.Services
         {
             var unloadRecords = fileCabinetServiceSnapshot.Records.ToList();
 
-            this.context.AddRange(unloadRecords);
-            this.context.SaveChanges();
+            var collection = MongoService.GetMongoCollection();
+            collection.InsertMany(unloadRecords);
         }
 
         /// <inheritdoc/>
@@ -265,22 +301,14 @@ namespace FileCabinetApp.Services
         {
             MemoizerService.RefreshMemoizer();
 
+            var collection = MongoService.GetMongoCollection();
+
             foreach (var record in records)
             {
-                var tableRecord = this.context.FileCabinetRecords.Single(x => x.Id == record.Id);
-                this.AssignRecordToTable(ref tableRecord, record);
-                this.context.FileCabinetRecords.Update(tableRecord);
+                collection.ReplaceOne(x => x.Id == record.Id, record);
             }
 
-            this.context.SaveChanges();
-
             Console.WriteLine($"Records updating completed.");
-        }
-
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            this.context.Dispose();
         }
 
         private int GetUniqueId()
@@ -293,17 +321,6 @@ namespace FileCabinetApp.Services
             }
 
             return id;
-        }
-
-        private void AssignRecordToTable(ref FileCabinetRecord tableRecord, FileCabinetRecord record)
-        {
-            tableRecord.Id = record.Id;
-            tableRecord.FirstName = record.FirstName;
-            tableRecord.LastName = record.LastName;
-            tableRecord.DateOfBirth = record.DateOfBirth;
-            tableRecord.PersonalRating = record.PersonalRating;
-            tableRecord.Salary = record.Salary;
-            tableRecord.Gender = record.Gender;
         }
     }
 }
