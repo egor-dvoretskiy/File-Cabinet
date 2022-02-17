@@ -55,7 +55,7 @@ namespace FileCabinetApp.CommandHandlers
             Console.Write("Last name: ");
             var lastName = this.ReadInput(InputConverter.StringConverter, this.inputValidator.LastNameValidator);
 
-            Console.Write("Date of birth (month/day/year): ");
+            Console.Write("Date of birth (month.day.year): ");
             var birthDate = this.ReadInput(InputConverter.BirthDateConverter, this.inputValidator.DateOfBirthValidator);
 
             Console.Write("Personal rating: ");
