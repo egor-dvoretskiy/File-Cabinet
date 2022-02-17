@@ -55,7 +55,9 @@ namespace FileCabinetApp.CommandHandlers
             string exportFormat = splitedParams[0];
             string pathToFile = splitedParams[1];
 
-            if (!Program.AvailableFormatsToExportImport.Contains(exportFormat))
+            bool isValid = Enum.TryParse(exportFormat, out ConvertFormats format);
+
+            if (!isValid)
             {
                 Console.WriteLine("Wrong format. Please, try again.");
                 return;
@@ -67,16 +69,16 @@ namespace FileCabinetApp.CommandHandlers
 
                 using (StreamReader reader = new StreamReader(pathToFile))
                 {
-                    switch (exportFormat)
+                    switch (format)
                     {
-                        case "csv":
+                        case ConvertFormats.Csv when isValid:
                             snapshot.LoadFromCsv(reader);
                             break;
-                        case "xml":
+                        case ConvertFormats.Xml when isValid:
                             snapshot.LoadFromXml(reader);
                             break;
                         default:
-                            Console.WriteLine("There is no such format to export.");
+                            throw new ArgumentException("There is no such format to export.");
                             break;
                     }
                 }

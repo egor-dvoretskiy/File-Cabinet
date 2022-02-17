@@ -46,6 +46,53 @@ namespace FileCabinetApp
     }
 
     /// <summary>
+    /// Available storage modes in cmd.
+    /// </summary>
+    public enum StorageModes
+    {
+        /// <summary>
+        /// Memory storage mode. All data stored in List.
+        /// </summary>
+        Memory,
+
+        /// <summary>
+        /// File storage mode. All data stored in binary representation in .db file.
+        /// </summary>
+        File,
+
+        /// <summary>
+        /// Database storage mode. All data stored in SQL SERVER database. Using ADO.NET technology to interact with db.
+        /// </summary>
+        Database,
+
+        /// <summary>
+        /// Entity storage mode. All data stored in SQL SERVER database. Using Entity Framework technology to interact with db.
+        /// </summary>
+        Entity,
+
+        /// <summary>
+        /// Mongo storage mode. All data stored in MONGODB's SERVER database. Using MongoDb technology to interact with db.
+        /// </summary>
+        Mongo,
+    }
+
+    /// <summary>
+    /// Formats to work with export/import.
+    /// </summary>
+    public enum ConvertFormats
+    {
+        /// <summary>
+        /// CSV format to convert.
+        /// </summary>
+        Csv,
+
+        /// <summary>
+        /// XML format to convert.
+        /// </summary>
+        Xml,
+    }
+
+    /// <summary>
     /// Main Class.
     /// </summary>
     public static class Program
@@ -54,15 +101,6 @@ namespace FileCabinetApp
         /// Hint message.
         /// </summary>
         public const string HintMessage = "Enter your command, or enter 'help' to get help.";
-
-        /// <summary>
-        /// Available format to export/import.
-        /// </summary>
-        public static readonly string[] AvailableFormatsToExportImport = new string[]
-        {
-            "csv",
-            "xml",
-        };
 
         private const string DeveloperName = "Egor Dvoretskiy";
         private const string CorrectCustomInputArgsMessage = "Using custom validation rules.";
@@ -90,21 +128,6 @@ namespace FileCabinetApp
             { "--validation-rules", CommandLineParameters.Validation },
             { "-s", CommandLineParameters.Storage },
             { "--storage", CommandLineParameters.Storage },
-        };
-
-        private static Dictionary<string, SettingsType> dictSettingsType = new ()
-        {
-            { "default", SettingsType.Default },
-            { "custom", SettingsType.Custom },
-        };
-
-        private static string[] storageModes = new string[]
-        {
-            "memory",
-            "file",
-            "database",
-            "entity",
-            "mongo",
         };
 
         /// <summary>
@@ -226,30 +249,26 @@ namespace FileCabinetApp
                 }
 
                 var validationValue = args[validationModeIndex + 1];
+                string validationValueString = char.ToUpper(validationValue[0]) + validationValue.Substring(1);
 
-                if (!dictSettingsType.ContainsKey(validationValue))
+                bool isValid = Enum.TryParse(validationValueString, out SettingsType validationMode);
+
+                switch (validationMode)
                 {
-                    throw new ArgumentException($"Validation args don't have such parameter as {validationValue}");
-                }
-
-                var type = dictSettingsType[validationValue];
-
-                switch (type)
-                {
-                    case SettingsType.Default:
+                    case SettingsType.Default when isValid:
                         Program.recordValidator = new ValidatorBuilder().CreateDefault();
                         Program.inputValidator = new DefaultInputValidator();
 
                         Console.WriteLine(CorrectDefaultInputArgsMessage);
                         break;
-                    case SettingsType.Custom:
+                    case SettingsType.Custom when isValid:
                         Program.recordValidator = new ValidatorBuilder().CreateCustom();
                         Program.inputValidator = new CustomInputValidator();
 
                         Console.WriteLine(CorrectCustomInputArgsMessage);
                         break;
                     default:
-                        break;
+                        throw new ArgumentException($"Validation args don't have such parameter as {validationValue}");
                 }
             }
             else
@@ -269,34 +288,35 @@ namespace FileCabinetApp
                     throw new ArgumentOutOfRangeException($"Wrong input storage args order.");
                 }
 
-                var storageValue = args[storageModeIndex + 1];
+                var storageValueTemporary = args[storageModeIndex + 1];
+                string storageValueString = char.ToUpper(storageValueTemporary[0]) + storageValueTemporary.Substring(1);
 
-                int indexStorageMode = Array.IndexOf(storageModes, storageValue);
+                bool isValid = Enum.TryParse(storageValueString, out StorageModes storageMode);
 
-                switch (indexStorageMode)
+                switch (storageMode)
                 {
-                    case 0:
+                    case StorageModes.Memory when isValid:
                         Program.fileCabinetService = new FileCabinetMemoryService(Program.recordValidator);
                         Console.WriteLine(Program.CorrectStorageMemoryInputArgsMessage);
                         break;
-                    case 1:
+                    case StorageModes.File when isValid:
                         Program.fileCabinetService = new FileCabinetFileSystemService(Program.fileStream, Program.recordValidator);
                         Console.WriteLine(Program.CorrectStorageFilesystemInputArgsMessage);
                         break;
-                    case 2:
+                    case StorageModes.Database when isValid:
                         Program.fileCabinetService = new FileCabinetDatabaseService(Program.recordValidator);
                         Console.WriteLine(CorrectStorageDatabaseInputArgsMessage);
                         break;
-                    case 3:
+                    case StorageModes.Entity when isValid:
                         Program.fileCabinetService = new FileCabinetEntityService(Program.recordValidator);
                         Console.WriteLine(CorrectStorageEntityInputArgsMessage);
                         break;
-                    case 4:
+                    case StorageModes.Mongo when isValid:
                         Program.fileCabinetService = new FileCabinetMongoService(Program.recordValidator);
                         Console.WriteLine(CorrectStorageMongoInputArgsMessage);
                         break;
                     default:
-                        throw new ArgumentException($"Storage args doesn't have such parameter as {storageValue}");
+                        throw new ArgumentException($"Storage args don't have such parameter as {storageValueString}");
                 }
             }
             else

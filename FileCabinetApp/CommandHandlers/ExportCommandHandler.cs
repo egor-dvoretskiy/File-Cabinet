@@ -56,7 +56,9 @@ namespace FileCabinetApp.CommandHandlers
             string pathToFile = splitedParams[1];
             string fileName = pathToFile.Split('\\').Last();
 
-            if (!Program.AvailableFormatsToExportImport.Contains(exportFormat))
+            bool isValid = Enum.TryParse(exportFormat, out ConvertFormats format);
+
+            if (!isValid)
             {
                 Console.WriteLine("Wrong format. Please, try again.");
                 return;
@@ -78,17 +80,16 @@ namespace FileCabinetApp.CommandHandlers
                 {
                     var snapshot = this.service.MakeSnapshot();
 
-                    switch (exportFormat)
+                    switch (format)
                     {
-                        case "csv":
+                        case ConvertFormats.Csv when isValid:
                             snapshot.SaveToCsv(writer);
                             break;
-                        case "xml":
+                        case ConvertFormats.Xml when isValid:
                             snapshot.SaveToXml(writer);
                             break;
                         default:
-                            Console.WriteLine("There is no such format to export.");
-                            break;
+                            throw new ArgumentException("There is no such format to export.");
                     }
 
                     Console.WriteLine($"All records are exported to file {fileName}.");
@@ -98,6 +99,14 @@ namespace FileCabinetApp.CommandHandlers
             {
                 _ = directoryNotFoundException;
                 Console.WriteLine($"Export failed: can't open file {pathToFile}.");
+            }
+            catch (FileNotFoundException fileNotFoundException)
+            {
+                Console.WriteLine($"Import failed: {fileNotFoundException.Message}.");
+            }
+            catch (ArgumentException argumentException)
+            {
+                Console.WriteLine(argumentException.Message);
             }
         }
 

@@ -842,6 +842,51 @@
             Storage commands.
             </summary>
         </member>
+        <member name="T:FileCabinetApp.StorageModes">
+            <summary>
+            Available storage modes in cmd.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.StorageModes.Memory">
+            <summary>
+            Memory storage mode. All data stored in List.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.StorageModes.File">
+            <summary>
+            File storage mode. All data stored in binary representation in .db file.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.StorageModes.Database">
+            <summary>
+            Database storage mode. All data stored in SQL SERVER database. Using ADO.NET technology to interact with db.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.StorageModes.Entity">
+            <summary>
+            Entity storage mode. All data stored in SQL SERVER database. Using Entity Framework technology to interact with db.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.StorageModes.Mongo">
+            <summary>
+            Mongo storage mode. All data stored in MONGODB's SERVER database. Using MongoDb technology to interact with db.
+            </summary>
+        </member>
+        <member name="T:FileCabinetApp.ConvertFormats">
+            <summary>
+            Formats to work with export/import.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.ConvertFormats.Csv">
+            <summary>
+            CSV format to convert.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.ConvertFormats.Xml">
+            <summary>
+            XML format to convert.
+            </summary>
+        </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
             Main Class.
@@ -850,11 +895,6 @@
         <member name="F:FileCabinetApp.Program.HintMessage">
             <summary>
             Hint message.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Program.AvailableFormatsToExportImport">
-            <summary>
-            Available format to export/import.
             </summary>
         </member>
         <member name="M:FileCabinetApp.Program.Main(System.String[])">
