@@ -80,7 +80,11 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public void Delete(List<int> ids)
         {
-            throw new NotImplementedException();
+            MemoizerService.RefreshMemoizer();
+
+            var deleteResult = MongoService.GetMongoCollection().DeleteMany(x => ids.Contains(x.Id));
+
+            Console.WriteLine($"Deleted {ids.Count} record(s).");
         }
 
         /// <inheritdoc/>
