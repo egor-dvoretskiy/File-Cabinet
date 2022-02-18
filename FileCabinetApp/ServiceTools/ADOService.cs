@@ -17,7 +17,7 @@ namespace FileCabinetApp.ServiceTools
         /// <summary>
         /// Name of the table on the server's side.
         /// </summary>
-        internal const string TableName = "FileCabinetRecords";
+        internal static readonly string TableName = ConfigurationManager.AppSettings.Get("DatabaseTableName") ?? "FileCabinetRecords";
 
         /// <summary>
         /// String to connect with server.
